@@ -5,7 +5,7 @@
 - **UI:** Jetpack Compose (Declarative UI)
 - **Architecture:** Clean Architecture + MVVM + UDF (Unidirectional Data Flow)
 - **DI:** Hilt
-- **Network:** Retrofit
+-  **Network:** Retrofit
 - **Paging:** Paging 3 (Remote Pagination)
 - **Local DB:** Room (Offline-first caching)
 - **Navigation:** Type-Safe Jetpack Navigation
