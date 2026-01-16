@@ -49,7 +49,8 @@ fun FilmInfo(
             modifier = Modifier
                 .height(300.dp)
                 .graphicsLayer(scaleX = scale, scaleY = scale)
-                .clickable(interactionSource = interactionSource,
+                .clickable(
+                    interactionSource = interactionSource,
                     indication = LocalIndication.current
                 ) {
                     scope.launch {
