@@ -1,5 +1,6 @@
 package com.example.cinema.di
 
+import com.example.cinema.BuildConfig
 import com.example.cinema.data.remote.ApiConstants
 import com.example.cinema.data.remote.FilmApi
 import dagger.Module
@@ -9,7 +10,6 @@ import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
-
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
@@ -18,7 +18,7 @@ object NetworkModule {
     @Provides
     @ApiKey
     fun provideApiKey(): String {
-        return ApiConstants.API_KEY
+        return BuildConfig.API_KEY
     }
 
     @Provides

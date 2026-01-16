@@ -38,7 +38,7 @@ class FilmRepositoryImpl @Inject constructor(
             config = PagingConfig(
                 pageSize = 20,
                 enablePlaceholders = false,
-                initialLoadSize = 20
+                initialLoadSize = 40
             ),
             pagingSourceFactory = {
                 FilmPagingSource(
