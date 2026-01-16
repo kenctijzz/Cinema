@@ -1,10 +1,8 @@
 package com.example.cinema.di
 
-import android.os.Build
 import com.example.cinema.BuildConfig
 import com.example.cinema.data.remote.ApiConstants
 import com.example.cinema.data.remote.FilmApi
-import com.google.gson.internal.GsonBuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
