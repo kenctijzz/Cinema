@@ -8,12 +8,13 @@ import com.google.gson.annotations.SerializedName
 data class FilmEntity(
     @PrimaryKey
     val id: Int,
-    val title: String,
+    val page: Int,
     @SerializedName("poster_path")
     val image: String?,
     @SerializedName("release_date")
     val releaseDate: String?,
+    val overview: String?,
+    val title: String,
     val adult: Boolean,
-    val page: Int,
-    val overview: String?
+    val isFavorite: Boolean
 )

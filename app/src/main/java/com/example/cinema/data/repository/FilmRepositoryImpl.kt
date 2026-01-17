@@ -23,6 +23,7 @@ fun FilmModel.toEntity(): FilmEntity {
         releaseDate = this.releaseDate,
         adult = this.adult,
         overview = this.overview,
+        isFavorite = false,
         page = 0
     )
 }
@@ -37,8 +38,9 @@ class FilmRepositoryImpl @Inject constructor(
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
+                prefetchDistance = 10,
                 enablePlaceholders = false,
-                initialLoadSize = 40
+                initialLoadSize = 60
             ),
             pagingSourceFactory = {
                 FilmPagingSource(

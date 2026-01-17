@@ -36,8 +36,4 @@ class FilmViewModel @Inject constructor(
     )
     val uiEvents: SharedFlow<UiEvent> = _uiEvents
 
-    init {
-        Log.d("PAGING_DEBUG", "ViewModel инициализирована")
-    }
-
 }

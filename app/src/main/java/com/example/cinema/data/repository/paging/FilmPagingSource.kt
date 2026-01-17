@@ -23,11 +23,11 @@ class FilmPagingSource(
             try {
                 val response = api.getPopularMovies(page = position, apikey = apiKey)
                 dao.insertAll(response.results.map { it.toEntity() })
-                val movies = response.results
+                val films = response.results
                 LoadResult.Page(
-                    data = movies,
+                    data = films.distinctBy { it.id },
                     prevKey = if (position == 1) null else position - 1,
-                    nextKey = if (movies.isEmpty()) null else position + 1
+                    nextKey = if (films.isEmpty()) null else position + 1
                 )
             } catch (e: Exception) {
                 LoadResult.Error(e)
