@@ -1,12 +1,9 @@
 package com.example.cinema.ui.screens.filminfo
 
-import android.R.attr.contentDescription
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,15 +27,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.example.cinema.data.remote.ApiConstants
-import com.example.cinema.ui.navigation.NavigationManager
 import com.example.cinema.ui.common.UiState
-import kotlinx.coroutines.launch
 
 @Composable
 fun FilmDetailScreen(
     filmDetailViewModel: FilmDetailViewModel = hiltViewModel(),
 ) {
-    val scope = rememberCoroutineScope()
     val state = filmDetailViewModel.state.collectAsStateWithLifecycle()
     Box() {
         when (val uiState = state.value) {
@@ -111,19 +105,6 @@ fun FilmDetailScreen(
                                 )
                             )
                         )
-                        Spacer(modifier = Modifier.height(5.dp))
-                        Text(
-                            if (uiState.data.adult) "18+" else "0+",
-                            fontSize = 20.sp,
-                            style = TextStyle(
-                                shadow = Shadow(
-                                    color = Color.Black,
-                                    blurRadius = 8f
-                                )
-                            )
-                        )
-
-
                     }
 
                 }
