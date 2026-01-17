@@ -25,5 +25,5 @@
 ## Как запустить
 
 1. Получите API-ключ на [TMDB](https://www.themoviedb.org).
-2. Вставьте ваш ключ в файл `data/remote/ApiConstants.kt`.
+2. Вставьте ваш ключ в  `di-NetworkModule-ProvideKey()`.
 3. Соберите и запустите проект в Android Studio.
