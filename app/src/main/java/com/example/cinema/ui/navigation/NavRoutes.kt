@@ -4,10 +4,9 @@ import kotlinx.serialization.Serializable
 
 sealed class Screen {
     @Serializable
-    object FilmList
-
+    data object FilmList
     @Serializable
-    object FavoriteFilms
+    data object FavoriteFilms
     @Serializable
     data class FilmDetail(val id: Int)
 }
