@@ -1,5 +1,6 @@
 package com.example.cinema.ui.screens.filmlist
 
+import android.R.attr.contentDescription
 import android.graphics.drawable.Icon
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -34,6 +36,7 @@ import androidx.compose.ui.input.key.Key.Companion.I
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
@@ -47,6 +50,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun FilmInfo(
     film: FilmEntity,
+    filmViewModel: FilmViewModel = hiltViewModel()
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -88,9 +92,21 @@ fun FilmInfo(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.Bottom
                 ) {
-                    Box(modifier = Modifier.size(40.dp).padding(8.dp)
-                        .clickable(onClick = {})) {
-                        Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = null)
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(8.dp)
+                            .clickable(onClick = { filmViewModel.toggleFilmLike(film.id) })
+                    ) {
+                        Icon(
+                            imageVector =
+                                if (film.isFavorite) {
+                                    Icons.Default.Favorite
+                                } else {
+                                    Icons.Default.FavoriteBorder
+                                },
+                            contentDescription = null
+                        )
                     }
                 }
             }

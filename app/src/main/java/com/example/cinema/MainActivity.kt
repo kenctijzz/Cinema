@@ -12,6 +12,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.example.cinema.ui.navigation.AppNavigationDrawer
 import com.example.cinema.ui.navigation.AppNavigationGraph
 import com.example.cinema.ui.theme.MyApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,14 +26,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val snackBarHostState = remember { SnackbarHostState() }
             MyApplicationTheme {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
-                ) { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding)) {
-                        AppNavigationGraph(snackBarHostState = snackBarHostState)
-                    }
-                }
+
+                AppNavigationDrawer(snackBarHostState = snackBarHostState)
             }
         }
     }

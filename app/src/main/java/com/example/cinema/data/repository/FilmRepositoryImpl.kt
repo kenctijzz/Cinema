@@ -78,4 +78,8 @@ class FilmRepositoryImpl @Inject constructor(
         val likeChangedFilm = likeInfo?.let {filmDao.getFilmById(id)?.copy(isFavorite = !likeInfo)}
         likeChangedFilm?.let { filmDao.addFilm(likeChangedFilm) }
     }
+
+    override fun getFavoriteFilms(): Flow<List<FilmEntity>> {
+        return filmDao.getAllLikedFilms()
+    }
 }
