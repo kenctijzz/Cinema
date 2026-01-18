@@ -27,9 +27,6 @@ class FavoriteFilmsViewModel @Inject constructor(
         extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
     val snackBarEvent: MutableSharedFlow<UiEvent<Any>> = _snackBarEvent
-    private val _isLoading = MutableStateFlow(true)
-    val isLoading: StateFlow<Boolean> = _isLoading
-
     val state: StateFlow<UiState<List<FilmEntity>>> = repository.getFavoriteFilms()
         .map { films -> UiState.Success(films) }
         .stateIn(
@@ -40,14 +37,6 @@ class FavoriteFilmsViewModel @Inject constructor(
 
     suspend fun showSnackBar(message: String) {
         _snackBarEvent.emit(UiEvent.ShowSnackBar(message))
-    }
-
-    init {
-        viewModelScope.launch {
-            delay(100)
-            _isLoading.value = false
-        }
-
     }
 
     fun toggleFilmLike(film: FilmEntity) {
