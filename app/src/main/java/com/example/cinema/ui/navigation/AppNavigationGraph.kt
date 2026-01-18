@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cinema.core.navigation.UiNavigation
+import com.example.cinema.ui.screens.favoritefilms.FavoriteFilms
 import com.example.cinema.ui.screens.filminfo.FilmDetailScreen
 import com.example.cinema.ui.screens.filmlist.FilmListScreen
 
@@ -47,6 +48,9 @@ fun AppNavigationGraph(snackBarHostState: SnackbarHostState) {
         }
         composable<Screen.FilmDetail> {
             FilmDetailScreen()
+        }
+        composable<Screen.FavoriteFilms>{
+            FavoriteFilms()
         }
     }
 }

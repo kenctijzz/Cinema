@@ -10,4 +10,6 @@ interface FilmRepository {
     suspend fun addFilm(film: FilmEntity)
     suspend fun deleteCharacter(id: Int)
     suspend fun getFilmById(id: Int): Result<FilmEntity>
+
+    suspend fun toggleFilmLike(id: Int)
 }

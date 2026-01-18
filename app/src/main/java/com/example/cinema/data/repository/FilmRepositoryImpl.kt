@@ -72,4 +72,10 @@ class FilmRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
+
+    override suspend fun toggleFilmLike(id: Int){
+        val likeInfo = filmDao.getFilmById(id)?.isFavorite
+        val likeChangedFilm = likeInfo?.let {filmDao.getFilmById(id)?.copy(isFavorite = !likeInfo)}
+        likeChangedFilm?.let { filmDao.addFilm(likeChangedFilm) }
+    }
 }

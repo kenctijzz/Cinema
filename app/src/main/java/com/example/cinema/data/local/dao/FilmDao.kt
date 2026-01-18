@@ -16,6 +16,8 @@ interface FilmDao {
     @Query("DELETE FROM films")
     suspend fun clearAll()
 
+    @Query("UPDATE films SET isFavorite =:likeStatus WHERE id =:id")
+    suspend fun toggleFilmLike(likeStatus: Boolean, id: Int)
     @Query("DELETE FROM films WHERE id = :id")
     suspend fun deleteCharacter(id: Int)
 

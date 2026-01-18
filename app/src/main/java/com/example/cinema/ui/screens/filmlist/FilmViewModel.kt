@@ -28,7 +28,12 @@ import javax.inject.Inject
 class FilmViewModel @Inject constructor(
     private val repository: FilmRepository
 ) : ViewModel() {
-
     val filmsFlow: Flow<PagingData<FilmEntity>> =
         repository.getPopularMovies().cachedIn(viewModelScope)
+
+    fun toggleFilmLike(id: Int) {
+        viewModelScope.launch {
+            repository.toggleFilmLike(id)
+        }
+    }
 }
