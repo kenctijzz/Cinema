@@ -14,5 +14,5 @@ interface FilmApi {
     ): FilmResponse
 
     @GET("movie/{id}")
-    suspend fun getMovie(@Path("id") id: Int): FilmModel
+    suspend fun getFilm(@Path("id") id: Int): FilmModel
 }

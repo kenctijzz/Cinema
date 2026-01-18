@@ -6,8 +6,7 @@ import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "films")
 data class FilmEntity(
-    @PrimaryKey
-    val id: Int,
+    @PrimaryKey val id: Int,
     val page: Int,
     @SerializedName("poster_path")
     val image: String?,

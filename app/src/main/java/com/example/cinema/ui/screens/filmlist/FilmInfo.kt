@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.example.cinema.data.local.entities.FilmEntity
 import com.example.cinema.data.remote.ApiConstants
 import com.example.cinema.data.remote.dto.FilmModel
 import com.example.cinema.ui.navigation.NavigationManager
@@ -45,7 +46,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun FilmInfo(
-    film: FilmModel,
+    film: FilmEntity,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()

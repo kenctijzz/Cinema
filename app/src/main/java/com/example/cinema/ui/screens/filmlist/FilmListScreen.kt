@@ -31,7 +31,6 @@ import com.example.cinema.core.ui.UiEvent
 @Composable
 fun FilmListScreen(
     filmViewModel: FilmViewModel = hiltViewModel(),
-    snackBarHostState: SnackbarHostState
 ) {
 
     val pagedMovies = filmViewModel.filmsFlow.collectAsLazyPagingItems()
@@ -74,10 +73,8 @@ fun FilmListScreen(
             LazyVerticalGrid(modifier = Modifier.fillMaxSize(), columns = GridCells.Fixed(2)) {
                 items(
                     count = pagedMovies.itemCount,
-                    key = { index ->
-                        val film = pagedMovies[index]
-                        "${film?.id ?: index}_$index"
-                    }) { index ->
+                    key = pagedMovies.itemKey { it.id })
+                    { index ->
 
                     val film = pagedMovies[index]
 
@@ -85,39 +82,39 @@ fun FilmListScreen(
                         FilmInfo(film = film)
                     }
                 }
-
-
                 when (pagedMovies.loadState.append) {
                     is LoadState.Loading -> {
-                        item { CircularProgressIndicator() }
+                        item(span = { GridItemSpan(2) }) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
                     }
 
                     is LoadState.Error -> {
-                        item {
-                            Row() {
+                        item(span = { GridItemSpan(2) }) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
                                 Text("Ошибка загрузки", color = MaterialTheme.colorScheme.error)
                                 Button(onClick = { pagedMovies.retry() }) {
                                     Text("Повторить")
                                 }
                             }
-                        }
 
+                        }
                     }
 
                     else -> {}
                 }
+            }
 
-            }
-        }
-    }
-    LaunchedEffect(Unit) {
-        filmViewModel.uiEvents.collect { event ->
-            when (event) {
-                is UiEvent.ShowSnackBar -> snackBarHostState.showSnackbar(
-                    event.message,
-                    withDismissAction = true,
-                )
-            }
         }
     }
 }

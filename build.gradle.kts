@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     kotlin("plugin.serialization") version "2.1.0"
     id("com.google.dagger.hilt.android") version "2.57.1" apply false
-    id("com.google.devtools.ksp") version "2.0.21-1.0.28" apply false
+    id("com.google.devtools.ksp") version "2.3.0" apply false
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin") version "2.0.1" apply false
+    alias(libs.plugins.android.library) apply false
 }

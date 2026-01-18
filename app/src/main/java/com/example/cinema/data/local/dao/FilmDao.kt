@@ -1,5 +1,6 @@
 package com.example.cinema.data.local.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -8,8 +9,12 @@ import com.example.cinema.data.local.entities.FilmEntity
 
 @Dao
 interface FilmDao {
-    @Query("SELECT * FROM films")
-    suspend fun getDataPopularFilms(): List<FilmEntity>
+    @Query("SELECT * FROM films ORDER BY page ASC, id ASC")
+    fun getPagingSource(): PagingSource<Int, FilmEntity>
+    @Query("SELECT * FROM films LIMIT 1")
+    suspend fun getAnyFilm(): FilmEntity?
+    @Query("DELETE FROM films")
+    suspend fun clearAll()
 
     @Query("DELETE FROM films WHERE id = :id")
     suspend fun deleteCharacter(id: Int)
