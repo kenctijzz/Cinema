@@ -34,7 +34,7 @@ class FilmDetailViewModel @Inject constructor(
             _state.update {
                 UiState.Loading
             }
-            repository.getMovieById(characterId).onSuccess { data ->
+            repository.getFilmById(characterId).onSuccess { data ->
                 _state.update {
                     UiState.Success(data)
                 }

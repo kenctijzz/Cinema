@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.cinema.core.ui.UiEvent
+import com.example.cinema.data.local.entities.FilmEntity
 import com.example.cinema.data.remote.dto.FilmModel
 import com.example.cinema.domain.repository.FilmRepository
 import com.example.cinema.ui.common.UiState
@@ -28,16 +29,6 @@ class FilmViewModel @Inject constructor(
     private val repository: FilmRepository
 ) : ViewModel() {
 
-    val filmsFlow: Flow<PagingData<FilmModel>> =
+    val filmsFlow: Flow<PagingData<FilmEntity>> =
         repository.getPopularMovies().cachedIn(viewModelScope)
-    private val _uiEvents = MutableSharedFlow<UiEvent>(
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
-    val uiEvents: SharedFlow<UiEvent> = _uiEvents
-
-    init {
-        Log.d("PAGING_DEBUG", "ViewModel инициализирована")
-    }
-
 }

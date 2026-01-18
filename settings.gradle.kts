@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Cinema"
 include(":app")
- 
+include(":mylibrary")

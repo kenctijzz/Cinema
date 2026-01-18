@@ -20,95 +20,101 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key.Companion.F
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.example.cinema.core.ui.UiEvent
 
 @Composable
 fun FilmListScreen(
     filmViewModel: FilmViewModel = hiltViewModel(),
-    snackBarHostState: SnackbarHostState
 ) {
-    Log.d("PAGING_DEBUG", "FilmListScreen: Композиция началась")
+
     val pagedMovies = filmViewModel.filmsFlow.collectAsLazyPagingItems()
 
-    LazyVerticalGrid(modifier = Modifier.fillMaxSize(), columns = GridCells.Fixed(2)) {
-        if (pagedMovies.loadState.refresh is LoadState.Loading) {
+    when (pagedMovies.loadState.refresh) {
+        is LoadState.Loading -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
 
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                Box(
-                    modifier = Modifier.fillMaxHeight(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
+        is LoadState.Error -> {
+            Log.e(
+                "PagingError",
+                "Причина: ",
+                (pagedMovies.loadState.refresh as LoadState.Error).error
+            )
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Проблемы с доступом. Проверьте подключение к VPN",
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Center
+                )
+                Button(onClick = { pagedMovies.retry() }) {
+                    Text("Повторить попытку")
                 }
             }
         }
-        if (pagedMovies.loadState.refresh != LoadState.Loading) {
-            items(
-                count = pagedMovies.itemCount,
-                key = { index ->
+
+        else -> {
+            LazyVerticalGrid(modifier = Modifier.fillMaxSize(), columns = GridCells.Fixed(2)) {
+                items(
+                    count = pagedMovies.itemCount,
+                    key = pagedMovies.itemKey { it.id })
+                    { index ->
+
                     val film = pagedMovies[index]
-                    "${film?.id ?: index}_$index"
-                }) { index ->
 
-                val film = pagedMovies[index]
-
-                film?.let {
-                    FilmInfo(film = film)
-                }
-            }
-        }
-
-        when (pagedMovies.loadState.append) {
-            is LoadState.Loading -> {
-                item { CircularProgressIndicator() }
-            }
-
-            is LoadState.Error -> {
-                item {
-                    Row() {
-                        Text("Ошибка загрузки", color = MaterialTheme.colorScheme.error)
-                        Button(onClick = { pagedMovies.retry() }) {
-                            Text("Повторить")
-                        }
+                    film?.let {
+                        FilmInfo(film = film)
                     }
                 }
+                when (pagedMovies.loadState.append) {
+                    is LoadState.Loading -> {
+                        item(span = { GridItemSpan(2) }) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                    }
 
+                    is LoadState.Error -> {
+                        item(span = { GridItemSpan(2) }) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text("Ошибка загрузки", color = MaterialTheme.colorScheme.error)
+                                Button(onClick = { pagedMovies.retry() }) {
+                                    Text("Повторить")
+                                }
+                            }
+
+                        }
+                    }
+
+                    else -> {}
+                }
             }
 
-            else -> {}
-        }
-
-    }
-    if (pagedMovies.loadState.refresh is LoadState.Error) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "Проблемы с доступом. Проверьте подключение к VPN",
-                color = MaterialTheme.colorScheme.error,
-                textAlign = TextAlign.Center
-            )
-            Button(onClick = { pagedMovies.refresh() }) {
-                Text("Повторить попытку")
-            }
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        filmViewModel.uiEvents.collect { event ->
-            when (event) {
-                is UiEvent.ShowSnackBar -> snackBarHostState.showSnackbar(
-                    event.message,
-                    withDismissAction = true,
-                )
-            }
         }
     }
 }
