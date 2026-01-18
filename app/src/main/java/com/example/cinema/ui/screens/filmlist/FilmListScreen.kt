@@ -1,5 +1,6 @@
 package com.example.cinema.ui.screens.filmlist
 
+import android.R.attr.duration
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,10 +15,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key.Companion.F
@@ -27,14 +30,21 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.example.cinema.core.ui.UiEvent
+import kotlinx.coroutines.launch
 
 @Composable
 fun FilmListScreen(
     filmViewModel: FilmViewModel = hiltViewModel(),
+    snackbarHostState: SnackbarHostState
 ) {
-
+    LaunchedEffect(Unit) {
+        filmViewModel.snackBarEvent.collect { event ->
+            if (event is UiEvent.ShowSnackBar) {
+                snackbarHostState.showSnackbar(message = event.message)
+            }
+        }
+    }
     val pagedMovies = filmViewModel.filmsFlow.collectAsLazyPagingItems()
-
     when (pagedMovies.loadState.refresh) {
         is LoadState.Loading -> {
             Column(
@@ -74,12 +84,12 @@ fun FilmListScreen(
                 items(
                     count = pagedMovies.itemCount,
                     key = pagedMovies.itemKey { it.id })
-                    { index ->
+                { index ->
 
                     val film = pagedMovies[index]
 
                     film?.let {
-                        FilmInfo(film = film)
+                        FilmInfo(film = film, onLikeClick = { filmViewModel.toggleFilmLike(film) })
                     }
                 }
                 when (pagedMovies.loadState.append) {
