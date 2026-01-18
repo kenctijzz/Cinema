@@ -49,7 +49,7 @@ fun AppNavigationGraph(snackBarHostState: SnackbarHostState) {
         composable<Screen.FilmDetail> {
             FilmDetailScreen()
         }
-        composable<Screen.FavoriteFilms>{
+        composable<Screen.FavoriteFilms> {
             FavoriteFilms(snackbarHostState = snackBarHostState)
         }
     }

@@ -1,20 +1,19 @@
 package com.example.cinema.ui.screens.favoritefilms
 
-import androidx.compose.ui.input.key.Key.Companion.U
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cinema.core.ui.UiEvent
-import com.example.cinema.data.local.dao.FilmDao
 import com.example.cinema.data.local.entities.FilmEntity
 import com.example.cinema.data.repository.FilmRepositoryImpl
 import com.example.cinema.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,16 +27,29 @@ class FavoriteFilmsViewModel @Inject constructor(
         extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
     val snackBarEvent: MutableSharedFlow<UiEvent<Any>> = _snackBarEvent
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading: StateFlow<Boolean> = _isLoading
 
-    val favoriteFilms: StateFlow<List<FilmEntity>> = repository.getFavoriteFilms()
+    val state: StateFlow<UiState<List<FilmEntity>>> = repository.getFavoriteFilms()
+        .map { films -> UiState.Success(films) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
+            initialValue = UiState.Loading
         )
+
     suspend fun showSnackBar(message: String) {
         _snackBarEvent.emit(UiEvent.ShowSnackBar(message))
     }
+
+    init {
+        viewModelScope.launch {
+            delay(100)
+            _isLoading.value = false
+        }
+
+    }
+
     fun toggleFilmLike(film: FilmEntity) {
         viewModelScope.launch {
             repository.toggleFilmLike(film.id)

@@ -84,12 +84,12 @@ fun FilmListScreen(
                 items(
                     count = pagedMovies.itemCount,
                     key = pagedMovies.itemKey { it.id })
-                    { index ->
+                { index ->
 
                     val film = pagedMovies[index]
 
                     film?.let {
-                        FilmInfo(film = film, onLikeClick = {filmViewModel.toggleFilmLike(film) })
+                        FilmInfo(film = film, onLikeClick = { filmViewModel.toggleFilmLike(film) })
                     }
                 }
                 when (pagedMovies.loadState.append) {
