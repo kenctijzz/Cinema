@@ -10,7 +10,6 @@ object NavigationManager {
     private val _events = MutableSharedFlow<UiNavigation<Any>>(
         extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_LATEST
     )
-    var notUsedNavigation: Boolean = true
     var currentScreen: Any = Screen.FilmList
     val events: SharedFlow<UiNavigation<Any>> = _events
     suspend fun navigateTo(route: Any) {

@@ -44,13 +44,13 @@ fun AppNavigationGraph(snackBarHostState: SnackbarHostState) {
         popExitTransition = { fadeOut(animationSpec = tween(100)) }
     ) {
         composable<Screen.FilmList> {
-            FilmListScreen()
+            FilmListScreen(snackbarHostState = snackBarHostState)
         }
         composable<Screen.FilmDetail> {
             FilmDetailScreen()
         }
         composable<Screen.FavoriteFilms>{
-            FavoriteFilms()
+            FavoriteFilms(snackbarHostState = snackBarHostState)
         }
     }
 }

@@ -24,8 +24,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButtonDefaults.Icon
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -40,6 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.example.cinema.core.ui.UiEvent
 import com.example.cinema.data.local.entities.FilmEntity
 import com.example.cinema.data.remote.ApiConstants
 import com.example.cinema.data.remote.dto.FilmModel
@@ -50,7 +53,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun FilmInfo(
     film: FilmEntity,
-    filmViewModel: FilmViewModel = hiltViewModel()
+    filmViewModel: FilmViewModel = hiltViewModel(),
+    onLikeClick: () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -58,6 +62,7 @@ fun FilmInfo(
         targetValue = if (isPressed) 0.95f else 1f
     )
     val scope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -96,7 +101,10 @@ fun FilmInfo(
                         modifier = Modifier
                             .size(40.dp)
                             .padding(8.dp)
-                            .clickable(onClick = { filmViewModel.toggleFilmLike(film.id) })
+                            .clickable(onClick = {
+                                onLikeClick()
+                            }
+                            )
                     ) {
                         Icon(
                             imageVector =
@@ -112,4 +120,5 @@ fun FilmInfo(
             }
         }
     }
+
 }
