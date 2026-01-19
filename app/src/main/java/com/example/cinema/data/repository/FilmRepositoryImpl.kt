@@ -73,13 +73,24 @@ class FilmRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun toggleFilmLike(id: Int){
+    override suspend fun toggleFilmLike(id: Int) {
         val likeInfo = filmDao.getFilmById(id)?.isFavorite
-        val likeChangedFilm = likeInfo?.let {filmDao.getFilmById(id)?.copy(isFavorite = !likeInfo)}
+        val likeChangedFilm =
+            likeInfo?.let { filmDao.getFilmById(id)?.copy(isFavorite = !likeInfo) }
         likeChangedFilm?.let { filmDao.addFilm(likeChangedFilm) }
     }
 
-    override fun getFavoriteFilms(): Flow<List<FilmEntity>> {
+    override fun getFavoriteFilmsFlow(): Flow<List<FilmEntity>> {
+        return filmDao.getAllLikedFilmsFlow()
+    }
+
+    override suspend fun loadLikesAfterRefresh(likedFilmsIdList: List<Int>) {
+        likedFilmsIdList.forEach { id ->
+            filmDao.loadLikesAfterRefresh(id)
+        }
+    }
+
+    override suspend fun getFavoriteFilms(): List<Int> {
         return filmDao.getAllLikedFilms()
     }
 }

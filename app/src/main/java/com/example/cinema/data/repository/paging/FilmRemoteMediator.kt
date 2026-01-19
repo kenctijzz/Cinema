@@ -38,7 +38,10 @@ class FilmRemoteMediator(
             }
 
             val response = api.getPopularMovies(page = page, apikey = apiKey)
-            val films = response.results.map { it.toEntity(pageNumber = page) }
+            val localFavorites = db.filmDao().getAllLikedFilms()
+            val films = response.results.map {
+                it.toEntity(pageNumber = page).copy(isFavorite = localFavorites.contains(it.id))
+            }
 
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {

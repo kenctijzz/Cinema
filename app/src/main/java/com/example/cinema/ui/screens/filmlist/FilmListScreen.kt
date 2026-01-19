@@ -34,6 +34,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.example.cinema.core.ui.UiEvent
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -54,7 +55,9 @@ fun FilmListScreen(
     PullToRefreshBox(
         modifier = Modifier.fillMaxSize(),
         isRefreshing = isRefreshing,
-        onRefresh = { pagedMovies.refresh() },
+        onRefresh = {
+                pagedMovies.refresh()
+        }
     ) {
         when (pagedMovies.loadState.refresh) {
 
@@ -94,6 +97,7 @@ fun FilmListScreen(
             }
 
             else -> {
+
                 LazyVerticalGrid(modifier = Modifier.fillMaxSize(), columns = GridCells.Fixed(2)) {
                     items(
                         count = pagedMovies.itemCount,

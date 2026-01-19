@@ -8,9 +8,7 @@ import com.example.cinema.data.repository.FilmRepositoryImpl
 import com.example.cinema.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -27,7 +25,7 @@ class FavoriteFilmsViewModel @Inject constructor(
         extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
     val snackBarEvent: MutableSharedFlow<UiEvent<Any>> = _snackBarEvent
-    val state: StateFlow<UiState<List<FilmEntity>>> = repository.getFavoriteFilms()
+    val state: StateFlow<UiState<List<FilmEntity>>> = repository.getFavoriteFilmsFlow()
         .map { films -> UiState.Success(films) }
         .stateIn(
             scope = viewModelScope,
