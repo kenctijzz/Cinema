@@ -3,7 +3,7 @@
 Технологический стек
 
 - **UI:** Jetpack Compose (Declarative UI)
-- **Architecture:** Clean Architecture + MVVM + UDF (Unidirectional Data Flow)
+- **Architecture:** Clean Architecture + MVVM
 - **DI:** Hilt
 -  **Network:** Retrofit
 - **Paging:** Paging 3 (Remote Pagination)
