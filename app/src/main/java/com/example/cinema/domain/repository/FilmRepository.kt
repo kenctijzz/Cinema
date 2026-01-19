@@ -11,5 +11,7 @@ interface FilmRepository {
     suspend fun deleteCharacter(id: Int)
     suspend fun getFilmById(id: Int): Result<FilmEntity>
     suspend fun toggleFilmLike(id: Int)
-     fun getFavoriteFilms(): Flow<List<FilmEntity>>
+    fun getFavoriteFilmsFlow(): Flow<List<FilmEntity>>
+    suspend fun loadLikesAfterRefresh(likedFilmsIdList: List<Int>)
+    suspend fun getFavoriteFilms(): List<Int>
 }

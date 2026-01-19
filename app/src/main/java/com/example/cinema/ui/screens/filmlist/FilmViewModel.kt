@@ -2,6 +2,7 @@ package com.example.cinema.ui.screens.filmlist
 
 import android.R.id.message
 import android.util.Log
+import androidx.compose.foundation.rememberPlatformOverscrollFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -29,6 +30,7 @@ import javax.inject.Inject
 class FilmViewModel @Inject constructor(
     private val repository: FilmRepository
 ) : ViewModel() {
+
     private val _snackBarEvent = MutableSharedFlow<UiEvent<Any>>(
         replay = 0,
         extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST
@@ -45,13 +47,16 @@ class FilmViewModel @Inject constructor(
     fun toggleFilmLike(film: FilmEntity) {
         viewModelScope.launch {
             repository.toggleFilmLike(film.id)
-            val message = if (!film.isFavorite) {
-                "${film.title} добавлен в избранное"
+            val message: String
+            if (!film.isFavorite) {
+                message = "${film.title} добавлен в избранное"
+
             } else {
-                "${film.title} удален из избранного"
+                message = "${film.title} удален из избранного"
             }
             showSnackBar(message)
         }
-
     }
+
+
 }
