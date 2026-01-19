@@ -18,8 +18,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,8 +39,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun FilmListScreen(
     filmViewModel: FilmViewModel = hiltViewModel(),
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
 ) {
+    val pagedMovies = filmViewModel.filmsFlow.collectAsLazyPagingItems()
+    val isRefreshing =
+        pagedMovies.loadState.refresh is LoadState.Loading && pagedMovies.itemCount > 0
     LaunchedEffect(Unit) {
         filmViewModel.snackBarEvent.collect { event ->
             if (event is UiEvent.ShowSnackBar) {
@@ -44,87 +51,99 @@ fun FilmListScreen(
             }
         }
     }
-    val pagedMovies = filmViewModel.filmsFlow.collectAsLazyPagingItems()
-    when (pagedMovies.loadState.refresh) {
-        is LoadState.Loading -> {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
+    PullToRefreshBox(
+        modifier = Modifier.fillMaxSize(),
+        isRefreshing = isRefreshing,
+        onRefresh = { pagedMovies.refresh() },
+    ) {
+        when (pagedMovies.loadState.refresh) {
 
-        is LoadState.Error -> {
-            Log.e(
-                "PagingError",
-                "Причина: ",
-                (pagedMovies.loadState.refresh as LoadState.Error).error
-            )
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "Проблемы с доступом. Проверьте подключение к VPN",
-                    color = MaterialTheme.colorScheme.error,
-                    textAlign = TextAlign.Center
-                )
-                Button(onClick = { pagedMovies.retry() }) {
-                    Text("Повторить попытку")
-                }
-            }
-        }
-
-        else -> {
-            LazyVerticalGrid(modifier = Modifier.fillMaxSize(), columns = GridCells.Fixed(2)) {
-                items(
-                    count = pagedMovies.itemCount,
-                    key = pagedMovies.itemKey { it.id })
-                { index ->
-
-                    val film = pagedMovies[index]
-
-                    film?.let {
-                        FilmInfo(film = film, onLikeClick = { filmViewModel.toggleFilmLike(film) })
+            is LoadState.Loading -> {
+                if (pagedMovies.itemCount == 0) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        CircularProgressIndicator()
                     }
                 }
-                when (pagedMovies.loadState.append) {
-                    is LoadState.Loading -> {
-                        item(span = { GridItemSpan(2) }) {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                CircularProgressIndicator()
-                            }
+            }
+
+            is LoadState.Error -> {
+                Log.e(
+                    "PagingError",
+                    "Причина: ",
+                    (pagedMovies.loadState.refresh as LoadState.Error).error
+                )
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "Проблемы с доступом. Проверьте подключение к VPN",
+                        color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center
+                    )
+                    Button(onClick = { pagedMovies.retry() }) {
+                        Text("Повторить попытку")
+                    }
+                }
+            }
+
+            else -> {
+                LazyVerticalGrid(modifier = Modifier.fillMaxSize(), columns = GridCells.Fixed(2)) {
+                    items(
+                        count = pagedMovies.itemCount,
+                        key = pagedMovies.itemKey { it.id })
+                    { index ->
+
+                        val film = pagedMovies[index]
+
+                        film?.let {
+                            FilmInfo(
+                                film = film,
+                                onLikeClick = { filmViewModel.toggleFilmLike(film) })
                         }
                     }
-
-                    is LoadState.Error -> {
-                        item(span = { GridItemSpan(2) }) {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Text("Ошибка загрузки", color = MaterialTheme.colorScheme.error)
-                                Button(onClick = { pagedMovies.retry() }) {
-                                    Text("Повторить")
+                    when (pagedMovies.loadState.append) {
+                        is LoadState.Loading -> {
+                            item(span = { GridItemSpan(2) }) {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    CircularProgressIndicator()
                                 }
                             }
-
                         }
+
+                        is LoadState.Error -> {
+                            item(span = { GridItemSpan(2) }) {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text("Ошибка загрузки", color = MaterialTheme.colorScheme.error)
+                                    Button(onClick = { pagedMovies.retry() }) {
+                                        Text("Повторить")
+                                    }
+                                }
+
+                            }
+                        }
+
+                        else -> {}
                     }
-
-                    else -> {}
                 }
-            }
 
+            }
         }
     }
+
+
 }
