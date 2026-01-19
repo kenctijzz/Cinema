@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
@@ -44,7 +45,8 @@ fun AppNavigationDrawer(snackBarHostState: SnackbarHostState) {
                             drawerState.close()
                             NavigationManager.navigateTo(Screen.FilmList)
                         }
-                    }
+                    },
+                    icon = { Icon(Icons.Default.Album, contentDescription = null) }
                 )
                 NavigationDrawerItem(
                     label = { Text(text = "Любимые Фильмы") },
