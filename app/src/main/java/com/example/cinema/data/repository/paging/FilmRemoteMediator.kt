@@ -8,8 +8,24 @@ import androidx.room.withTransaction
 import com.example.cinema.data.local.db.FilmDatabase
 import com.example.cinema.data.local.entities.FilmEntity
 import com.example.cinema.data.remote.FilmApi
+import com.example.cinema.data.remote.dto.FilmModel
 import com.example.cinema.data.repository.toEntity
+import com.example.cinema.domain.model.Film
+
 import kotlinx.coroutines.delay
+
+private fun FilmModel.toEntity(pageNumber: Int): FilmEntity {
+    return FilmEntity(
+        id = this.id,
+        title = this.title,
+        image = this.image,
+        releaseDate = this.releaseDate,
+        adult = this.adult,
+        overview = this.overview,
+        isFavorite = false,
+        page = pageNumber
+    )
+}
 
 @OptIn(ExperimentalPagingApi::class)
 class FilmRemoteMediator(
@@ -39,8 +55,9 @@ class FilmRemoteMediator(
 
             val response = api.getPopularMovies(page = page, apikey = apiKey)
             val localFavorites = db.filmDao().getAllLikedFilms()
-            val films = response.results.map {
-                it.toEntity(pageNumber = page).copy(isFavorite = localFavorites.contains(it.id))
+            val films = response.results.map { filmModel ->
+                filmModel.toEntity(pageNumber = page)
+                    .copy(isFavorite = localFavorites.contains(filmModel.id))
             }
 
             db.withTransaction {

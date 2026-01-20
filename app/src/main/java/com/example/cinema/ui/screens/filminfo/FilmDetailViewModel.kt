@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.cinema.ui.navigation.Screen
 import com.example.cinema.data.local.entities.FilmEntity
+import com.example.cinema.domain.model.Film
 import com.example.cinema.domain.repository.FilmRepository
+import com.example.cinema.domain.usecase.GetFilmDetailsUseCase
 import com.example.cinema.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,22 +21,18 @@ import javax.inject.Inject
 @HiltViewModel
 class FilmDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repository: FilmRepository
+    private val getFilmDetailsUseCase: GetFilmDetailsUseCase
 ) : ViewModel() {
     private val characterId: Int = savedStateHandle.toRoute<Screen.FilmDetail>().id
-    private val _state = MutableStateFlow<UiState<FilmEntity>>(UiState.Loading)
-    val state: StateFlow<UiState<FilmEntity>> = _state
-
-    init {
-        loadFilm()
-    }
+    private val _state = MutableStateFlow<UiState<Film>>(UiState.Loading)
+    val state: StateFlow<UiState<Film>> = _state
 
     fun loadFilm() {
         viewModelScope.launch {
             _state.update {
                 UiState.Loading
             }
-            repository.getFilmById(characterId).onSuccess { data ->
+            getFilmDetailsUseCase(characterId).onSuccess { data ->
                 _state.update {
                     UiState.Success(data)
                 }
@@ -44,5 +42,9 @@ class FilmDetailViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    init {
+        loadFilm()
     }
 }

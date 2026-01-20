@@ -31,9 +31,6 @@ interface FilmDao {
     @Query("SELECT id FROM FILMS WHERE isFavorite = 1")
     suspend fun getAllLikedFilms(): List<Int>
 
-    @Query("DELETE FROM films WHERE id = :id")
-    suspend fun deleteCharacter(id: Int)
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addFilm(film: FilmEntity)
 

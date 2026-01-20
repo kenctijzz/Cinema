@@ -10,7 +10,10 @@ import androidx.paging.cachedIn
 import com.example.cinema.core.ui.UiEvent
 import com.example.cinema.data.local.entities.FilmEntity
 import com.example.cinema.data.remote.dto.FilmModel
+import com.example.cinema.domain.model.Film
 import com.example.cinema.domain.repository.FilmRepository
+import com.example.cinema.domain.usecase.GetPopularFilmsUseCase
+import com.example.cinema.domain.usecase.ToggleFilmLikeUseCase
 import com.example.cinema.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -28,9 +31,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FilmViewModel @Inject constructor(
-    private val repository: FilmRepository
+    private val getPopularFilmsUseCase: GetPopularFilmsUseCase,
+    private val toggleFilmLikeUseCase: ToggleFilmLikeUseCase,
 ) : ViewModel() {
-
     private val _snackBarEvent = MutableSharedFlow<UiEvent<Any>>(
         replay = 0,
         extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST
@@ -41,22 +44,17 @@ class FilmViewModel @Inject constructor(
         _snackBarEvent.emit(UiEvent.ShowSnackBar(message))
     }
 
-    val filmsFlow: Flow<PagingData<FilmEntity>> =
-        repository.getPopularMovies().cachedIn(viewModelScope)
+    val filmsFlow: Flow<PagingData<Film>> =
+        getPopularFilmsUseCase().cachedIn(viewModelScope)
 
-    fun toggleFilmLike(film: FilmEntity) {
+    fun toggleFilmLike(film: Film) {
         viewModelScope.launch {
-            repository.toggleFilmLike(film.id)
-            val message: String
-            if (!film.isFavorite) {
-                message = "${film.title} добавлен в избранное"
-
+            val favoriteStatus = toggleFilmLikeUseCase(film)
+            if (favoriteStatus) {
+                showSnackBar("${film.title} добавлен в избранное")
             } else {
-                message = "${film.title} удален из избранного"
+                showSnackBar("${film.title} удален из избранного")
             }
-            showSnackBar(message)
         }
     }
-
-
 }

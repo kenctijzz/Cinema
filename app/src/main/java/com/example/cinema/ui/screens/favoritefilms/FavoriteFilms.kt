@@ -39,6 +39,7 @@ fun FavoriteFilms(
     val scope = rememberCoroutineScope()
 
     val state by favoriteFilmsViewModel.state.collectAsStateWithLifecycle()
+
     LaunchedEffect(Unit) {
         favoriteFilmsViewModel.snackBarEvent.collect { event ->
             if (event is UiEvent.ShowSnackBar) {
