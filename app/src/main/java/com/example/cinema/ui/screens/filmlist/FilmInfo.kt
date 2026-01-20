@@ -34,13 +34,14 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.cinema.data.local.entities.FilmEntity
 import com.example.cinema.data.remote.ApiConstants
+import com.example.cinema.domain.model.Film
 import com.example.cinema.ui.navigation.NavigationManager
 import com.example.cinema.ui.navigation.Screen
 import kotlinx.coroutines.launch
 
 @Composable
 fun FilmInfo(
-    film: FilmEntity,
+    film: Film,
     filmViewModel: FilmViewModel = hiltViewModel(),
     onLikeClick: () -> Unit,
 ) {
