@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.People
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -36,7 +37,6 @@ fun AppNavigationDrawer(snackBarHostState: SnackbarHostState) {
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet(modifier = Modifier.width(300.dp)) {
-                HorizontalDivider()
                 NavigationDrawerItem(
                     label = { Text(text = "Лучшие Фильмы") },
                     selected = false,
@@ -47,6 +47,17 @@ fun AppNavigationDrawer(snackBarHostState: SnackbarHostState) {
                         }
                     },
                     icon = { Icon(Icons.Default.Album, contentDescription = null) }
+                )
+                NavigationDrawerItem(
+                    label = { Text(text = "Лучшие Актеры") },
+                    selected = false,
+                    onClick = {
+                        scope.launch {
+                            drawerState.close()
+                            NavigationManager.navigateTo(Screen.ActorList)
+                        }
+                    },
+                    icon = { Icon(Icons.Default.People, contentDescription = null) }
                 )
                 NavigationDrawerItem(
                     label = { Text(text = "Любимые Фильмы") },

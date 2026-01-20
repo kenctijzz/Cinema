@@ -1,10 +1,12 @@
 package com.example.cinema.domain.model
 
 import androidx.room.PrimaryKey
+import com.example.cinema.ui.common.VisualModels
 import com.google.gson.annotations.SerializedName
 
 data class Film(
-    val id: Int,
+    val type: String = "Film",
+    override val id: Int,
     val page: Int,
     val image: String?,
     val releaseDate: String?,
@@ -12,4 +14,4 @@ data class Film(
     val title: String,
     val adult: Boolean,
     val isFavorite: Boolean
-)
+) : VisualModels

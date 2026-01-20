@@ -1,25 +1,26 @@
-package com.example.cinema.ui.screens.filmlist
+package com.example.cinema.ui.screens.actorlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.cinema.core.ui.UiEvent
+import com.example.cinema.domain.model.Actor
 import com.example.cinema.domain.model.Film
-import com.example.cinema.domain.usecases.films.GetPopularFilmsUseCase
-import com.example.cinema.domain.usecases.films.ToggleFilmLikeUseCase
+import com.example.cinema.domain.usecases.actors.GetPopularActorsUseCase
+import com.example.cinema.domain.usecases.actors.ToggleActorLikeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.cache
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
-class FilmViewModel @Inject constructor(
-    private val getPopularFilmsUseCase: GetPopularFilmsUseCase,
-    private val toggleFilmLikeUseCase: ToggleFilmLikeUseCase,
+class ActorViewModel @Inject constructor(
+    private val getPopularActorsUseCase: GetPopularActorsUseCase,
+    private val toggleActorLikeUseCase: ToggleActorLikeUseCase
 ) : ViewModel() {
     private val _snackBarEvent = MutableSharedFlow<UiEvent.ShowSnackBar>(
         replay = 0,
@@ -30,17 +31,16 @@ class FilmViewModel @Inject constructor(
     suspend fun showSnackBar(message: String) {
         _snackBarEvent.emit(UiEvent.ShowSnackBar(message))
     }
+    val popularActorsList: Flow<PagingData<Actor>> =
+        getPopularActorsUseCase().cachedIn(viewModelScope)
 
-    val filmsFlow: Flow<PagingData<Film>> =
-        getPopularFilmsUseCase().cachedIn(viewModelScope)
-
-    fun toggleFilmLike(film: Film) {
+    fun toggleActorLike(actor: Actor) {
         viewModelScope.launch {
-            val favoriteStatus = toggleFilmLikeUseCase(film)
+            val favoriteStatus = toggleActorLikeUseCase(actor)
             if (favoriteStatus) {
-                showSnackBar("${film.title} добавлен в избранное")
+                showSnackBar("${actor.name} добавлен в избранное")
             } else {
-                showSnackBar("${film.title} удален из избранного")
+                showSnackBar("${actor.name} удален из избранного")
             }
         }
     }

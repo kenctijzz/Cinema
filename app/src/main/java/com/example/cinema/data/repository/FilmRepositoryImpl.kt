@@ -6,21 +6,19 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.example.cinema.data.local.dao.FilmDao
-import com.example.cinema.data.local.db.FilmDatabase
+import com.example.cinema.data.local.db.CinemaDatabase
 import com.example.cinema.data.local.entities.FilmEntity
-import com.example.cinema.data.remote.FilmApi
-import com.example.cinema.data.remote.dto.FilmModel
+import com.example.cinema.data.remote.films.FilmApi
+import com.example.cinema.data.remote.films.dto.FilmModel
 import com.example.cinema.data.repository.paging.FilmRemoteMediator
 import com.example.cinema.di.ApiKey
 import com.example.cinema.domain.model.Film
 import com.example.cinema.domain.repository.FilmRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-private fun FilmEntity.toDomainModel(pageNumber: Int): Film {
+private fun FilmEntity.toDomainModel(): Film {
     return Film(
         id = this.id,
         title = this.title,
@@ -29,7 +27,7 @@ private fun FilmEntity.toDomainModel(pageNumber: Int): Film {
         adult = this.adult,
         overview = this.overview,
         isFavorite = this.isFavorite,
-        page = pageNumber
+        page = this.page
     )
 }
 
@@ -46,7 +44,7 @@ private fun FilmModel.toDomainModel(pageNumber: Int): Film {
     )
 }
 
-fun Film.toEntity(pageNumber: Int): FilmEntity {
+fun Film.toEntity(): FilmEntity {
     return FilmEntity(
         id = this.id,
         title = this.title,
@@ -55,14 +53,14 @@ fun Film.toEntity(pageNumber: Int): FilmEntity {
         adult = this.adult,
         overview = this.overview,
         isFavorite = this.isFavorite,
-        page = pageNumber
+        page = this.page
     )
 }
 
 class FilmRepositoryImpl @Inject constructor(
     private val filmApi: FilmApi,
     private val filmDao: FilmDao,
-    private val db: FilmDatabase,
+    private val db: CinemaDatabase,
     @param:ApiKey private val apiKey: String
 ) :
     FilmRepository {
@@ -75,18 +73,14 @@ class FilmRepositoryImpl @Inject constructor(
             remoteMediator = FilmRemoteMediator(filmApi, db, apiKey),
             pagingSourceFactory = { db.filmDao().getPagingSource() }
         ).flow.map { pagingData ->
-            pagingData.map { entity -> entity.toDomainModel(pageNumber = entity.page) }
+            pagingData.map { entity -> entity.toDomainModel() }
         }
     }
 
-    override suspend fun addFilm(film: Film) {
-        filmDao.addFilm(film.toEntity(pageNumber = film.page))
-    }
 
     override suspend fun getFilmByIdFromLocal(id: Int): Film {
-        val film = filmDao.getFilmById(id)
-            ?: throw Exception("Film Not Found")
-        return film.toDomainModel(pageNumber = film.page)
+        val film = filmDao.getFilmById(id) ?: throw Exception("Фильм не найден")
+        return film.toDomainModel()
     }
 
     override suspend fun getFilmByIdFromRemote(id: Int): Film {
@@ -95,11 +89,11 @@ class FilmRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateFilm(film: Film) {
-        filmDao.addFilm(film.toEntity(pageNumber = film.page))
+        filmDao.addFilm(film.toEntity())
     }
 
     override fun getFavoriteFilmsFlow(): Flow<List<Film>> {
         return filmDao.getAllLikedFilmsFlow()
-            .map { entities -> entities.map { entity -> entity.toDomainModel(pageNumber = entity.page) } }
+            .map { entities -> entities.map { entity -> entity.toDomainModel() } }
     }
 }

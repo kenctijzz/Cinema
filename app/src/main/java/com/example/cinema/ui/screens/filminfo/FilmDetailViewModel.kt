@@ -5,10 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.cinema.ui.navigation.Screen
-import com.example.cinema.data.local.entities.FilmEntity
 import com.example.cinema.domain.model.Film
-import com.example.cinema.domain.repository.FilmRepository
-import com.example.cinema.domain.usecase.GetFilmDetailsUseCase
+import com.example.cinema.domain.usecases.films.GetFilmDetailsUseCase
 import com.example.cinema.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

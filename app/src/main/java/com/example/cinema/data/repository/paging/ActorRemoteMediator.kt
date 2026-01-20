@@ -1,75 +1,86 @@
 package com.example.cinema.data.repository.paging
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState.Loading.endOfPaginationReached
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
+import androidx.paging.RemoteMediator.InitializeAction
+import androidx.paging.RemoteMediator.MediatorResult
 import androidx.room.withTransaction
 import com.example.cinema.data.local.db.CinemaDatabase
+import com.example.cinema.data.local.entities.ActorEntity
 import com.example.cinema.data.local.entities.FilmEntity
+import com.example.cinema.data.remote.actors.ActorApi
+import com.example.cinema.data.remote.actors.dto.ActorModel
 import com.example.cinema.data.remote.films.FilmApi
-import com.example.cinema.data.remote.films.dto.FilmModel
-
 import kotlinx.coroutines.delay
 
-private fun FilmModel.toEntity(pageNumber: Int): FilmEntity {
-    return FilmEntity(
+private fun ActorModel.toEntity(pageNumber: Int): ActorEntity {
+    return ActorEntity(
         id = this.id,
-        title = this.title,
+        gender = this.gender,
+        popularity = this.popularity,
+        birthday = null,
+        deathday = null,
+        biography = null,
+        name = this.name,
         image = this.image,
-        releaseDate = this.releaseDate,
-        adult = this.adult,
-        overview = this.overview,
         isFavorite = false,
         page = pageNumber
     )
 }
 
 @OptIn(ExperimentalPagingApi::class)
-class FilmRemoteMediator(
-    private val api: FilmApi,
+class ActorRemoteMediator(
+    private val api: ActorApi,
     private val db: CinemaDatabase,
     private val apiKey: String
-) : RemoteMediator<Int, FilmEntity>() {
+) : RemoteMediator<Int, ActorEntity>() {
 
     override suspend fun initialize(): InitializeAction {
-        return InitializeAction.SKIP_INITIAL_REFRESH
+        return InitializeAction.LAUNCH_INITIAL_REFRESH
     }
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, FilmEntity>
+        state: PagingState<Int, ActorEntity>
     ): MediatorResult {
+
         return try {
-            delay(500)
-            val page = when (loadType) {
+
+            val page = when (loadType)
+            {
+
                 LoadType.REFRESH -> 1
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
+                    Log.d("paging", "Loading page")
                     val lastItem = state.lastItemOrNull()
                     if (lastItem == null) 1 else lastItem.page + 1
                 }
             }
 
-            val response = api.getPopularMovies(page = page, apikey = apiKey)
-            val localFavorites = db.filmDao().getAllLikedFilms()
-            val films = response.results.map { filmModel ->
-                filmModel.toEntity(pageNumber = page)
-                    .copy(isFavorite = localFavorites.contains(filmModel.id))
+            val response = api.getPopularActors(page = page, apikey = apiKey)
+            val localFavorites = db.actorDao().getAllLikedActors()
+            val actors = response.results.map { actorModel ->
+                actorModel.toEntity(pageNumber = page)
+                    .copy(isFavorite = localFavorites.contains(actorModel.id))
             }
 
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    db.filmDao().clearAll()
+                    db.actorDao().clearAll()
                 }
-                db.filmDao().insertAll(films)
+                db.actorDao().insertAll(actors)
             }
-
-            MediatorResult.Success(endOfPaginationReached = films.isEmpty())
+            MediatorResult.Success(endOfPaginationReached = actors.isEmpty())
         } catch (e: Exception) {
+
             if (loadType == LoadType.REFRESH) {
 
-                val hasData = db.filmDao().getAnyFilm() != null
+                val hasData = db.actorDao().getAnyActor() != null
                 if (hasData) {
                     return MediatorResult.Success(endOfPaginationReached = false)
                 }

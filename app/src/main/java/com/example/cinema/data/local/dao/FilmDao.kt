@@ -19,16 +19,13 @@ interface FilmDao {
     @Query("DELETE FROM films")
     suspend fun clearAll()
 
-    @Query("UPDATE films SET isFavorite = 1 WHERE id =:id")
-    suspend fun loadLikesAfterRefresh(id: Int)
-
     @Query("UPDATE films SET isFavorite =:likeStatus WHERE id =:id")
     suspend fun toggleFilmLike(likeStatus: Boolean, id: Int)
 
     @Query("SELECT * FROM films WHERE isFavorite = 1")
     fun getAllLikedFilmsFlow(): Flow<List<FilmEntity>>
 
-    @Query("SELECT id FROM FILMS WHERE isFavorite = 1")
+    @Query("SELECT id FROM films WHERE isFavorite = 1")
     suspend fun getAllLikedFilms(): List<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

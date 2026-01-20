@@ -7,6 +7,9 @@ sealed class Screen {
     data object FilmList
 
     @Serializable
+    data object ActorList
+
+    @Serializable
     data object FavoriteFilms
 
     @Serializable
