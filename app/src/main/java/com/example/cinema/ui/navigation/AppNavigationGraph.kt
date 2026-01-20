@@ -11,10 +11,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cinema.core.navigation.UiNavigation
-import com.example.cinema.ui.screens.actorlist.ActorListScreen
-import com.example.cinema.ui.screens.favoritefilms.FavoriteFilms
-import com.example.cinema.ui.screens.filminfo.FilmDetailScreen
-import com.example.cinema.ui.screens.filmlist.FilmListScreen
+import com.example.cinema.ui.screens.actors.actorinfo.ActorDetailScreen
+import com.example.cinema.ui.screens.actors.actorlist.ActorListScreen
+import com.example.cinema.ui.screens.films.favoritefilms.FavoriteFilms
+import com.example.cinema.ui.screens.films.filminfo.FilmDetailScreen
+import com.example.cinema.ui.screens.films.filmlist.FilmListScreen
 
 @Composable
 fun AppNavigationGraph(snackBarHostState: SnackbarHostState) {
@@ -55,6 +56,9 @@ fun AppNavigationGraph(snackBarHostState: SnackbarHostState) {
         }
         composable<Screen.ActorList>{
             ActorListScreen(snackbarHostState = snackBarHostState)
+        }
+        composable<Screen.ActorDetail>{
+            ActorDetailScreen()
         }
     }
 }

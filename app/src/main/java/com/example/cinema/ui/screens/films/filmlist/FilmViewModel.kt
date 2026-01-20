@@ -1,4 +1,4 @@
-package com.example.cinema.ui.screens.filmlist
+package com.example.cinema.ui.screens.films.filmlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

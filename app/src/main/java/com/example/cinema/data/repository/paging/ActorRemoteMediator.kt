@@ -40,7 +40,7 @@ class ActorRemoteMediator(
 ) : RemoteMediator<Int, ActorEntity>() {
 
     override suspend fun initialize(): InitializeAction {
-        return InitializeAction.LAUNCH_INITIAL_REFRESH
+        return InitializeAction.SKIP_INITIAL_REFRESH
     }
 
     override suspend fun load(
@@ -50,13 +50,11 @@ class ActorRemoteMediator(
 
         return try {
 
-            val page = when (loadType)
-            {
+            val page = when (loadType) {
 
                 LoadType.REFRESH -> 1
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
-                    Log.d("paging", "Loading page")
                     val lastItem = state.lastItemOrNull()
                     if (lastItem == null) 1 else lastItem.page + 1
                 }

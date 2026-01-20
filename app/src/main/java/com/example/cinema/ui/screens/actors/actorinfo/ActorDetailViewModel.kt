@@ -1,36 +1,40 @@
-package com.example.cinema.ui.screens.filminfo
+package com.example.cinema.ui.screens.actors.actorinfo
 
+import android.R.attr.data
+import android.util.Log.e
+import android.util.Log.i
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.example.cinema.ui.navigation.Screen
-import com.example.cinema.domain.model.Film
-import com.example.cinema.domain.usecases.films.GetFilmDetailsUseCase
+import com.example.cinema.domain.model.Actor
+import com.example.cinema.domain.usecases.actors.GetActorDetailsUseCase
 import com.example.cinema.ui.common.UiState
+import com.example.cinema.ui.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import okhttp3.Route
 import javax.inject.Inject
 
-
 @HiltViewModel
-class FilmDetailViewModel @Inject constructor(
+class ActorDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getFilmDetailsUseCase: GetFilmDetailsUseCase
+    private val getActorDetailsUseCase: GetActorDetailsUseCase
 ) : ViewModel() {
-    private val characterId: Int = savedStateHandle.toRoute<Screen.FilmDetail>().id
-    private val _state = MutableStateFlow<UiState<Film>>(UiState.Loading)
-    val state: StateFlow<UiState<Film>> = _state
+    private val actorId: Int = savedStateHandle.toRoute<Screen.ActorDetail>().id
+    private val _state = MutableStateFlow<UiState<Actor>>(UiState.Loading)
+    val state: StateFlow<UiState<Actor>> = _state
 
-    fun loadFilm() {
+    fun loadActor() {
         viewModelScope.launch {
+
             _state.update {
                 UiState.Loading
             }
-            getFilmDetailsUseCase(characterId).onSuccess { data ->
+            getActorDetailsUseCase(actorId).onSuccess { data ->
                 _state.update {
                     UiState.Success(data)
                 }
@@ -39,10 +43,10 @@ class FilmDetailViewModel @Inject constructor(
                     UiState.Error("$error")
                 }
             }
+
         }
     }
-
     init {
-        loadFilm()
+        loadActor()
     }
 }
