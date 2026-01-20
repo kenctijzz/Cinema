@@ -9,7 +9,7 @@ data class ActorEntity (
     @PrimaryKey val id: Int,
     val page: Int,
     val gender: Int,
-    val popularity: Double,
+    val popularity: Double?,
     val birthday: String?,
     val deathday: String?,
     val biography: String?,

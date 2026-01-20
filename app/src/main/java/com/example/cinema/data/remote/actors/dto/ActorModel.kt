@@ -8,8 +8,16 @@ import com.google.gson.annotations.SerializedName
 data class ActorModel(
     val id: Int,
     val gender: Int,
-    val popularity: Double,
     val name: String,
     @SerializedName("profile_path")
-    val image: String
+    val image: String,
+    val biography: String?,
+    val birthday: String?,
+    val deathday: String?,
+    val popularity: Double?
+
+)
+data class ActorImageModel(
+    @SerializedName("file_path")
+    val actorImage: String?
 )

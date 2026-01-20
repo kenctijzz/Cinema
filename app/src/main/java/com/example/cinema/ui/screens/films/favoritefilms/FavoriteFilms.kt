@@ -1,6 +1,5 @@
-package com.example.cinema.ui.screens.favoritefilms
+package com.example.cinema.ui.screens.films.favoritefilms
 
-import android.system.Os.stat
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,7 +27,7 @@ import com.example.cinema.core.ui.UiEvent
 import com.example.cinema.ui.common.UiState
 import com.example.cinema.ui.navigation.NavigationManager
 import com.example.cinema.ui.navigation.Screen
-import com.example.cinema.ui.screens.filmlist.FilmInfo
+import com.example.cinema.ui.screens.films.filmlist.FilmInfo
 import kotlinx.coroutines.launch
 
 @Composable

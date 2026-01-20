@@ -1,4 +1,4 @@
-package com.example.cinema.ui.screens.filmlist
+package com.example.cinema.ui.screens.films.filmlist
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.LocalIndication
@@ -32,7 +32,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.example.cinema.data.local.entities.FilmEntity
 import com.example.cinema.data.remote.ApiConstants
 import com.example.cinema.domain.model.Film
 import com.example.cinema.ui.navigation.NavigationManager

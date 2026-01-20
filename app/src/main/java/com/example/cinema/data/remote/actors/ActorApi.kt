@@ -1,5 +1,6 @@
 package com.example.cinema.data.remote.actors
 
+import com.example.cinema.data.remote.actors.dto.ActorImagesResponse
 import com.example.cinema.data.remote.actors.dto.ActorModel
 import com.example.cinema.data.remote.actors.dto.ActorResponse
 import kotlinx.coroutines.flow.Flow
@@ -15,5 +16,14 @@ interface ActorApi {
     ): ActorResponse
 
     @GET("person/{id}")
-    suspend fun getActor(@Path("id") id: Int): ActorModel
+    suspend fun getActor(
+        @Path("id") id: Int,
+        @Query("api_key") apikey: String
+    ): ActorModel
+
+    @GET("person/{id}/images")
+    suspend fun getActorPhotos(
+        @Path("id") id: Int,
+        @Query("api_key") apikey: String
+        ): ActorImagesResponse
 }

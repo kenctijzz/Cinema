@@ -1,4 +1,4 @@
-package com.example.cinema.ui.screens.actorlist
+package com.example.cinema.ui.screens.actors.actorlist
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.LocalIndication
@@ -34,6 +34,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -47,7 +48,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ActorInfo(
     actor: Actor,
-    actorViewModel: ActorViewModel = viewModel(),
+    actorViewModel: ActorViewModel = hiltViewModel(),
     onLikeClick: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -70,7 +71,7 @@ fun ActorInfo(
                     indication = LocalIndication.current
                 ) {
                     scope.launch {
-                        NavigationManager.navigateTo(Screen.FilmDetail(id = actor.id))
+                        NavigationManager.navigateTo(Screen.ActorDetail(id = actor.id))
                     }
                 }
         ) {

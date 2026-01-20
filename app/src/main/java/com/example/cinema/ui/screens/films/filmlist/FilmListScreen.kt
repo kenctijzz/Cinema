@@ -1,4 +1,4 @@
-package com.example.cinema.ui.screens.actorlist
+package com.example.cinema.ui.screens.films.filmlist
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -21,18 +21,17 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.cinema.core.ui.UiEvent
 import com.example.cinema.ui.components.PagingDataVerticalGrid
-import com.example.cinema.ui.screens.filmlist.FilmInfo
 
 @Composable
-fun ActorListScreen(
+fun FilmListScreen(
+    filmViewModel: FilmViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState,
-    actorViewModel: ActorViewModel = hiltViewModel()
 ) {
-    val pagedActors = actorViewModel.popularActorsList.collectAsLazyPagingItems()
+    val pagedMovies = filmViewModel.filmsFlow.collectAsLazyPagingItems()
     val isRefreshing =
-        pagedActors.loadState.refresh is LoadState.Loading && pagedActors.itemCount > 0
+        pagedMovies.loadState.refresh is LoadState.Loading && pagedMovies.itemCount > 0
     LaunchedEffect(Unit) {
-        actorViewModel.snackBarEvent.collect { event ->
+        filmViewModel.snackBarEvent.collect { event ->
             if (event is UiEvent.ShowSnackBar) {
                 snackbarHostState.showSnackbar(message = event.message)
             }
@@ -42,13 +41,13 @@ fun ActorListScreen(
         modifier = Modifier.fillMaxSize(),
         isRefreshing = isRefreshing,
         onRefresh = {
-            pagedActors.refresh()
+                pagedMovies.refresh()
         }
     ) {
-        when (pagedActors.loadState.refresh) {
+        when (pagedMovies.loadState.refresh) {
 
             is LoadState.Loading -> {
-                if (pagedActors.itemCount == 0) {
+                if (pagedMovies.itemCount == 0) {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -63,7 +62,7 @@ fun ActorListScreen(
                 Log.e(
                     "PagingError",
                     "Причина: ",
-                    (pagedActors.loadState.refresh as LoadState.Error).error
+                    (pagedMovies.loadState.refresh as LoadState.Error).error
                 )
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -76,16 +75,16 @@ fun ActorListScreen(
                         color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center
                     )
-                    Button(onClick = { pagedActors.retry() }) {
+                    Button(onClick = { pagedMovies.retry() }) {
                         Text("Повторить попытку")
                     }
                 }
             }
 
-            else -> PagingDataVerticalGrid(anyPagingData = actorViewModel.popularActorsList, cellsAmount = 2) { actor ->
-                ActorInfo(
-                    actor = actor,
-                    onLikeClick = { actorViewModel.toggleActorLike(actor) }
+            else -> PagingDataVerticalGrid(anyPagingData = filmViewModel.filmsFlow) {film ->
+                FilmInfo(
+                    film = film,
+                    onLikeClick = {filmViewModel.toggleFilmLike(film)}
                 )
             }
         }

@@ -5,7 +5,6 @@ import com.example.cinema.ui.common.VisualModels
 import com.google.gson.annotations.SerializedName
 
 data class Film(
-    val type: String = "Film",
     override val id: Int,
     val page: Int,
     val image: String?,

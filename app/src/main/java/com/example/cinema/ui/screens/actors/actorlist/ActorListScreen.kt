@@ -1,53 +1,37 @@
-package com.example.cinema.ui.screens.filmlist
+package com.example.cinema.ui.screens.actors.actorlist
 
-import android.R.attr.duration
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.key.Key.Companion.F
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
 import com.example.cinema.core.ui.UiEvent
 import com.example.cinema.ui.components.PagingDataVerticalGrid
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
-fun FilmListScreen(
-    filmViewModel: FilmViewModel = hiltViewModel(),
+fun ActorListScreen(
     snackbarHostState: SnackbarHostState,
+    actorViewModel: ActorViewModel = hiltViewModel()
 ) {
-    val pagedMovies = filmViewModel.filmsFlow.collectAsLazyPagingItems()
+    val pagedActors = actorViewModel.popularActorsList.collectAsLazyPagingItems()
     val isRefreshing =
-        pagedMovies.loadState.refresh is LoadState.Loading && pagedMovies.itemCount > 0
+        pagedActors.loadState.refresh is LoadState.Loading && pagedActors.itemCount > 0
     LaunchedEffect(Unit) {
-        filmViewModel.snackBarEvent.collect { event ->
+        actorViewModel.snackBarEvent.collect { event ->
             if (event is UiEvent.ShowSnackBar) {
                 snackbarHostState.showSnackbar(message = event.message)
             }
@@ -57,13 +41,13 @@ fun FilmListScreen(
         modifier = Modifier.fillMaxSize(),
         isRefreshing = isRefreshing,
         onRefresh = {
-                pagedMovies.refresh()
+            pagedActors.refresh()
         }
     ) {
-        when (pagedMovies.loadState.refresh) {
+        when (pagedActors.loadState.refresh) {
 
             is LoadState.Loading -> {
-                if (pagedMovies.itemCount == 0) {
+                if (pagedActors.itemCount == 0) {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -78,7 +62,7 @@ fun FilmListScreen(
                 Log.e(
                     "PagingError",
                     "Причина: ",
-                    (pagedMovies.loadState.refresh as LoadState.Error).error
+                    (pagedActors.loadState.refresh as LoadState.Error).error
                 )
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -91,16 +75,16 @@ fun FilmListScreen(
                         color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center
                     )
-                    Button(onClick = { pagedMovies.retry() }) {
+                    Button(onClick = { pagedActors.retry() }) {
                         Text("Повторить попытку")
                     }
                 }
             }
 
-            else -> PagingDataVerticalGrid(anyPagingData = filmViewModel.filmsFlow, cellsAmount = 2) {film ->
-                FilmInfo(
-                    film = film,
-                    onLikeClick = {filmViewModel.toggleFilmLike(film)}
+            else -> PagingDataVerticalGrid(anyPagingData = actorViewModel.popularActorsList) { actor ->
+                ActorInfo(
+                    actor = actor,
+                    onLikeClick = { actorViewModel.toggleActorLike(actor) }
                 )
             }
         }

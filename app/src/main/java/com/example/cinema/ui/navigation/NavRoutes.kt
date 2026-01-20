@@ -10,6 +10,8 @@ sealed class Screen {
     data object ActorList
 
     @Serializable
+    data class ActorDetail(val id: Int)
+    @Serializable
     data object FavoriteFilms
 
     @Serializable

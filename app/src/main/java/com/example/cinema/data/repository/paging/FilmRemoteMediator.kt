@@ -41,7 +41,6 @@ class FilmRemoteMediator(
         state: PagingState<Int, FilmEntity>
     ): MediatorResult {
         return try {
-            delay(500)
             val page = when (loadType) {
                 LoadType.REFRESH -> 1
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
