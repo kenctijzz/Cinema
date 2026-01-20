@@ -2,8 +2,9 @@ package com.example.cinema.di
 
 import android.content.Context
 import androidx.room.Room
+import com.example.cinema.data.local.dao.ActorDao
 import com.example.cinema.data.local.dao.FilmDao
-import com.example.cinema.data.local.db.FilmDatabase
+import com.example.cinema.data.local.db.CinemaDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,15 +17,21 @@ import javax.inject.Singleton
 object DataBaseModule {
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): FilmDatabase {
+    fun provideDatabase(@ApplicationContext context: Context): CinemaDatabase {
         return Room.databaseBuilder(
-            context, FilmDatabase::class.java, "film_database"
+            context, CinemaDatabase::class.java, "film_database"
         ).build()
     }
 
     @Provides
     @Singleton
-    fun provideDao(database: FilmDatabase): FilmDao {
+    fun provideActorDao(database: CinemaDatabase): ActorDao {
+        return database.actorDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFilmDao(database: CinemaDatabase): FilmDao {
         return database.filmDao()
     }
 }

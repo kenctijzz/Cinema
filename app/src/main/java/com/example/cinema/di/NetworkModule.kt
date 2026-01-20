@@ -2,7 +2,8 @@ package com.example.cinema.di
 
 import com.example.cinema.BuildConfig
 import com.example.cinema.data.remote.ApiConstants
-import com.example.cinema.data.remote.FilmApi
+import com.example.cinema.data.remote.actors.ActorApi
+import com.example.cinema.data.remote.films.FilmApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,7 +21,14 @@ object NetworkModule {
     fun provideApiKey(): String {
         return BuildConfig.API_KEY
     }
-
+    @Provides
+    fun provideActorApi(): ActorApi{
+        return Retrofit.Builder()
+            .baseUrl(ApiConstants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ActorApi::class.java)
+    }
     @Provides
     fun provideFilmApi(): FilmApi {
         return Retrofit.Builder()

@@ -1,7 +1,7 @@
-package com.example.cinema.data.remote
+package com.example.cinema.data.remote.films
 
-import com.example.cinema.data.remote.dto.FilmModel
-import com.example.cinema.data.remote.dto.FilmResponse
+import com.example.cinema.data.remote.films.dto.FilmModel
+import com.example.cinema.data.remote.films.dto.FilmResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
