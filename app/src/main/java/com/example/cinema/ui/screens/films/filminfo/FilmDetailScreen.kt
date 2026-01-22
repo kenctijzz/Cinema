@@ -17,6 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.cinema.data.remote.ApiConstants
 import com.example.cinema.ui.common.UiState
 import com.example.cinema.ui.screens.films.filminfo.components.FilmPoster
+import com.example.cinema.ui.screens.films.filminfo.components.FilmRateButton
 
 @Composable
 fun FilmDetailScreen(
@@ -45,7 +46,11 @@ fun FilmDetailScreen(
                 }
 
             is UiState.Success ->
-                Box(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                ) {
                     FilmPoster(
                         "${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image}                                                                   ",
                         filmTitle = uiState.data.title,
@@ -53,12 +58,7 @@ fun FilmDetailScreen(
                         filmRunTime = uiState.data.runtime,
                         filmRating = uiState.data.rating
                     )
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                    ) {
-                    }
+                    FilmRateButton()
                 }
         }
     }

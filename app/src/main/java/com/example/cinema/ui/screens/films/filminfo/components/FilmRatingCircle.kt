@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -30,7 +31,7 @@ fun FilmRatingCircle(filmRating: Double) {
             .size(45.dp)
             .background(
                 color = when {
-                    filmRating >= 8.50 -> Color(0xFF2ECC71)
+                    filmRating >= 8.00 -> Color(0xFF2ECC71)
                     filmRating >= 6.50 -> Color(0xFFF1C40F)
                     filmRating >= 5 -> Color(0xFFE67E22)
                     else -> Color(0xFFE74C3C)
