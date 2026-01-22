@@ -27,6 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.example.cinema.data.remote.ApiConstants
 import com.example.cinema.ui.common.UiState
+import com.example.cinema.ui.components.films.FilmPoster
 
 @Composable
 fun FilmDetailScreen(
@@ -56,54 +57,18 @@ fun FilmDetailScreen(
 
             is UiState.Success ->
                 Box(modifier = Modifier.fillMaxSize()) {
-                    AsyncImage(
-                        alpha = 0.5f,
-                        model = "${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image}",
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
+                    FilmPoster(
+                        "${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image},",
+                        filmTitle = uiState.data.title,
+                        filmReleaseDate = uiState.data.releaseDate,
+                        filmRunTime = uiState.data.runtime,
+                        filmRating = uiState.data.rating.toString().dropLast(2).toDouble()
                     )
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
                     ) {
-
-                        Text(
-                            uiState.data.title,
-                            modifier = Modifier.fillMaxWidth(),
-                            fontSize = 40.sp,
-                            textAlign = TextAlign.Center,
-                            style = TextStyle(
-                                shadow = Shadow(
-                                    color = Color.Black,
-                                    blurRadius = 8f
-                                )
-                            )
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Text(
-                            "${uiState.data.overview}", textAlign = TextAlign.Justify,
-                            fontSize = 32.sp,
-                            modifier = Modifier.fillMaxSize(),
-                            style = TextStyle(
-                                shadow = Shadow(
-                                    color = Color.Black,
-                                    blurRadius = 8f
-                                )
-                            )
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
-                        Text(
-                            "Release Date: ${uiState.data.releaseDate}",
-                            fontSize = 20.sp,
-                            style = TextStyle(
-                                shadow = Shadow(
-                                    color = Color.Black,
-                                    blurRadius = 8f
-                                )
-                            )
-                        )
                     }
                 }
         }

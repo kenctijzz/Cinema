@@ -1,5 +1,7 @@
 package com.example.cinema.data.repository.paging
 
+import android.R
+import android.R.attr.apiKey
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -9,6 +11,7 @@ import com.example.cinema.data.local.db.CinemaDatabase
 import com.example.cinema.data.local.entities.FilmEntity
 import com.example.cinema.data.remote.films.FilmApi
 import com.example.cinema.data.remote.films.dto.FilmModel
+import com.example.cinema.data.repository.paging.toEntity
 
 import kotlinx.coroutines.delay
 
@@ -21,9 +24,14 @@ private fun FilmModel.toEntity(pageNumber: Int): FilmEntity {
         adult = this.adult,
         overview = this.overview,
         isFavorite = false,
-        page = pageNumber
+        page = pageNumber,
+        rating = this.rating,
+        popularity = this.popularity,
+        language = this.language,
+        runtime = this.runtime,
     )
 }
+
 
 @OptIn(ExperimentalPagingApi::class)
 class FilmRemoteMediator(
@@ -53,7 +61,7 @@ class FilmRemoteMediator(
             val response = api.getPopularMovies(page = page, apikey = apiKey)
             val localFavorites = db.filmDao().getAllLikedFilms()
             val films = response.results.map { filmModel ->
-                filmModel.toEntity(pageNumber = page)
+                filmModel.toEntity(pageNumber = page, )
                     .copy(isFavorite = localFavorites.contains(filmModel.id))
             }
 
