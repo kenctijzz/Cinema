@@ -61,7 +61,7 @@ class FilmRemoteMediator(
             val response = api.getPopularMovies(page = page, apikey = apiKey)
             val localFavorites = db.filmDao().getAllLikedFilms()
             val films = response.results.map { filmModel ->
-                filmModel.toEntity(pageNumber = page, )
+                filmModel.toEntity(pageNumber = page)
                     .copy(isFavorite = localFavorites.contains(filmModel.id))
             }
 
