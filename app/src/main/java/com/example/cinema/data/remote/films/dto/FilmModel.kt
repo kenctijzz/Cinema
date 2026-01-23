@@ -19,3 +19,10 @@ data class FilmModel(
     val adult: Boolean,
     val overview: String?
 )
+
+data class FilmVideoModel(
+    @SerializedName("key")
+    val videoKey: String?,
+    @SerializedName("type")
+    val type: String?
+)

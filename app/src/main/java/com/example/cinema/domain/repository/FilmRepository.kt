@@ -2,6 +2,7 @@ package com.example.cinema.domain.repository
 
 import androidx.paging.PagingData
 import com.example.cinema.domain.model.Film
+import com.example.cinema.domain.model.FilmVideo
 import kotlinx.coroutines.flow.Flow
 
 interface FilmRepository {
@@ -11,4 +12,5 @@ interface FilmRepository {
     suspend fun getFilmByIdFromLocal(id: Int): Film?
     suspend fun getFilmByIdFromRemote(id: Int): Film
     suspend fun updateFilm(film: Film)
+/*    suspend fun getFilmVideos(id: Int): List<FilmVideo>*/
 }

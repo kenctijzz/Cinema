@@ -1,6 +1,5 @@
 package com.example.cinema.data.repository
 
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -32,11 +31,12 @@ private fun FilmEntity.toDomainModel(): Film {
         rating = this.rating,
         popularity = this.popularity,
         language = this.language,
-        runtime = this.runtime
+        runtime = this.runtime,
+        video = this.video
     )
 }
 
-private fun FilmModel.toDomainModel(pageNumber: Int): Film {
+private fun FilmModel.toDomainModel(pageNumber: Int, video: String?): Film {
     return Film(
         id = this.id,
         title = this.title,
@@ -49,7 +49,8 @@ private fun FilmModel.toDomainModel(pageNumber: Int): Film {
         rating = this.rating,
         popularity = this.popularity,
         language = this.language,
-        runtime = this.runtime
+        runtime = this.runtime,
+        video = video
     )
 }
 
@@ -66,7 +67,8 @@ fun Film.toEntity(): FilmEntity {
         rating = this.rating,
         popularity = this.popularity,
         language = this.language,
-        runtime = this.runtime
+        runtime = this.runtime,
+        video = this.video
     )
 }
 
@@ -87,7 +89,8 @@ class FilmRepositoryImpl @Inject constructor(
             pagingSourceFactory = { db.filmDao().getPagingSource() }
         ).flow.map { pagingData ->
             pagingData.map { entity ->
-                entity.toDomainModel() }
+                entity.toDomainModel()
+            }
         }
     }
 
@@ -99,7 +102,19 @@ class FilmRepositoryImpl @Inject constructor(
 
     override suspend fun getFilmByIdFromRemote(id: Int): Film {
         val film = filmApi.getFilm(id, apiKey)
-        return film.toDomainModel(pageNumber = 0)
+        val video = filmApi.getFilmVideos(id, apiKey)
+        val gettedFilm = film.toDomainModel(
+            pageNumber = 0, video = video.results?.firstOrNull { it.type == "Trailer" }?.videoKey
+            ?: video.results?.firstOrNull()?.videoKey
+        )
+        println(video.results?.first()?.videoKey)
+        println(video.results?.first()?.videoKey)
+        println(video.results?.first()?.videoKey)
+
+
+        filmDao.addFilm(gettedFilm.toEntity())
+        return gettedFilm
+
     }
 
     override suspend fun updateFilm(film: Film) {
@@ -109,9 +124,13 @@ class FilmRepositoryImpl @Inject constructor(
     override fun getFilmFlow(id: Int): Flow<Film> {
         return filmDao.getFilmFlow(id).map { entity -> entity.toDomainModel() }
     }
+
     override fun getFavoriteFilmsFlow(): Flow<List<Film>> {
         return filmDao.getAllLikedFilmsFlow()
-            .map { entities -> entities.map { entity ->
-                entity.toDomainModel() } }
+            .map { entities ->
+                entities.map { entity ->
+                    entity.toDomainModel()
+                }
+            }
     }
 }

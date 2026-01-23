@@ -9,7 +9,7 @@ import com.example.cinema.data.local.entities.FilmEntity
 
 @Database(
     entities = [FilmEntity::class, ActorEntity::class],
-    version = 2 ,
+    version = 6,
     exportSchema = false
 )
 abstract class CinemaDatabase : RoomDatabase(){

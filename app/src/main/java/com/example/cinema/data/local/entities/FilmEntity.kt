@@ -1,6 +1,8 @@
 package com.example.cinema.data.local.entities
 
+import android.util.Log.v
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
@@ -22,5 +24,6 @@ data class FilmEntity(
     @SerializedName("original_language")
     val language: String,
     @SerializedName("runtime")
-    val runtime: Int
+    val runtime: Int,
+    val video: String?
 )

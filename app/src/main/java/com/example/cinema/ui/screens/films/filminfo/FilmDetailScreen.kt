@@ -32,6 +32,7 @@ import com.example.cinema.ui.screens.films.filminfo.components.BackgroundPoster
 import com.example.cinema.ui.screens.films.filminfo.components.FilmDetailButtons
 import com.example.cinema.ui.screens.films.filminfo.components.FilmOverview
 import com.example.cinema.ui.screens.films.filminfo.components.FilmPoster
+import com.example.cinema.ui.screens.films.filminfo.components.FilmTrailerWatchButton
 import com.example.cinema.ui.utils.UiError
 import com.example.cinema.ui.utils.UiLoading
 
@@ -77,8 +78,10 @@ fun FilmDetailScreen(
                                 filmRunTime = uiState.data.runtime,
                                 filmRating = uiState.data.rating
                             )
+                            FilmTrailerWatchButton()
                             FilmDetailButtons(snackbarHostState = snackbarHostState)
                             FilmOverview(uiState.data.overview ?: "Film has no overview")
+
                         }
                     }
                 }
