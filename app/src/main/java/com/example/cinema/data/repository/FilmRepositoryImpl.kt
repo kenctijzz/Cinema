@@ -1,5 +1,6 @@
 package com.example.cinema.data.repository
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -27,7 +28,11 @@ private fun FilmEntity.toDomainModel(): Film {
         adult = this.adult,
         overview = this.overview,
         isFavorite = this.isFavorite,
-        page = this.page
+        page = this.page,
+        rating = this.rating,
+        popularity = this.popularity,
+        language = this.language,
+        runtime = this.runtime
     )
 }
 
@@ -40,7 +45,11 @@ private fun FilmModel.toDomainModel(pageNumber: Int): Film {
         adult = this.adult,
         overview = this.overview,
         isFavorite = false,
-        page = pageNumber
+        page = pageNumber,
+        rating = this.rating,
+        popularity = this.popularity,
+        language = this.language,
+        runtime = this.runtime
     )
 }
 
@@ -53,7 +62,11 @@ fun Film.toEntity(): FilmEntity {
         adult = this.adult,
         overview = this.overview,
         isFavorite = this.isFavorite,
-        page = this.page
+        page = this.page,
+        rating = this.rating,
+        popularity = this.popularity,
+        language = this.language,
+        runtime = this.runtime
     )
 }
 
@@ -73,7 +86,8 @@ class FilmRepositoryImpl @Inject constructor(
             remoteMediator = FilmRemoteMediator(filmApi, db, apiKey),
             pagingSourceFactory = { db.filmDao().getPagingSource() }
         ).flow.map { pagingData ->
-            pagingData.map { entity -> entity.toDomainModel() }
+            pagingData.map { entity ->
+                entity.toDomainModel() }
         }
     }
 
@@ -84,7 +98,7 @@ class FilmRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getFilmByIdFromRemote(id: Int): Film {
-        val film = filmApi.getFilm(id)
+        val film = filmApi.getFilm(id, apiKey)
         return film.toDomainModel(pageNumber = 0)
     }
 
@@ -92,8 +106,12 @@ class FilmRepositoryImpl @Inject constructor(
         filmDao.addFilm(film.toEntity())
     }
 
+    override fun getFilmFlow(id: Int): Flow<Film> {
+        return filmDao.getFilmFlow(id).map { entity -> entity.toDomainModel() }
+    }
     override fun getFavoriteFilmsFlow(): Flow<List<Film>> {
         return filmDao.getAllLikedFilmsFlow()
-            .map { entities -> entities.map { entity -> entity.toDomainModel() } }
+            .map { entities -> entities.map { entity ->
+                entity.toDomainModel() } }
     }
 }

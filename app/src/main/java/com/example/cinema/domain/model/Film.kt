@@ -12,5 +12,9 @@ data class Film(
     val overview: String?,
     val title: String,
     val adult: Boolean,
-    val isFavorite: Boolean
+    val isFavorite: Boolean,
+    val rating: Double,
+    val popularity: Double,
+    val language: String,
+    val runtime: Int
 ) : VisualModels

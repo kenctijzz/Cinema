@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.cinema.domain.model.Actor
 import com.example.cinema.domain.usecases.actors.GetActorDetailsUseCase
+import com.example.cinema.ui.common.BaseViewModel
 import com.example.cinema.ui.common.UiState
 import com.example.cinema.ui.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,12 +24,12 @@ import javax.inject.Inject
 class ActorDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getActorDetailsUseCase: GetActorDetailsUseCase
-) : ViewModel() {
+) : BaseViewModel() {
     private val actorId: Int = savedStateHandle.toRoute<Screen.ActorDetail>().id
     private val _state = MutableStateFlow<UiState<Actor>>(UiState.Loading)
     val state: StateFlow<UiState<Actor>> = _state
 
-    fun loadActor() {
+    override fun load() {
         viewModelScope.launch {
 
             _state.update {
@@ -46,7 +47,8 @@ class ActorDetailViewModel @Inject constructor(
 
         }
     }
+
     init {
-        loadActor()
+        load()
     }
 }

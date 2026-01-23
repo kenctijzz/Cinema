@@ -15,5 +15,12 @@ data class FilmEntity(
     val overview: String?,
     val title: String,
     val adult: Boolean,
-    val isFavorite: Boolean
+    val isFavorite: Boolean,
+    @SerializedName("vote_average")
+    val rating: Double,
+    val popularity: Double,
+    @SerializedName("original_language")
+    val language: String,
+    @SerializedName("runtime")
+    val runtime: Int
 )

@@ -8,6 +8,7 @@ import com.example.cinema.core.ui.UiEvent
 import com.example.cinema.domain.model.Film
 import com.example.cinema.domain.usecases.films.GetPopularFilmsUseCase
 import com.example.cinema.domain.usecases.films.ToggleFilmLikeUseCase
+import com.example.cinema.ui.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +21,7 @@ import javax.inject.Inject
 class FilmViewModel @Inject constructor(
     private val getPopularFilmsUseCase: GetPopularFilmsUseCase,
     private val toggleFilmLikeUseCase: ToggleFilmLikeUseCase,
-) : ViewModel() {
+) : BaseViewModel() {
     private val _snackBarEvent = MutableSharedFlow<UiEvent.ShowSnackBar>(
         replay = 0,
         extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST
@@ -43,5 +44,9 @@ class FilmViewModel @Inject constructor(
                 showSnackBar("${film.title} удален из избранного")
             }
         }
+    }
+
+    override fun load() {
+        
     }
 }

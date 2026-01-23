@@ -1,112 +1,88 @@
 package com.example.cinema.ui.screens.films.filminfo
 
+import android.R.attr.visible
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
 import com.example.cinema.data.remote.ApiConstants
 import com.example.cinema.ui.common.UiState
+import com.example.cinema.ui.screens.films.filminfo.components.BackgroundPoster
+import com.example.cinema.ui.screens.films.filminfo.components.FilmDetailButtons
+import com.example.cinema.ui.screens.films.filminfo.components.FilmOverview
+import com.example.cinema.ui.screens.films.filminfo.components.FilmPoster
+import com.example.cinema.ui.utils.UiError
+import com.example.cinema.ui.utils.UiLoading
 
 @Composable
 fun FilmDetailScreen(
     filmDetailViewModel: FilmDetailViewModel = hiltViewModel(),
+    snackbarHostState: SnackbarHostState
 ) {
+    val scrollState = rememberScrollState()
+    val backgroundAlpha = (1f - (scrollState.value / 1000f)).coerceIn(0f, 1f)
     val state = filmDetailViewModel.state.collectAsStateWithLifecycle()
     Box() {
         when (val uiState = state.value) {
             is UiState.Loading ->
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) { CircularProgressIndicator() }
+                UiLoading()
 
             is UiState.Error ->
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                UiError(filmDetailViewModel)
+
+            is UiState.Success -> {
+                var animateSuccess by remember { mutableStateOf(false) }
+                LaunchedEffect(Unit) {
+                    animateSuccess = true
+                }
+                AnimatedVisibility(
+                    visible = animateSuccess,
+                    enter = fadeIn(animationSpec = tween(durationMillis = 500))
                 ) {
-                    Text("Ошибка при загрузке")
-                    Button(onClick = { filmDetailViewModel.loadFilm() }) {
-                        Text("Повторить")
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        Box(modifier = Modifier.graphicsLayer { alpha = backgroundAlpha }) {
+                            BackgroundPoster("${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image}")
+                        }
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(scrollState),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            FilmPoster(
+                                "${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image}",
+                                filmTitle = uiState.data.title,
+                                filmReleaseDate = uiState.data.releaseDate,
+                                filmRunTime = uiState.data.runtime,
+                                filmRating = uiState.data.rating
+                            )
+                            FilmDetailButtons(snackbarHostState = snackbarHostState)
+                            FilmOverview(uiState.data.overview ?: "Film has no overview")
+                        }
                     }
                 }
-
-            is UiState.Success ->
-                Box(modifier = Modifier.fillMaxSize()) {
-                    AsyncImage(
-                        alpha = 0.5f,
-                        model = "${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image}",
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                    ) {
-
-                        Text(
-                            uiState.data.title,
-                            modifier = Modifier.fillMaxWidth(),
-                            fontSize = 40.sp,
-                            textAlign = TextAlign.Center,
-                            style = TextStyle(
-                                shadow = Shadow(
-                                    color = Color.Black,
-                                    blurRadius = 8f
-                                )
-                            )
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Text(
-                            "${uiState.data.overview}", textAlign = TextAlign.Justify,
-                            fontSize = 32.sp,
-                            modifier = Modifier.fillMaxSize(),
-                            style = TextStyle(
-                                shadow = Shadow(
-                                    color = Color.Black,
-                                    blurRadius = 8f
-                                )
-                            )
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
-                        Text(
-                            "Release Date: ${uiState.data.releaseDate}",
-                            fontSize = 20.sp,
-                            style = TextStyle(
-                                shadow = Shadow(
-                                    color = Color.Black,
-                                    blurRadius = 8f
-                                )
-                            )
-                        )
-                    }
-                }
+            }
         }
     }
-
 }

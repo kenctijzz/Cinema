@@ -9,6 +9,7 @@ import com.example.cinema.domain.model.Actor
 import com.example.cinema.domain.model.Film
 import com.example.cinema.domain.usecases.actors.GetPopularActorsUseCase
 import com.example.cinema.domain.usecases.actors.ToggleActorLikeUseCase
+import com.example.cinema.ui.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +22,7 @@ import javax.inject.Inject
 class ActorViewModel @Inject constructor(
     private val getPopularActorsUseCase: GetPopularActorsUseCase,
     private val toggleActorLikeUseCase: ToggleActorLikeUseCase
-) : ViewModel() {
+) : BaseViewModel() {
     private val _snackBarEvent = MutableSharedFlow<UiEvent.ShowSnackBar>(
         replay = 0,
         extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST
@@ -43,5 +44,9 @@ class ActorViewModel @Inject constructor(
                 showSnackBar("${actor.name} удален из избранного")
             }
         }
+    }
+
+    override fun load() {
+
     }
 }

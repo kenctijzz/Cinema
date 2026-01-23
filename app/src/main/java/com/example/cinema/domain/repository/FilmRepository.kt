@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface FilmRepository {
     fun getPopularMovies(): Flow<PagingData<Film>>
     fun getFavoriteFilmsFlow(): Flow<List<Film>>
+    fun getFilmFlow(id: Int): Flow<Film>
     suspend fun getFilmByIdFromLocal(id: Int): Film?
     suspend fun getFilmByIdFromRemote(id: Int): Film
     suspend fun updateFilm(film: Film)
