@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.cinema.ui.theme.toRatingColor
 import java.util.Locale
 
 @Composable
@@ -30,12 +31,7 @@ fun FilmRatingCircle(filmRating: Double) {
             .clip(RoundedCornerShape(60.dp))
             .size(45.dp)
             .background(
-                color = when {
-                    filmRating >= 8.00 -> Color(0xFF2ECC71)
-                    filmRating >= 6.50 -> Color(0xFFF1C40F)
-                    filmRating >= 5 -> Color(0xFFE67E22)
-                    else -> Color(0xFFE74C3C)
-                }
+                color = filmRating.toRatingColor()
             )
     ) {
         Column(

@@ -22,11 +22,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.cinema.data.remote.ApiConstants
 import com.example.cinema.ui.common.UiState
+import com.example.cinema.ui.screens.films.filminfo.components.BackgroundPoster
 import com.example.cinema.ui.screens.films.filminfo.components.FilmDetailButtons
+import com.example.cinema.ui.screens.films.filminfo.components.FilmOverview
 import com.example.cinema.ui.screens.films.filminfo.components.FilmPoster
 import com.example.cinema.ui.utils.UiError
 import com.example.cinema.ui.utils.UiLoading
@@ -45,7 +48,7 @@ fun FilmDetailScreen(
 
             is UiState.Error ->
                 UiError(filmDetailViewModel)
-            
+
             is UiState.Success -> {
                 var animateSuccess by remember { mutableStateOf(false) }
                 LaunchedEffect(Unit) {
@@ -55,19 +58,24 @@ fun FilmDetailScreen(
                     visible = animateSuccess,
                     enter = fadeIn(animationSpec = tween(durationMillis = 500))
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState()),
-                    ) {
-                        FilmPoster(
-                            "${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image}",
-                            filmTitle = uiState.data.title,
-                            filmReleaseDate = uiState.data.releaseDate,
-                            filmRunTime = uiState.data.runtime,
-                            filmRating = uiState.data.rating
-                        )
-                        FilmDetailButtons(snackbarHostState = snackbarHostState)
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        BackgroundPoster("${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image}")
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            FilmPoster(
+                                "${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image}",
+                                filmTitle = uiState.data.title,
+                                filmReleaseDate = uiState.data.releaseDate,
+                                filmRunTime = uiState.data.runtime,
+                                filmRating = uiState.data.rating
+                            )
+                            FilmDetailButtons(snackbarHostState = snackbarHostState)
+                            FilmOverview(uiState.data.overview ?: "Film has no overview")
+                        }
                     }
                 }
             }

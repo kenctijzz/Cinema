@@ -3,6 +3,7 @@ package com.example.cinema.ui.screens.films.filminfo.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.StarBorder
@@ -16,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
@@ -36,6 +38,11 @@ fun FilmRateChooseWindowButton(snackbarHostState: SnackbarHostState) {
                 contentDescription = "", Modifier.size(40.dp)
             )
         }
-        Text(text = "Rate", textAlign = TextAlign.Justify)
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "Rate",
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }

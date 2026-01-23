@@ -77,10 +77,10 @@ fun AppNavigationDrawer(snackBarHostState: SnackbarHostState) {
             modifier = Modifier.fillMaxSize(),
             snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
         ) { innerPadding ->
-            Box(modifier = Modifier.padding(innerPadding)) {
+
                 AppNavigationGraph(snackBarHostState = snackBarHostState)
 
-            }
+
         }
     }
 }

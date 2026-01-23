@@ -7,11 +7,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.cinema.ui.theme.toRatingColor
 
 @Composable
-fun FilmRateButton(selectedRate: Int, showValidText: (Boolean) -> Unit, isSelectRate: Boolean){
+fun FilmRateButton(selectedRate: Int, showValidText: (Boolean) -> Unit, isSelectRate: Boolean) {
     Button(
         onClick = {
             if (selectedRate == -1) {
