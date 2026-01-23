@@ -11,11 +11,12 @@
 - **Navigation:** Type-Safe Jetpack Navigation
 - **Images:** Coil 3
 
-Скриншоты приложения
-![Страница информации о фильме](https://github.com/user-attachments/assets/36e68cbd-7f60-444e-8441-f6ad56a3a73e)
-![Страница информации о фильме(скрытое описание)](https://github.com/user-attachments/assets/a42b9e0b-6d62-4a67-8a7d-9c28dd4f7900)
-![Главная страница с популярными фильмами](https://github.com/user-attachments/assets/eea8d288-004b-40d3-9816-769774c4947d)
-![Меню навигации приложения](https://github.com/user-attachments/assets/a2b9fe05-9ddc-426c-8425-52b4bb166dbe)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/36e68cbd-7f60-444e-8441-f6ad56a3a73e" alt="Страница информации о фильме" width="200""")/>
+  <img src="https://github.com/user-attachments/assets/a42b9e0b-6d62-4a67-8a7d-9c28dd4f7900" alt="Страница информации о фильме(скрытое описание)" width="200""")/>
+  <img src="https://github.com/user-attachments/assets/eea8d288-004b-40d3-9816-769774c4947d" alt="Главная страница с популярными фильмами" width="200""")/>
+  <img src="https://github.com/user-attachments/assets/a2b9fe05-9ddc-426c-8425-52b4bb166dbe" alt="Меню навигации приложения" width="200""")/>
+</p>
 
 Ключевые особенности
 
