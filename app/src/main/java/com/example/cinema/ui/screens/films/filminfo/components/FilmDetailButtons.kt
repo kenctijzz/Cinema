@@ -9,16 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.cinema.domain.model.Film
-import com.example.cinema.ui.common.UiState
 
 @Composable
-fun FilmDetailButtons(snackbarHostState: SnackbarHostState, film: UiState<Film>) {
+fun FilmDetailButtons(snackbarHostState: SnackbarHostState) {
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(30.dp)
         ) {
-            FilmRateButton(snackbarHostState = snackbarHostState)
+            FilmRateChooseWindowButton(snackbarHostState = snackbarHostState)
             FilmLikeButton(snackbarHostState = snackbarHostState)
         }
     }

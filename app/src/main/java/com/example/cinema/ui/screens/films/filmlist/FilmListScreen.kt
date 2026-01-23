@@ -21,6 +21,8 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.cinema.core.ui.UiEvent
 import com.example.cinema.ui.components.PagingDataVerticalGrid
+import com.example.cinema.ui.utils.UiError
+import com.example.cinema.ui.utils.UiLoading
 
 @Composable
 fun FilmListScreen(
@@ -41,50 +43,28 @@ fun FilmListScreen(
         modifier = Modifier.fillMaxSize(),
         isRefreshing = isRefreshing,
         onRefresh = {
-                pagedMovies.refresh()
+            pagedMovies.refresh()
         }
     ) {
         when (pagedMovies.loadState.refresh) {
 
             is LoadState.Loading -> {
                 if (pagedMovies.itemCount == 0) {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
+                    UiLoading()
                 }
             }
 
             is LoadState.Error -> {
-                Log.e(
-                    "PagingError",
-                    "Причина: ",
-                    (pagedMovies.loadState.refresh as LoadState.Error).error
+                UiError(
+                    anyViewModel = filmViewModel,
+                    errorText = "Проблемы с доступом.Проверьте подключение к VPN"
                 )
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "Проблемы с доступом. Проверьте подключение к VPN",
-                        color = MaterialTheme.colorScheme.error,
-                        textAlign = TextAlign.Center
-                    )
-                    Button(onClick = { pagedMovies.retry() }) {
-                        Text("Повторить попытку")
-                    }
-                }
             }
 
-            else -> PagingDataVerticalGrid(anyPagingData = filmViewModel.filmsFlow) {film ->
+            else -> PagingDataVerticalGrid(anyPagingData = filmViewModel.filmsFlow) { film ->
                 FilmInfo(
                     film = film,
-                    onLikeClick = {filmViewModel.toggleFilmLike(film)}
+                    onLikeClick = { filmViewModel.toggleFilmLike(film) }
                 )
             }
         }

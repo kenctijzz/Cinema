@@ -28,6 +28,8 @@ import com.example.cinema.ui.common.UiState
 import com.example.cinema.ui.navigation.NavigationManager
 import com.example.cinema.ui.navigation.Screen
 import com.example.cinema.ui.screens.films.filmlist.FilmInfo
+import com.example.cinema.ui.utils.UiError
+import com.example.cinema.ui.utils.UiLoading
 import kotlinx.coroutines.launch
 
 @Composable
@@ -47,15 +49,9 @@ fun FavoriteFilms(
         }
     }
     when (val currentState = state) {
-        is UiState.Loading -> {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
+        is UiState.Loading -> UiLoading()
+
+        is UiState.Error -> UiError(favoriteFilmsViewModel)
 
         is UiState.Success -> {
             if (currentState.data.isEmpty()) {
@@ -88,7 +84,5 @@ fun FavoriteFilms(
                 }
             }
         }
-
-        else -> {}
     }
 }

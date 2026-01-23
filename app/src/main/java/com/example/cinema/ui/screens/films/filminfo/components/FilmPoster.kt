@@ -28,39 +28,31 @@ fun FilmPoster(
     filmRunTime: Int,
     filmRating: Double
 ) {
-    var animate by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) {
-        animate = true
-    }
-    AnimatedVisibility(
-        visible = animate,
-        enter = fadeIn(animationSpec = tween(durationMillis = 500))
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Box {
-                FilmPrimaryInfo(
-                    filmPoster = filmPoster,
-                    filmTitle = filmTitle,
-                    filmReleaseDate = filmReleaseDate,
-                    filmRunTime = filmRunTime
-                )
-                Box(
-                    modifier = Modifier
-                        .size(height = 300.dp, width = 200.dp)
-                        .alpha(0.95f)
-                        .padding(2.dp),
-                    contentAlignment = Alignment.BottomStart,
-                ) {
-                    FilmRatingCircle(filmRating = filmRating)
-                }
+        Box {
+            FilmPrimaryInfo(
+                filmPoster = filmPoster,
+                filmTitle = filmTitle,
+                filmReleaseDate = filmReleaseDate,
+                filmRunTime = filmRunTime
+            )
+            Box(
+                modifier = Modifier
+                    .size(height = 300.dp, width = 200.dp)
+                    .alpha(0.95f)
+                    .padding(2.dp),
+                contentAlignment = Alignment.BottomStart,
+            ) {
+                FilmRatingCircle(filmRating = filmRating)
             }
-
         }
+
+
     }
 }

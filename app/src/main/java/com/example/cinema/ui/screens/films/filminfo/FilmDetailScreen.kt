@@ -1,5 +1,9 @@
 package com.example.cinema.ui.screens.films.filminfo
 
+import android.R.attr.visible
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +15,11 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -19,49 +28,49 @@ import com.example.cinema.data.remote.ApiConstants
 import com.example.cinema.ui.common.UiState
 import com.example.cinema.ui.screens.films.filminfo.components.FilmDetailButtons
 import com.example.cinema.ui.screens.films.filminfo.components.FilmPoster
+import com.example.cinema.ui.utils.UiError
+import com.example.cinema.ui.utils.UiLoading
 
 @Composable
 fun FilmDetailScreen(
     filmDetailViewModel: FilmDetailViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState
 ) {
+
     val state = filmDetailViewModel.state.collectAsStateWithLifecycle()
     Box() {
         when (val uiState = state.value) {
             is UiState.Loading ->
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) { CircularProgressIndicator() }
+                UiLoading()
 
             is UiState.Error ->
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                UiError(filmDetailViewModel)
+            
+            is UiState.Success -> {
+                var animateSuccess by remember { mutableStateOf(false) }
+                LaunchedEffect(Unit) {
+                    animateSuccess = true
+                }
+                AnimatedVisibility(
+                    visible = animateSuccess,
+                    enter = fadeIn(animationSpec = tween(durationMillis = 500))
                 ) {
-                    Text("Ошибка при загрузке")
-                    Button(onClick = { filmDetailViewModel.loadFilm() }) {
-                        Text("Повторить")
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState()),
+                    ) {
+                        FilmPoster(
+                            "${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image}",
+                            filmTitle = uiState.data.title,
+                            filmReleaseDate = uiState.data.releaseDate,
+                            filmRunTime = uiState.data.runtime,
+                            filmRating = uiState.data.rating
+                        )
+                        FilmDetailButtons(snackbarHostState = snackbarHostState)
                     }
                 }
-
-            is UiState.Success ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState()),
-                ) {
-                    FilmPoster(
-                        "${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image}                                                                   ",
-                        filmTitle = uiState.data.title,
-                        filmReleaseDate = uiState.data.releaseDate,
-                        filmRunTime = uiState.data.runtime,
-                        filmRating = uiState.data.rating
-                    )
-                    FilmDetailButtons(snackbarHostState = snackbarHostState, film = state.value)
-                }
+            }
         }
     }
 }

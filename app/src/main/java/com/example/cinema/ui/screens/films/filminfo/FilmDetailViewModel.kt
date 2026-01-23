@@ -1,10 +1,7 @@
 package com.example.cinema.ui.screens.films.filminfo
 
-import android.util.Log
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.cinema.core.ui.UiEvent
@@ -13,12 +10,10 @@ import com.example.cinema.domain.model.Film
 import com.example.cinema.domain.usecases.films.GetFilmDetailsUseCase
 import com.example.cinema.domain.usecases.films.GetFilmFlowUseCase
 import com.example.cinema.domain.usecases.films.ToggleFilmLikeUseCase
+import com.example.cinema.ui.common.BaseViewModel
 import com.example.cinema.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -35,7 +30,7 @@ class FilmDetailViewModel @Inject constructor(
     private val getFilmDetailsUseCase: GetFilmDetailsUseCase,
     private val toggleFilmLikeUseCase: ToggleFilmLikeUseCase,
     private val getFilmFlowUseCase: GetFilmFlowUseCase
-) : ViewModel() {
+) : BaseViewModel() {
     private val _snackBarEvent = MutableSharedFlow<UiEvent.ShowSnackBar>(
         replay = 0,
         extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST
@@ -58,7 +53,7 @@ class FilmDetailViewModel @Inject constructor(
 
     )
     val state: StateFlow<UiState<Film>> = _state
-    fun loadFilm() {
+    override fun load() {
         viewModelScope.launch {
             _state.update {
                 UiState.Loading
@@ -88,6 +83,6 @@ class FilmDetailViewModel @Inject constructor(
     }
 
     init {
-        loadFilm()
+        load()
     }
 }

@@ -21,6 +21,8 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.cinema.core.ui.UiEvent
 import com.example.cinema.ui.components.PagingDataVerticalGrid
+import com.example.cinema.ui.utils.UiError
+import com.example.cinema.ui.utils.UiLoading
 
 @Composable
 fun ActorListScreen(
@@ -46,40 +48,15 @@ fun ActorListScreen(
     ) {
         when (pagedActors.loadState.refresh) {
 
-            is LoadState.Loading -> {
-                if (pagedActors.itemCount == 0) {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
+            is LoadState.Loading -> if (pagedActors.itemCount == 0) {
+                    UiLoading()
                 }
-            }
 
-            is LoadState.Error -> {
-                Log.e(
-                    "PagingError",
-                    "Причина: ",
-                    (pagedActors.loadState.refresh as LoadState.Error).error
-                )
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "Проблемы с доступом. Проверьте подключение к VPN",
-                        color = MaterialTheme.colorScheme.error,
-                        textAlign = TextAlign.Center
-                    )
-                    Button(onClick = { pagedActors.retry() }) {
-                        Text("Повторить попытку")
-                    }
-                }
-            }
+
+            is LoadState.Error -> UiError(
+                actorViewModel,
+                errorText = "Проблемы с доступом. Проверьте подключение к VPN"
+            )
 
             else -> PagingDataVerticalGrid(anyPagingData = actorViewModel.popularActorsList) { actor ->
                 ActorInfo(

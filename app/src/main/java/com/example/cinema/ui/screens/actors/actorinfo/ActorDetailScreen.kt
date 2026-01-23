@@ -28,8 +28,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
+import com.example.cinema.core.ui.UiEvent
 import com.example.cinema.data.remote.ApiConstants
 import com.example.cinema.ui.common.UiState
+import com.example.cinema.ui.utils.UiError
+import com.example.cinema.ui.utils.UiLoading
 
 @Composable
 fun ActorDetailScreen(
@@ -38,24 +41,9 @@ fun ActorDetailScreen(
     val state = actorDetailViewModel.state.collectAsStateWithLifecycle()
     Box() {
         when (val uiState = state.value) {
-            is UiState.Loading ->
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) { CircularProgressIndicator() }
+            is UiState.Loading -> UiLoading()
 
-            is UiState.Error ->
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text("Ошибка при загрузке")
-                    Button(onClick = { actorDetailViewModel.loadActor() }) {
-                        Text("Повторить")
-                    }
-                }
+            is UiState.Error -> UiError(actorDetailViewModel)
 
             is UiState.Success ->
                 Box(modifier = Modifier.fillMaxSize()) {
