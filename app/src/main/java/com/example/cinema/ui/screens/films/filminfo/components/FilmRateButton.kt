@@ -1,6 +1,7 @@
 package com.example.cinema.ui.screens.films.filminfo.components
 
 import android.R.attr.contentDescription
+import android.R.attr.height
 import android.R.attr.text
 import android.util.Log.i
 import androidx.compose.foundation.Image
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material.icons.filled.Start
 import androidx.compose.material.icons.materialIcon
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,18 +28,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun FilmRateButton() {
+fun FilmRateButton(snackbarHostState: SnackbarHostState) {
     var rateDialogVisible by remember { mutableStateOf(false) }
     if (rateDialogVisible) {
-        FilmRateDialog(onDismiss = { rateDialogVisible = false })
+        FilmRateDialog(onDismiss = { rateDialogVisible = false }, snackbarHostState)
     }
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    Column(modifier = Modifier.size(width = 40.dp, height = 60.dp)) {
         Box(
             modifier = Modifier
                 .clickable(onClick = { rateDialogVisible = true }),
@@ -48,6 +48,6 @@ fun FilmRateButton() {
                 contentDescription = "", Modifier.size(40.dp)
             )
         }
-        Text(text = "Rate")
+        Text(text = "Rate", textAlign = TextAlign.Justify)
     }
 }

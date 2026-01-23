@@ -8,6 +8,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,12 +17,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.cinema.data.remote.ApiConstants
 import com.example.cinema.ui.common.UiState
+import com.example.cinema.ui.screens.films.filminfo.components.FilmDetailButtons
 import com.example.cinema.ui.screens.films.filminfo.components.FilmPoster
-import com.example.cinema.ui.screens.films.filminfo.components.FilmRateButton
 
 @Composable
 fun FilmDetailScreen(
     filmDetailViewModel: FilmDetailViewModel = hiltViewModel(),
+    snackbarHostState: SnackbarHostState
 ) {
     val state = filmDetailViewModel.state.collectAsStateWithLifecycle()
     Box() {
@@ -49,7 +51,7 @@ fun FilmDetailScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
+                        .verticalScroll(rememberScrollState()),
                 ) {
                     FilmPoster(
                         "${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image}                                                                   ",
@@ -58,9 +60,8 @@ fun FilmDetailScreen(
                         filmRunTime = uiState.data.runtime,
                         filmRating = uiState.data.rating
                     )
-                    FilmRateButton()
+                    FilmDetailButtons(snackbarHostState = snackbarHostState, film = state.value)
                 }
         }
     }
-
 }

@@ -106,6 +106,9 @@ class FilmRepositoryImpl @Inject constructor(
         filmDao.addFilm(film.toEntity())
     }
 
+    override fun getFilmFlow(id: Int): Flow<Film> {
+        return filmDao.getFilmFlow(id).map { entity -> entity.toDomainModel() }
+    }
     override fun getFavoriteFilmsFlow(): Flow<List<Film>> {
         return filmDao.getAllLikedFilmsFlow()
             .map { entities -> entities.map { entity ->

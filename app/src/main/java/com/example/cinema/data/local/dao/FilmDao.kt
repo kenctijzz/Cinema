@@ -31,6 +31,8 @@ interface FilmDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addFilm(film: FilmEntity)
 
+    @Query("SELECT * FROM films WHERE id = :id")
+    fun getFilmFlow(id: Int): Flow<FilmEntity>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(films: List<FilmEntity>)
 
