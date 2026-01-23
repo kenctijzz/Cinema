@@ -51,6 +51,7 @@ fun FilmPoster(
             ) {
                 FilmRatingCircle(filmRating = filmRating)
             }
+
         }
 
 

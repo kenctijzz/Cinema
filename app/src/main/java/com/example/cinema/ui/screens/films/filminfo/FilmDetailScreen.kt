@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -39,7 +40,8 @@ fun FilmDetailScreen(
     filmDetailViewModel: FilmDetailViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState
 ) {
-
+    val scrollState = rememberScrollState()
+    val backgroundAlpha = (1f - (scrollState.value / 1000f)).coerceIn(0f, 1f)
     val state = filmDetailViewModel.state.collectAsStateWithLifecycle()
     Box() {
         when (val uiState = state.value) {
@@ -59,11 +61,13 @@ fun FilmDetailScreen(
                     enter = fadeIn(animationSpec = tween(durationMillis = 500))
                 ) {
                     Box(modifier = Modifier.fillMaxSize()) {
-                        BackgroundPoster("${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image}")
+                        Box(modifier = Modifier.graphicsLayer { alpha = backgroundAlpha }) {
+                            BackgroundPoster("${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image}")
+                        }
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .verticalScroll(rememberScrollState()),
+                                .verticalScroll(scrollState),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             FilmPoster(
