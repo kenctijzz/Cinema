@@ -1,7 +1,7 @@
 package com.example.cinema.ui.screens.films.filminfo
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.cinema.core.ui.UiEvent
@@ -48,7 +48,8 @@ class FilmDetailViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = Film(
             0, 0, null, null, null, "",
-            adult = false, isFavorite = false, 0.0, 0.0, "", 0
+            adult = false, isFavorite = false, 0.0, 0.0, "",
+            0, video = null
         )
 
     )
@@ -65,6 +66,7 @@ class FilmDetailViewModel @Inject constructor(
                 }
             }.onFailure { error ->
                 _state.update {
+                    Log.e("ERROR OF LOADING FILM INFO","$error")
                     UiState.Error("$error")
                 }
             }

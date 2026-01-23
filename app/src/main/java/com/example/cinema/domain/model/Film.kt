@@ -1,8 +1,6 @@
 package com.example.cinema.domain.model
 
-import androidx.room.PrimaryKey
 import com.example.cinema.ui.common.VisualModels
-import com.google.gson.annotations.SerializedName
 
 data class Film(
     override val id: Int,
@@ -16,5 +14,6 @@ data class Film(
     val rating: Double,
     val popularity: Double,
     val language: String,
-    val runtime: Int
+    val runtime: Int,
+    val video: String?
 ) : VisualModels
