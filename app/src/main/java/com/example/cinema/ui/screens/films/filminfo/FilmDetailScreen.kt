@@ -57,6 +57,7 @@ fun FilmDetailScreen(
         when (val uiState = state.value) {
             is UiState.Loading ->
                 UiLoading()
+
             is UiState.Error ->
                 UiError(filmDetailViewModel)
 
@@ -79,6 +80,7 @@ fun FilmDetailScreen(
                                 .verticalScroll(scrollState),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
+                            Spacer(modifier = Modifier.height(32.dp))
                             FilmPoster(
                                 "${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image}",
                                 filmTitle = uiState.data.title,

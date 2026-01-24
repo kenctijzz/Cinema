@@ -1,17 +1,22 @@
 package com.example.cinema.ui.navigation
 
-import android.R.attr.label
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
@@ -22,9 +27,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.cinema.core.navigation.UiNavigation
 import kotlinx.coroutines.launch
 
 @Composable
@@ -73,14 +78,28 @@ fun AppNavigationDrawer(snackBarHostState: SnackbarHostState) {
             }
         }
     ) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
-        ) { innerPadding ->
+        Box(modifier = Modifier.fillMaxSize()) {
+            Scaffold(
+                modifier = Modifier
+                    .fillMaxSize(),
+                snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
+            ) { innerPadding ->
 
                 AppNavigationGraph(snackBarHostState = snackBarHostState)
-
-
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .windowInsetsTopHeight(WindowInsets.statusBars)
+                    .background(color = MaterialTheme.colorScheme.background.copy(0.3f))
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .windowInsetsBottomHeight(WindowInsets.navigationBars)
+                    .align(Alignment.BottomStart)
+                    .background(color = MaterialTheme.colorScheme.background.copy(0.3f))
+            )
         }
     }
 }
