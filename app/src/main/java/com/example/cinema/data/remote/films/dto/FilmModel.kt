@@ -26,3 +26,7 @@ data class FilmVideoModel(
     @SerializedName("type")
     val type: String?
 )
+data class FilmPhotoModel(
+    @SerializedName("file_path")
+    val photo: String?
+)

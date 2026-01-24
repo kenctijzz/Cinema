@@ -2,16 +2,19 @@ package com.example.cinema.data.local.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.cinema.data.local.dao.ActorDao
 import com.example.cinema.data.local.dao.FilmDao
 import com.example.cinema.data.local.entities.ActorEntity
 import com.example.cinema.data.local.entities.FilmEntity
+import com.example.cinema.data.remote.JsonConverters
 
 @Database(
     entities = [FilmEntity::class, ActorEntity::class],
-    version = 6,
+    version = 7,
     exportSchema = false
 )
+@TypeConverters(JsonConverters::class)
 abstract class CinemaDatabase : RoomDatabase(){
 
     abstract fun filmDao() : FilmDao

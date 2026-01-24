@@ -25,5 +25,6 @@ data class FilmEntity(
     val language: String,
     @SerializedName("runtime")
     val runtime: Int,
-    val video: String?
+    val video: String?,
+    val photos: List<String>
 )

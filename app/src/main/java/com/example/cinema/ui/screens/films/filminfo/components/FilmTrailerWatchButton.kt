@@ -1,12 +1,19 @@
 package com.example.cinema.ui.screens.films.filminfo.components
 
 import android.R.attr.text
+import android.R.attr.y
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.CornerBasedShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -17,33 +24,51 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.cinema.data.remote.ApiConstants
 import com.example.cinema.ui.screens.films.filminfo.FilmDetailViewModel
+import androidx.core.net.toUri
 
 @Composable
-fun FilmTrailerWatchButton(filmDetailViewModel: FilmDetailViewModel = hiltViewModel()) {
+fun FilmTrailerWatchButton(video: String?) {
     val context = LocalContext.current
-    val film by filmDetailViewModel.filmFlow.collectAsStateWithLifecycle()
-    val haveVideos = !film.video.isNullOrBlank()
+    val haveVideos = !video.isNullOrBlank()
     if (haveVideos) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(modifier = Modifier.alpha(0.8f),
+            Button(
+                modifier = Modifier.border(
+                    width = 2.dp,
+                    color = MaterialTheme.colorScheme.inverseSurface,
+                    RoundedCornerShape(24.dp)
+                ),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.inverseSurface
+                ),
                 onClick = {
-                val intent = Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("${ApiConstants.YOUTUBE_URL}${film.video}")
-                )
-                context.startActivity(intent)
+                    val intent = Intent(
+                        Intent.ACTION_VIEW,
+                        "${ApiConstants.YOUTUBE_URL}${video}".toUri()
+                    )
+                    context.startActivity(intent)
 
-            }) {
-                Text("Watch About Film")
+                }) {
+                Text(
+                    text = "Watch About Film",
+                    fontWeight = FontWeight.Bold,
+                )
             }
         }
     }
