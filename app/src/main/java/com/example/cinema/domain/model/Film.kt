@@ -15,5 +15,6 @@ data class Film(
     val popularity: Double,
     val language: String,
     val runtime: Int,
-    val video: String?
+    val video: String?,
+    val photos: List<String>
 ) : VisualModels

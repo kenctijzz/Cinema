@@ -13,7 +13,11 @@ class GetFilmDetailsUseCase @Inject constructor(
     suspend operator fun invoke(id: Int): Result<Film> {
         return try {
             val localFilmEntity = repository.getFilmByIdFromLocal(id)
-            if (localFilmEntity != null && localFilmEntity.runtime != 0 && localFilmEntity.video != null) {
+            if (localFilmEntity != null
+                && localFilmEntity.runtime != 0
+                && localFilmEntity.video != null
+                && localFilmEntity.photos.isNotEmpty()
+            ) {
                 Result.success(localFilmEntity)
             } else {
                 val remoteFilm = repository.getFilmByIdFromRemote(id)

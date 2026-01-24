@@ -7,7 +7,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -31,6 +33,7 @@ import com.example.cinema.ui.common.UiState
 import com.example.cinema.ui.screens.films.filminfo.components.BackgroundPoster
 import com.example.cinema.ui.screens.films.filminfo.components.FilmDetailButtons
 import com.example.cinema.ui.screens.films.filminfo.components.FilmOverview
+import com.example.cinema.ui.screens.films.filminfo.components.FilmPhotos
 import com.example.cinema.ui.screens.films.filminfo.components.FilmPoster
 import com.example.cinema.ui.screens.films.filminfo.components.FilmTrailerWatchButton
 import com.example.cinema.ui.utils.UiError
@@ -78,10 +81,11 @@ fun FilmDetailScreen(
                                 filmRunTime = uiState.data.runtime,
                                 filmRating = uiState.data.rating
                             )
-                            FilmTrailerWatchButton()
+                            FilmTrailerWatchButton(uiState.data.video)
                             FilmDetailButtons(snackbarHostState = snackbarHostState)
                             FilmOverview(uiState.data.overview ?: "Film has no overview")
-
+                            FilmPhotos(uiState.data.photos)
+                            Spacer(modifier = Modifier.height(32.dp))
                         }
                     }
                 }

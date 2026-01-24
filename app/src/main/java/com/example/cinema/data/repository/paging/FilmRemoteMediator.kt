@@ -15,7 +15,7 @@ import com.example.cinema.data.repository.paging.toEntity
 
 import kotlinx.coroutines.delay
 
-private fun FilmModel.toEntity(pageNumber: Int, videos: List<String> = emptyList()): FilmEntity {
+private fun FilmModel.toEntity(pageNumber: Int, videos: List<String> = emptyList(), photos: List<String> = emptyList()): FilmEntity {
     return FilmEntity(
         id = this.id,
         title = this.title,
@@ -29,7 +29,8 @@ private fun FilmModel.toEntity(pageNumber: Int, videos: List<String> = emptyList
         popularity = this.popularity,
         language = this.language,
         runtime = this.runtime,
-        video = null
+        video = null,
+        photos = photos
     )
 }
 

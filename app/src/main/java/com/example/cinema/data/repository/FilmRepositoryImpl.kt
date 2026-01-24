@@ -1,5 +1,6 @@
 package com.example.cinema.data.repository
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -32,11 +33,12 @@ private fun FilmEntity.toDomainModel(): Film {
         popularity = this.popularity,
         language = this.language,
         runtime = this.runtime,
-        video = this.video
+        video = this.video,
+        photos = this.photos
     )
 }
 
-private fun FilmModel.toDomainModel(pageNumber: Int, video: String?): Film {
+private fun FilmModel.toDomainModel(pageNumber: Int, video: String?, photos: List<String>): Film {
     return Film(
         id = this.id,
         title = this.title,
@@ -50,7 +52,8 @@ private fun FilmModel.toDomainModel(pageNumber: Int, video: String?): Film {
         popularity = this.popularity,
         language = this.language,
         runtime = this.runtime,
-        video = video
+        video = video,
+        photos = photos
     )
 }
 
@@ -68,7 +71,8 @@ fun Film.toEntity(): FilmEntity {
         popularity = this.popularity,
         language = this.language,
         runtime = this.runtime,
-        video = this.video
+        video = this.video,
+        photos = this.photos
     )
 }
 
@@ -103,13 +107,17 @@ class FilmRepositoryImpl @Inject constructor(
     override suspend fun getFilmByIdFromRemote(id: Int): Film {
         val film = filmApi.getFilm(id, apiKey)
         val video = filmApi.getFilmVideos(id, apiKey)
+        val photosResponse = filmApi.getFilmImages(id, apiKey)
+        Log.e("Film Photos Response Result", "${photosResponse.backdrops}")
+        val photos: List<String> =
+            filmApi.getFilmImages(id, apiKey).backdrops?.mapNotNull { it -> it.photo }
+                ?: emptyList()
         val gettedFilm = film.toDomainModel(
             pageNumber = 0, video = video.results?.firstOrNull { it.type == "Trailer" }?.videoKey
-            ?: video.results?.firstOrNull()?.videoKey
+                ?: video.results?.firstOrNull()?.videoKey, photos = photos
         )
         println(video.results?.first()?.videoKey)
-        println(video.results?.first()?.videoKey)
-        println(video.results?.first()?.videoKey)
+        println(photos)
 
 
         filmDao.addFilm(gettedFilm.toEntity())

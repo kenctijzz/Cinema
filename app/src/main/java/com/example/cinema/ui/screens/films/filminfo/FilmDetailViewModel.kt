@@ -49,7 +49,7 @@ class FilmDetailViewModel @Inject constructor(
         initialValue = Film(
             0, 0, null, null, null, "",
             adult = false, isFavorite = false, 0.0, 0.0, "",
-            0, video = null
+            0, video = null, photos = emptyList()
         )
 
     )

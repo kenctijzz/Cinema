@@ -7,3 +7,7 @@ data class FilmResponse(
 data class FilmVideosResponse(
     val results: List<FilmVideoModel>?
 )
+
+data class FilmPhotosResponse(
+    val backdrops: List<FilmPhotoModel>?
+)

@@ -1,6 +1,7 @@
 package com.example.cinema.data.remote.films
 
 import com.example.cinema.data.remote.films.dto.FilmModel
+import com.example.cinema.data.remote.films.dto.FilmPhotosResponse
 import com.example.cinema.data.remote.films.dto.FilmResponse
 import com.example.cinema.data.remote.films.dto.FilmVideoModel
 import com.example.cinema.data.remote.films.dto.FilmVideosResponse
@@ -27,4 +28,10 @@ interface FilmApi {
         @Path("id") id: Int,
         @Query("api_key") apikey: String
     ): FilmVideosResponse
+
+    @GET("movie/{id}/images")
+    suspend fun getFilmImages(
+        @Path("id") id: Int,
+        @Query("api_key") apiKey: String
+    ): FilmPhotosResponse
 }
