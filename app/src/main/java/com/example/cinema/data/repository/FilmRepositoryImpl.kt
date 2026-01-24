@@ -107,7 +107,6 @@ class FilmRepositoryImpl @Inject constructor(
         val film = filmApi.getFilm(id, apiKey)
         val video = filmApi.getFilmVideos(id, apiKey)
         val photosResponse = filmApi.getFilmImages(id, apiKey)
-        Log.e("Film Photos Response Result", "${photosResponse.backdrops}")
         val photos: List<String> =
             filmApi.getFilmImages(id, apiKey).backdrops?.mapNotNull { it -> it.photo }
                 ?: emptyList()
