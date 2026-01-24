@@ -41,13 +41,7 @@ fun FilmLikeButton(
     snackbarHostState: SnackbarHostState,
 ) {
     val film by filmDetailViewModel.filmFlow.collectAsStateWithLifecycle()
-    LaunchedEffect(Unit) {
-        filmDetailViewModel.snackBarEvent.collect { event ->
-            if (event is UiEvent.ShowSnackBar) {
-                snackbarHostState.showSnackbar(message = event.message)
-            }
-        }
-    }
+    
     Column(modifier = Modifier.size(width = 40.dp, height = 60.dp)) {
         Box(modifier = Modifier.clickable(onClick = { filmDetailViewModel.toggleFilmLike(film) })) {
             Icon(

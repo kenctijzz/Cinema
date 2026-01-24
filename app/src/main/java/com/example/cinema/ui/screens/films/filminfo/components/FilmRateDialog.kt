@@ -36,13 +36,7 @@ fun FilmRateDialog(
     snackbarHostState: SnackbarHostState,
     filmDetailViewModel: FilmDetailViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(Unit) {
-        filmDetailViewModel.snackBarEvent.collect { event ->
-            if (event is UiEvent.ShowSnackBar) {
-                snackbarHostState.showSnackbar(message = event.message)
-            }
-        }
-    }
+
     val rateNumbers = remember {
         listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
     }

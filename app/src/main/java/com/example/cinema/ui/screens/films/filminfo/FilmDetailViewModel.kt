@@ -83,7 +83,11 @@ class FilmDetailViewModel @Inject constructor(
             }
         }
     }
-
+    fun successImageSave() {
+        viewModelScope.launch {
+            showSnackBar("Saved in gallery")
+        }
+    }
     init {
         load()
     }
