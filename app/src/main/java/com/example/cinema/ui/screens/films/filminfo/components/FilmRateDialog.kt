@@ -34,7 +34,7 @@ import com.example.cinema.ui.theme.toRatingColor
 fun FilmRateDialog(
     onDismiss: () -> Unit,
     snackbarHostState: SnackbarHostState,
-    filmDetailViewModel: FilmDetailViewModel = hiltViewModel()
+    filmId: Int
 ) {
 
     val rateNumbers = remember {
@@ -80,6 +80,8 @@ fun FilmRateDialog(
                     Text("Choose rate", color = MaterialTheme.colorScheme.error)
                 }
                 FilmRateButton(
+                    onDismiss = onDismiss,
+                    filmId = filmId,
                     selectedRate = selectedRate,
                     showValidText = { newValue -> showValidText = newValue },
                     isSelectRate = isSelectRate

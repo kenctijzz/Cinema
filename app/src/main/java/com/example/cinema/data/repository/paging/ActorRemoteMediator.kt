@@ -17,7 +17,7 @@ import com.example.cinema.data.remote.actors.dto.ActorModel
 import com.example.cinema.data.remote.films.FilmApi
 import kotlinx.coroutines.delay
 
-private fun ActorModel.toEntity(pageNumber: Int): ActorEntity {
+private fun ActorModel.toActorEntity(pageNumber: Int): ActorEntity {
     return ActorEntity(
         id = this.id,
         gender = this.gender,
@@ -63,7 +63,7 @@ class ActorRemoteMediator(
             val response = api.getPopularActors(page = page, apikey = apiKey)
             val localFavorites = db.actorDao().getAllLikedActors()
             val actors = response.results.map { actorModel ->
-                actorModel.toEntity(pageNumber = page)
+                actorModel.toActorEntity(pageNumber = page)
                     .copy(isFavorite = localFavorites.contains(actorModel.id))
             }
 

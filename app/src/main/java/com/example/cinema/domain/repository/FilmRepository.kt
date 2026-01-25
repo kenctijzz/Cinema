@@ -12,5 +12,7 @@ interface FilmRepository {
     suspend fun getFilmByIdFromLocal(id: Int): Film?
     suspend fun getFilmByIdFromRemote(id: Int): Film
     suspend fun updateFilm(film: Film)
+    suspend fun toggleFilmLike(likeStatus: Boolean, id: Int)
 /*    suspend fun getFilmVideos(id: Int): List<FilmVideo>*/
+    suspend fun updateFilmRating(id: Int, newRating: Int)
 }

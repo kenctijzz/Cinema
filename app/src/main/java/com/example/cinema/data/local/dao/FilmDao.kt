@@ -5,7 +5,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.example.cinema.data.local.entities.FilmEntity
+import com.example.cinema.data.local.entities.IdRatingPair
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -30,7 +32,15 @@ interface FilmDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addFilm(film: FilmEntity)
-
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertInitialFilm(film: FilmEntity): Long
+    @Query("UPDATE films SET runtime = :runtime, video = :video, photos = :photos WHERE id = :id")
+    suspend fun updateFilmDetails(
+        runtime: Int,
+        id: Int,
+        video: String?,
+        photos: List<String>,
+    )
     @Query("SELECT * FROM films WHERE id = :id")
     fun getFilmFlow(id: Int): Flow<FilmEntity>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -38,4 +48,13 @@ interface FilmDao {
 
     @Query("SELECT * FROM films WHERE id = :id")
     suspend fun getFilmById(id: Int): FilmEntity?
+
+    @Query("UPDATE films SET userRating = :newRating WHERE id = :id")
+    suspend fun updateFilmRating(
+        newRating: Int,
+        id: Int
+    )
+
+    @Query("SELECT id, userRating FROM films WHERE userRating IS NOT NULL")
+    suspend fun getAllRatedFilmsId(): List<IdRatingPair>
 }

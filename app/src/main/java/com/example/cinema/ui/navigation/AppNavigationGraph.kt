@@ -7,6 +7,8 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -18,8 +20,8 @@ import com.example.cinema.ui.screens.films.filminfo.FilmDetailScreen
 import com.example.cinema.ui.screens.films.filmlist.FilmListScreen
 
 @Composable
-fun AppNavigationGraph(snackBarHostState: SnackbarHostState) {
-    val navController = rememberNavController()
+fun AppNavigationGraph(snackBarHostState: SnackbarHostState, navController: NavHostController) {
+   // val navController = rememberNavController()
 
     LaunchedEffect(Unit) {
         NavigationManager.events.collect { event ->

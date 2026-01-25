@@ -9,8 +9,7 @@ class ToggleFilmLikeUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(film: Film): Boolean {
         val newFavoriteStatus = !film.isFavorite
-        val updatedFilm = film.copy(isFavorite = newFavoriteStatus)
-        repository.updateFilm(updatedFilm)
+        repository.toggleFilmLike(newFavoriteStatus, film.id)
         return newFavoriteStatus
     }
 }

@@ -1,5 +1,6 @@
 package com.example.cinema.ui.screens.films.filminfo
 
+import android.R
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -10,9 +11,11 @@ import com.example.cinema.domain.model.Film
 import com.example.cinema.domain.usecases.films.GetFilmDetailsUseCase
 import com.example.cinema.domain.usecases.films.GetFilmFlowUseCase
 import com.example.cinema.domain.usecases.films.ToggleFilmLikeUseCase
+import com.example.cinema.domain.usecases.films.UpdateFilmRatingUseCase
 import com.example.cinema.ui.common.BaseViewModel
 import com.example.cinema.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +24,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -29,7 +33,8 @@ class FilmDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getFilmDetailsUseCase: GetFilmDetailsUseCase,
     private val toggleFilmLikeUseCase: ToggleFilmLikeUseCase,
-    private val getFilmFlowUseCase: GetFilmFlowUseCase
+    private val getFilmFlowUseCase: GetFilmFlowUseCase,
+    private val updateFilmRatingUseCase: UpdateFilmRatingUseCase
 ) : BaseViewModel() {
     private val _snackBarEvent = MutableSharedFlow<UiEvent.ShowSnackBar>(
         replay = 0,
@@ -43,13 +48,14 @@ class FilmDetailViewModel @Inject constructor(
 
     private val filmId: Int = savedStateHandle.toRoute<Screen.FilmDetail>().id
     private val _state = MutableStateFlow<UiState<Film>>(UiState.Loading)
+
     val filmFlow: StateFlow<Film> = getFilmFlowUseCase(filmId).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = Film(
             0, 0, null, null, null, "",
             adult = false, isFavorite = false, 0.0, 0.0, "",
-            0, video = null, photos = emptyList()
+            0, video = null, photos = emptyList(), userRating = 0
         )
 
     )
@@ -66,9 +72,17 @@ class FilmDetailViewModel @Inject constructor(
                 }
             }.onFailure { error ->
                 _state.update {
-                    Log.e("ERROR OF LOADING FILM INFO","$error")
+                    Log.e("ERROR OF LOADING FILM INFO", "$error")
                     UiState.Error("$error")
                 }
+            }
+        }
+    }
+
+    fun updateFilmRating(newRating: Int, id: Int) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                updateFilmRatingUseCase(newRating, id)
             }
         }
     }
@@ -83,11 +97,13 @@ class FilmDetailViewModel @Inject constructor(
             }
         }
     }
+
     fun successImageSave() {
         viewModelScope.launch {
             showSnackBar("Saved in gallery")
         }
     }
+
     init {
         load()
     }
