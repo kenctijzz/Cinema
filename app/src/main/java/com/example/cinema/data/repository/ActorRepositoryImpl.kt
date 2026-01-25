@@ -82,7 +82,7 @@ class ActorRepositoryImpl @Inject constructor(
     override fun getPopularActors(): Flow<PagingData<Actor>> {
         return Pager(
             config = PagingConfig(
-                pageSize = 20, enablePlaceholders = false, initialLoadSize = 20,
+                pageSize = 20, enablePlaceholders = true, initialLoadSize = 20,
             ),
             remoteMediator = ActorRemoteMediator(actorApi, db, apiKey),
             pagingSourceFactory = { db.actorDao().getPagingSource() }

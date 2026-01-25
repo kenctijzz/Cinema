@@ -42,21 +42,23 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.cinema.ui.common.MainScaffold
 import kotlinx.coroutines.launch
 
 @Composable
 fun AppNavigationDrawer(snackBarHostState: SnackbarHostState) {
-    val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
-    val isDetailScreen = currentDestination?.hasRoute<Screen.FilmDetail>() == true
+
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     ModalNavigationDrawer(
         modifier = Modifier,
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet(modifier = Modifier.width(300.dp)) {
+            ModalDrawerSheet(
+                modifier = Modifier.width(300.dp),
+                windowInsets = WindowInsets.statusBars,
+                drawerContainerColor = MaterialTheme.colorScheme.background.copy(0.98f)
+            ) {
                 NavigationDrawerItem(
                     label = { Text(text = "Лучшие Фильмы") },
                     selected = false,
@@ -94,42 +96,9 @@ fun AppNavigationDrawer(snackBarHostState: SnackbarHostState) {
         }
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            Scaffold(
-                topBar = {
-                    AnimatedVisibility(
-                        visible = !isDetailScreen,
-                        enter = fadeIn() + slideInVertically(),
-                        exit = fadeOut() + slideOutVertically()
-                    ) {
-                        TopAppBarNav()
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxSize(),
-                snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
-            ) { innerPadding ->
-                Box(modifier = Modifier.fillMaxSize()) {
-                    AppNavigationGraph(
-                        snackBarHostState = snackBarHostState,
-                        navController = navController
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .windowInsetsTopHeight(WindowInsets.statusBars)
-                            .background(color = MaterialTheme.colorScheme.background.copy(0.3f))
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .windowInsetsBottomHeight(WindowInsets.navigationBars)
-                            .align(Alignment.BottomStart)
-                            .background(color = MaterialTheme.colorScheme.background.copy(0.3f))
-                    )
-                }
-
-            }
-
+            MainScaffold(
+                snackBarHostState = snackBarHostState,
+                openMenuClick = { scope.launch { drawerState.open() } })
         }
     }
 }
