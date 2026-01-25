@@ -20,8 +20,7 @@ class GetFilmDetailsUseCase @Inject constructor(
             ) {
                 Result.success(localFilmEntity)
             } else {
-                val remoteFilm = repository.getFilmByIdFromRemote(id)
-                repository.updateFilm(remoteFilm)
+                val remoteFilm = repository.getFilmByIdFromRemote(id).copy()
                 Result.success(remoteFilm)
             }
         } catch (e: Exception) {

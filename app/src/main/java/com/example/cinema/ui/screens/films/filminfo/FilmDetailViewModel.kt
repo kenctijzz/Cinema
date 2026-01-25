@@ -43,6 +43,7 @@ class FilmDetailViewModel @Inject constructor(
 
     private val filmId: Int = savedStateHandle.toRoute<Screen.FilmDetail>().id
     private val _state = MutableStateFlow<UiState<Film>>(UiState.Loading)
+
     val filmFlow: StateFlow<Film> = getFilmFlowUseCase(filmId).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
