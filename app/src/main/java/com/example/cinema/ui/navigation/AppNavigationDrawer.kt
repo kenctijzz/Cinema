@@ -1,11 +1,19 @@
 package com.example.cinema.ui.navigation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
@@ -26,17 +34,24 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 
 @Composable
 fun AppNavigationDrawer(snackBarHostState: SnackbarHostState) {
+    val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val isDetailScreen = currentDestination?.hasRoute<Screen.FilmDetail>() == true
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-
     ModalNavigationDrawer(
         modifier = Modifier,
         drawerState = drawerState,
@@ -80,26 +95,41 @@ fun AppNavigationDrawer(snackBarHostState: SnackbarHostState) {
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Scaffold(
+                topBar = {
+                    AnimatedVisibility(
+                        visible = !isDetailScreen,
+                        enter = fadeIn() + slideInVertically(),
+                        exit = fadeOut() + slideOutVertically()
+                    ) {
+                        TopAppBarNav()
+                    }
+                },
                 modifier = Modifier
                     .fillMaxSize(),
                 snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
             ) { innerPadding ->
+                Box(modifier = Modifier.fillMaxSize()) {
+                    AppNavigationGraph(
+                        snackBarHostState = snackBarHostState,
+                        navController = navController
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .windowInsetsTopHeight(WindowInsets.statusBars)
+                            .background(color = MaterialTheme.colorScheme.background.copy(0.3f))
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .windowInsetsBottomHeight(WindowInsets.navigationBars)
+                            .align(Alignment.BottomStart)
+                            .background(color = MaterialTheme.colorScheme.background.copy(0.3f))
+                    )
+                }
 
-                AppNavigationGraph(snackBarHostState = snackBarHostState)
             }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .windowInsetsTopHeight(WindowInsets.statusBars)
-                    .background(color = MaterialTheme.colorScheme.background.copy(0.3f))
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .windowInsetsBottomHeight(WindowInsets.navigationBars)
-                    .align(Alignment.BottomStart)
-                    .background(color = MaterialTheme.colorScheme.background.copy(0.3f))
-            )
+
         }
     }
 }
