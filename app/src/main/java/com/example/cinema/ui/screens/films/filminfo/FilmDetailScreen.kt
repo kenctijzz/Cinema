@@ -89,7 +89,10 @@ fun FilmDetailScreen(
                                 filmRating = uiState.data.rating
                             )
                             FilmTrailerWatchButton(uiState.data.video)
-                            FilmDetailButtons(snackbarHostState = snackbarHostState)
+                            FilmDetailButtons(
+                                film = uiState.data,
+                                snackbarHostState = snackbarHostState,
+                                filmId = uiState.data.id)
                             FilmOverview(uiState.data.overview ?: "Film has no overview")
                             FilmPhotos(
                                 uiState.data.photos,

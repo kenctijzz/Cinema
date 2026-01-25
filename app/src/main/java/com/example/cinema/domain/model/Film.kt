@@ -16,5 +16,6 @@ data class Film(
     val language: String,
     val runtime: Int,
     val video: String?,
-    val photos: List<String>
+    val photos: List<String>,
+    val userRating: Int?
 ) : VisualModels

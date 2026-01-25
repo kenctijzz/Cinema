@@ -61,8 +61,10 @@ fun TopAppBarNav(openMenuClick: () -> Unit) {
             if (isTextField) {
                 Row() {
                     IconButton(
-                        onClick = { focusManager.clearFocus()
-                            isTextField = !isTextField},
+                        onClick = {
+                            focusManager.clearFocus()
+                            isTextField = !isTextField
+                        },
                         content = {
                             Icon(
                                 Icons.Default.ArrowBack, contentDescription = "Back",
@@ -71,7 +73,8 @@ fun TopAppBarNav(openMenuClick: () -> Unit) {
                         })
                     OutlinedTextField(
                         modifier = Modifier
-                            .fillMaxWidth().padding(horizontal = 8.dp)
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp)
                             .focusRequester(focusRequester)
                             .background(color = Color.Transparent.copy(0.65f)),
                         lineLimits = TextFieldLineLimits.SingleLine,

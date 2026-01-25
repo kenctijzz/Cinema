@@ -33,7 +33,8 @@ private fun FilmEntity.toDomainModel(): Film {
         language = this.language,
         runtime = this.runtime,
         video = this.video,
-        photos = this.photos
+        photos = this.photos,
+        userRating = this.userRating
     )
 }
 
@@ -57,7 +58,8 @@ private fun FilmModel.toDomainModel(
         language = this.language,
         runtime = this.runtime,
         video = video,
-        photos = photos
+        photos = photos,
+        userRating = 0
     )
 }
 
@@ -76,7 +78,8 @@ fun Film.toEntity(): FilmEntity {
         language = this.language,
         runtime = this.runtime,
         video = this.video,
-        photos = this.photos
+        photos = this.photos,
+        userRating = this.userRating
     )
 }
 
@@ -141,8 +144,9 @@ class FilmRepositoryImpl @Inject constructor(
     }
 
     override suspend fun toggleFilmLike(likeStatus: Boolean, id: Int) {
-        filmDao.toggleFilmLike(likeStatus,id)
+        filmDao.toggleFilmLike(likeStatus, id)
     }
+
     override fun getFilmFlow(id: Int): Flow<Film> {
         return filmDao.getFilmFlow(id).map { entity -> entity.toDomainModel() }
     }
@@ -154,5 +158,10 @@ class FilmRepositoryImpl @Inject constructor(
                     entity.toDomainModel()
                 }
             }
+    }
+
+    override suspend fun updateFilmRating(id: Int, newRating: Int) {
+        filmDao.updateFilmRating(newRating, id)
+        println(filmDao.getFilmById(id)?.userRating)
     }
 }

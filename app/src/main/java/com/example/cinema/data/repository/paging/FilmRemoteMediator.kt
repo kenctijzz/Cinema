@@ -2,7 +2,10 @@ package com.example.cinema.data.repository.paging
 
 import android.R
 import android.R.attr.apiKey
+import android.util.Log
+import android.util.Log.e
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState.Loading.endOfPaginationReached
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
@@ -15,7 +18,12 @@ import com.example.cinema.data.repository.paging.toEntity
 
 import kotlinx.coroutines.delay
 
-private fun FilmModel.toEntity(pageNumber: Int, videos: List<String> = emptyList(), photos: List<String> = emptyList()): FilmEntity {
+private fun FilmModel.toEntity(
+    pageNumber: Int,
+    videos: List<String> = emptyList(),
+    photos: List<String> = emptyList(),
+    userRating: Int?
+): FilmEntity {
     return FilmEntity(
         id = this.id,
         title = this.title,
@@ -30,7 +38,8 @@ private fun FilmModel.toEntity(pageNumber: Int, videos: List<String> = emptyList
         language = this.language,
         runtime = this.runtime,
         video = null,
-        photos = photos
+        photos = photos,
+        userRating = userRating
     )
 }
 
@@ -62,9 +71,12 @@ class FilmRemoteMediator(
 
             val response = api.getPopularMovies(page = page, apikey = apiKey)
             val localFavorites = db.filmDao().getAllLikedFilms()
+            val localRated = db.filmDao().getAllRatedFilmsId().associate { it.id to it.userRating }
             val films = response.results.map { filmModel ->
-                filmModel.toEntity(pageNumber = page)
-                    .copy(isFavorite = localFavorites.contains(filmModel.id))
+                filmModel.toEntity(pageNumber = page, userRating = localRated[filmModel.id])
+                    .copy(
+                        isFavorite = localFavorites.contains(filmModel.id)
+                    )
             }
 
             db.withTransaction {

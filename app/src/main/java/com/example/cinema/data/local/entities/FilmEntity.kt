@@ -1,6 +1,7 @@
 package com.example.cinema.data.local.entities
 
 import android.util.Log.v
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
@@ -26,5 +27,11 @@ data class FilmEntity(
     @SerializedName("runtime")
     val runtime: Int,
     val video: String?,
-    val photos: List<String>
+    val photos: List<String>,
+    val userRating: Int?
 )
+data class FilmRating(
+    @ColumnInfo(name = "id") val id: Int,
+    @ColumnInfo(name = "userRating") val userRating: Int
+)
+data class IdRatingPair(val id: Int, val userRating: Int?)
