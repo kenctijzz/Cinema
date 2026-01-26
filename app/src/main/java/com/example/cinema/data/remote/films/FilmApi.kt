@@ -14,19 +14,23 @@ interface FilmApi {
     @GET("movie/popular")
     suspend fun getPopularMovies(
         @Query("api_key") apikey: String,
-        @Query("page") page: Int
+        @Query("page") page: Int,
+        @Query("language") lang: String = "ru-RU",
+        @Query("include_image_language") imageLang: String = "ru,en,null"
     ): FilmResponse
 
     @GET("movie/{id}")
     suspend fun getFilm(
         @Path("id") id: Int,
-        @Query("api_key") apikey: String
+        @Query("api_key") apikey: String,
+        @Query("language") lang: String = "ru-RU"
     ): FilmModel
 
     @GET("movie/{id}/videos")
     suspend fun getFilmVideos(
         @Path("id") id: Int,
-        @Query("api_key") apikey: String
+        @Query("api_key") apikey: String,
+        @Query("language") lang: String = "ru-RU"
     ): FilmVideosResponse
 
     @GET("movie/{id}/images")

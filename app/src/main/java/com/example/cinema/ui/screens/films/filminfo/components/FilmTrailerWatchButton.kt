@@ -66,7 +66,7 @@ fun FilmTrailerWatchButton(video: String?) {
 
                 }) {
                 Text(
-                    text = "Watch About Film",
+                    text = "Смотреть о фильме",
                     fontWeight = FontWeight.Bold,
                 )
             }

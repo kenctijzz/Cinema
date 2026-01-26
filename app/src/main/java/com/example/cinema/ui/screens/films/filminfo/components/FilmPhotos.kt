@@ -59,7 +59,7 @@ fun FilmPhotos(photos: List<String>, showSnackBar: () -> Unit) {
             .padding(horizontal = 8.dp)
     ) {
 
-        Text(text = "Photos and posters", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+        Text(text = "Кадры и постеры", fontSize = 16.sp, fontWeight = FontWeight.Bold)
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)

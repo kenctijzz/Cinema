@@ -74,7 +74,7 @@ fun FilmRateDialog(
                     )
                 }
                 if (showValidText) {
-                    Text("Choose rate", color = MaterialTheme.colorScheme.error)
+                    Text("Выберите оценку", color = MaterialTheme.colorScheme.error)
                 }
                 FilmRateButton(
                     onDismiss = onDismiss,

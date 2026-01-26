@@ -64,7 +64,7 @@ fun FilmOverview(overview: String) {
                 },
             text = overview,
             textAlign = TextAlign.Start,
-            maxLines = if (onFullOverview) 100 else 4,
+            maxLines = if (onFullOverview) 100 else 3,
             overflow = TextOverflow.Clip,
             onTextLayout = { result ->
                 if (!onFullOverview) {
@@ -77,7 +77,7 @@ fun FilmOverview(overview: String) {
                 modifier = Modifier
                     .padding(vertical = 2.dp)
                     .clickable(onClick = { onFullOverview = !onFullOverview }),
-                text = if (onFullOverview) "Hide full overview" else "Read full overview",
+                text = if (onFullOverview) "Свернуть" else "Развернуть описание",
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFFF36621)
             )
