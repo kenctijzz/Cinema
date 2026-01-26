@@ -1,5 +1,7 @@
 package com.example.cinema.ui.screens.films.filminfo.components.detailbuttons
 
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -29,7 +31,7 @@ fun FilmRateButton(
             }
             onDismiss()
         },
-        modifier = Modifier.width(100.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = if (!isSelectRate) {
                 Color.Gray
@@ -39,6 +41,6 @@ fun FilmRateButton(
             contentColor = Color.White
         )
     ) {
-        Text("Rate")
+        Text("Оценить")
     }
 }

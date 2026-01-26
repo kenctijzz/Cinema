@@ -100,7 +100,7 @@ class FilmDetailViewModel @Inject constructor(
 
     fun successImageSave() {
         viewModelScope.launch {
-            showSnackBar("Saved in gallery")
+            showSnackBar("Сохранено в галерею")
         }
     }
 

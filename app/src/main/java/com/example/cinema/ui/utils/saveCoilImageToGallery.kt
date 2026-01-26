@@ -37,7 +37,7 @@ suspend fun saveCoilImageToGallery(context: Context, url: String, showShackBar: 
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
                         context,
-                        "Error: ${throwable?.message ?: "Unknown error"}",
+                        "Ошибка: ${throwable?.message ?: "Неизвестная ошибка"}",
                         Toast.LENGTH_LONG
                     ).show()
                 }

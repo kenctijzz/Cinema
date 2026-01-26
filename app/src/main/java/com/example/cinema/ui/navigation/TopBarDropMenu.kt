@@ -45,7 +45,7 @@ fun TopBarDropMenu(
             )
             {
                 DropdownMenuItem(
-                    text = { Text("Sort by popularity") },
+                    text = { Text("По популярности") },
                     onClick = {
                         sortByPopularityClick()
                         filmViewModel.searchTextChange("")
@@ -53,7 +53,7 @@ fun TopBarDropMenu(
                     })
 
                 DropdownMenuItem(
-                    text = { Text("Sort by my rating") },
+                    text = { Text("По моим оценкам") },
                     onClick = {
                         sortByUserRatingClick()
                         filmViewModel.searchTextChange("")
