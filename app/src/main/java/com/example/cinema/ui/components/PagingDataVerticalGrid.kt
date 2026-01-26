@@ -26,6 +26,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.example.cinema.data.repository.SortType
 import com.example.cinema.ui.common.VisualModels
 import kotlinx.coroutines.flow.Flow
 
@@ -35,30 +36,37 @@ private fun Any.toFilm() {
 
 
 @Composable
-fun <T : VisualModels> PagingDataVerticalGrid
-            (anyPagingData: LazyPagingItems<T>,
-             state: LazyGridState,
-            content: @Composable (T) -> Unit
+fun <T : VisualModels> PagingDataVerticalGrid(
+    anyPagingData: LazyPagingItems<T>,
+    state: LazyGridState,
+    sortType: SortType,
+    searchText: String,
+    content: @Composable (T) -> Unit
 
-){
+) {
 
 
-    LazyVerticalGrid(state = state, modifier = Modifier.fillMaxSize(), columns = GridCells.Fixed(2)) {
+    LazyVerticalGrid(
+        state = state,
+        modifier = Modifier.fillMaxSize(),
+        columns = GridCells.Fixed(2)
+    ) {
 
 
-            items(
-                count = anyPagingData.itemCount,
-                key = anyPagingData.itemKey { it.id })
-            { index ->
+        items(
+            count = anyPagingData.itemCount,
+            key = anyPagingData.itemKey { it.id })
+        { index ->
 
-                val item = anyPagingData[index]
+            val item = anyPagingData[index]
 
-                item?.let {
-                    content(item)
-                }
+            item?.let {
+                content(item)
             }
-            when (anyPagingData.loadState.append) {
-                is LoadState.Loading -> {
+        }
+        when (anyPagingData.loadState.append) {
+            is LoadState.Loading -> {
+                if ((sortType == SortType.POPULARITY && anyPagingData.itemCount > 20)) {
                     item(span = { GridItemSpan(2) }) {
                         Column(
                             modifier = Modifier.fillMaxWidth(),
@@ -69,25 +77,26 @@ fun <T : VisualModels> PagingDataVerticalGrid
                         }
                     }
                 }
-
-                is LoadState.Error -> {
-                    item(span = { GridItemSpan(2) }) {
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text("Ошибка загрузки", color = MaterialTheme.colorScheme.error)
-                            Button(onClick = { anyPagingData.retry() }) {
-                                Text("Повторить")
-                            }
-                        }
-
-                    }
-                }
-
-                else -> {}
             }
-        }
 
+            is LoadState.Error -> {
+                item(span = { GridItemSpan(2) }) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text("Ошибка загрузки", color = MaterialTheme.colorScheme.error)
+                        Button(onClick = { anyPagingData.retry() }) {
+                            Text("Повторить")
+                        }
+                    }
+
+                }
+            }
+
+            else -> {}
+        }
     }
+
+}

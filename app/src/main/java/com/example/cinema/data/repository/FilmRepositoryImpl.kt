@@ -1,5 +1,6 @@
 package com.example.cinema.data.repository
 
+import android.R.attr.apiKey
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -83,9 +84,11 @@ fun Film.toEntity(): FilmEntity {
         userRating = this.userRating
     )
 }
+
 enum class SortType {
     POPULARITY, USER_RATE
 }
+
 class FilmRepositoryImpl @Inject constructor(
     private val filmApi: FilmApi,
     private val filmDao: FilmDao,
@@ -94,31 +97,19 @@ class FilmRepositoryImpl @Inject constructor(
 ) :
     FilmRepository {
     @OptIn(ExperimentalPagingApi::class)
-    override fun getFilms(sortType: SortType): Flow<PagingData<Film>> {
+    override fun getFilms(sortType: SortType, search: String): Flow<PagingData<Film>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 20, enablePlaceholders = true, initialLoadSize = 20,
             ),
             remoteMediator = FilmRemoteMediator(filmApi, db, apiKey),
-            pagingSourceFactory = {
-                when(sortType){
-                SortType.POPULARITY -> db.filmDao().getPagingSource()
-                SortType.USER_RATE -> db.filmDao().sortPagingByUserRating()}}
-        ).flow.map { pagingData ->
-            pagingData.map { entity ->
-                entity.toDomainModel()
-            }
-        }
-    }
-
-    @OptIn(ExperimentalPagingApi::class)
-    override fun getUserRateSortFilms(): Flow<PagingData<Film>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 20, enablePlaceholders = true, initialLoadSize = 20,
-            ),
-            remoteMediator = FilmRemoteMediator(filmApi, db, apiKey),
-            pagingSourceFactory = { db.filmDao().sortPagingByUserRating() }
+            pagingSourceFactory =
+                {
+                    when (sortType) {
+                        SortType.POPULARITY -> db.filmDao().getPagingSource(search)
+                        SortType.USER_RATE -> db.filmDao().sortPagingByUserRating(search)
+                    }
+                }
         ).flow.map { pagingData ->
             pagingData.map { entity ->
                 entity.toDomainModel()
@@ -184,4 +175,5 @@ class FilmRepositoryImpl @Inject constructor(
         filmDao.updateFilmRating(newRating, id)
         println(filmDao.getFilmById(id)?.userRating)
     }
+
 }

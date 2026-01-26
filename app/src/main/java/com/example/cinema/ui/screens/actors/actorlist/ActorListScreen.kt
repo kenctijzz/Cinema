@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.cinema.core.ui.UiEvent
+import com.example.cinema.data.repository.SortType
 import com.example.cinema.ui.components.PagingDataVerticalGrid
 import com.example.cinema.ui.utils.UiError
 import com.example.cinema.ui.utils.UiLoading
@@ -62,7 +63,8 @@ fun ActorListScreen(
                 errorText = "Проблемы с доступом. Проверьте подключение к VPN"
             )
 
-            else -> PagingDataVerticalGrid(anyPagingData = pagedActors, state = gridState) { actor ->
+            else -> PagingDataVerticalGrid(anyPagingData = pagedActors, state = gridState,
+                sortType = SortType.POPULARITY, searchText = "") { actor ->
                 ActorInfo(
                     actor = actor,
                     onLikeClick = { actorViewModel.toggleActorLike(actor) }

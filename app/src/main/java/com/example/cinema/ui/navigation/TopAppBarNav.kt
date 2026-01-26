@@ -1,6 +1,7 @@
 package com.example.cinema.ui.navigation
 
 import android.R.attr.enabled
+import android.R.attr.text
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
@@ -39,24 +40,33 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.cinema.ui.screens.films.filmlist.FilmViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBarNav(
     openMenuClick: () -> Unit, sortByPopularityClick: () -> Unit,
-    sortByUserRatingClick: () -> Unit
+    sortByUserRatingClick: () -> Unit,
+    filmViewModel: FilmViewModel
 ) {
-    val state = remember { TextFieldState("") }
+    val state = filmViewModel.searchText.collectAsStateWithLifecycle()
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     var isTextField by remember { mutableStateOf(false) }
     var sortDropDown by remember { mutableStateOf(false) }
     if (sortDropDown) {
-        Box(modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp), contentAlignment = Alignment.TopEnd) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
+            contentAlignment = Alignment.TopEnd
+        ) {
             TopBarDropMenu(
                 sortByPopularityClick = { sortByPopularityClick() },
                 sortByUserRatingClick = { sortByUserRatingClick() },
-                onDismiss = { sortDropDown = !sortDropDown }
+                onDismiss = { sortDropDown = !sortDropDown },
+                filmViewModel = filmViewModel
             )
         }
     }
@@ -88,14 +98,17 @@ fun TopAppBarNav(
                             )
                         })
                     OutlinedTextField(
+                        value = state.value,
+                        onValueChange = { newText ->
+                            filmViewModel.searchTextChange(newText)
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 8.dp)
                             .focusRequester(focusRequester)
                             .background(color = Color.Transparent.copy(0.65f)),
-                        lineLimits = TextFieldLineLimits.SingleLine,
-                        state = state,
-                        placeholder = { Text("Search") },
+                        singleLine = true,
+                        placeholder = { Text("Search") }
                     )
                 }
             } else {

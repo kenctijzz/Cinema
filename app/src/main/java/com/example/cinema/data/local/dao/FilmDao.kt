@@ -12,11 +12,12 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FilmDao {
-    @Query("SELECT * FROM films ORDER BY page ASC, id ASC")
-    fun getPagingSource(): PagingSource<Int, FilmEntity>
+    @Query("SELECT * FROM films WHERE title LIKE '%' || :search || '%' ORDER BY page ASC, id ASC")
+    fun getPagingSource(search: String): PagingSource<Int, FilmEntity>
 
-    @Query("SELECT * FROM films WHERE userRating IS NOT NULL ORDER BY userRating DESC, id ASC")
-    fun sortPagingByUserRating(): PagingSource<Int, FilmEntity>
+    @Query("SELECT * FROM films WHERE title LIKE '%' || :search || '%' AND userRating IS NOT NULL ORDER BY userRating DESC, id ASC")
+    fun sortPagingByUserRating(search: String): PagingSource<Int, FilmEntity>
+
     @Query("SELECT * FROM films LIMIT 1")
     suspend fun getAnyFilm(): FilmEntity?
 
@@ -34,8 +35,10 @@ interface FilmDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addFilm(film: FilmEntity)
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertInitialFilm(film: FilmEntity): Long
+
     @Query("UPDATE films SET runtime = :runtime, video = :video, photos = :photos WHERE id = :id")
     suspend fun updateFilmDetails(
         runtime: Int,
@@ -43,8 +46,10 @@ interface FilmDao {
         video: String?,
         photos: List<String>,
     )
+
     @Query("SELECT * FROM films WHERE id = :id")
     fun getFilmFlow(id: Int): Flow<FilmEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(films: List<FilmEntity>)
 

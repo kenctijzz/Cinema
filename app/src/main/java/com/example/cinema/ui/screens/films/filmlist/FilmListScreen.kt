@@ -25,8 +25,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.cinema.core.ui.UiEvent
@@ -41,8 +44,9 @@ fun FilmListScreen(
     filmViewModel: FilmViewModel,
     snackbarHostState: SnackbarHostState,
 ) {
-
-
+    val focusManager = LocalFocusManager.current
+    val sortType = filmViewModel.filmsSortType.collectAsStateWithLifecycle()
+    val searchText = filmViewModel.searchText.collectAsStateWithLifecycle()
     val pagedMovies = filmViewModel.filmsFlow.collectAsLazyPagingItems()
     val gridState = rememberLazyGridState()
     val currentSort by filmViewModel.filmsSortType.collectAsState()
@@ -70,6 +74,8 @@ fun FilmListScreen(
         modifier = Modifier.fillMaxSize(),
         isRefreshing = isRefreshing,
         onRefresh = {
+            focusManager.clearFocus()
+            filmViewModel.searchTextChange("")
             pagedMovies.refresh()
         }
     ) {
@@ -90,7 +96,10 @@ fun FilmListScreen(
             }
 
             else -> {
-                PagingDataVerticalGrid(anyPagingData = pagedMovies, state = gridState) { film ->
+                PagingDataVerticalGrid(
+                    anyPagingData = pagedMovies, state = gridState,
+                    sortType = sortType.value, searchText = searchText.value
+                ) { film ->
                     FilmInfo(
                         film = film,
                         onLikeClick = { filmViewModel.toggleFilmLike(film) }

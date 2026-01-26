@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
+import com.example.cinema.ui.screens.films.filmlist.FilmViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -24,7 +25,8 @@ import kotlinx.coroutines.withContext
 fun TopBarDropMenu(
     sortByPopularityClick: () -> Unit,
     sortByUserRatingClick: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    filmViewModel: FilmViewModel
 ) {
     val scope = rememberCoroutineScope()
     Column(
@@ -47,6 +49,7 @@ fun TopBarDropMenu(
                     text = { Text("Sort by popularity") },
                     onClick = {
                         sortByPopularityClick()
+                        filmViewModel.searchTextChange("")
                         onDismiss()
                     })
 
@@ -54,6 +57,7 @@ fun TopBarDropMenu(
                     text = { Text("Sort by my rating") },
                     onClick = {
                         sortByUserRatingClick()
+                        filmViewModel.searchTextChange("")
                         onDismiss()
                     })
             }
