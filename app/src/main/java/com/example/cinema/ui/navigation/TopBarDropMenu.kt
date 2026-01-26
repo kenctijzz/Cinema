@@ -31,7 +31,6 @@ fun TopBarDropMenu(
     val scope = rememberCoroutineScope()
     Column(
         modifier = Modifier
-            .fillMaxSize()
             .padding(8.dp), horizontalAlignment = Alignment.End,
         verticalArrangement = Arrangement.Top
     ) {

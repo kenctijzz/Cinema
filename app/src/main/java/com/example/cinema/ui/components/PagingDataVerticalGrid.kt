@@ -2,6 +2,7 @@ package com.example.cinema.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -41,12 +43,16 @@ fun <T : VisualModels> PagingDataVerticalGrid(
     state: LazyGridState,
     sortType: SortType,
     searchText: String,
+    paddingValues: PaddingValues,
     content: @Composable (T) -> Unit
 
 ) {
 
 
     LazyVerticalGrid(
+        contentPadding = PaddingValues(
+            bottom = paddingValues.calculateBottomPadding() + 16.dp
+        ),
         state = state,
         modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(2)

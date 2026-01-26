@@ -3,6 +3,7 @@ package com.example.cinema.ui.screens.films.filmlist
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,6 +44,7 @@ import kotlinx.coroutines.delay
 fun FilmListScreen(
     filmViewModel: FilmViewModel,
     snackbarHostState: SnackbarHostState,
+    paddingValues: PaddingValues
 ) {
     val focusManager = LocalFocusManager.current
     val sortType = filmViewModel.filmsSortType.collectAsStateWithLifecycle()
@@ -98,7 +100,8 @@ fun FilmListScreen(
             else -> {
                 PagingDataVerticalGrid(
                     anyPagingData = pagedMovies, state = gridState,
-                    sortType = sortType.value, searchText = searchText.value
+                    sortType = sortType.value, searchText = searchText.value,
+                    paddingValues = paddingValues
                 ) { film ->
                     FilmInfo(
                         film = film,

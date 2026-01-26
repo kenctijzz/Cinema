@@ -1,19 +1,13 @@
 package com.example.cinema.ui.navigation
 
-import android.R.attr.enabled
-import android.R.attr.text
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.input.TextFieldLineLimits
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.ArrowBack
@@ -22,6 +16,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -34,7 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -46,6 +41,7 @@ import com.example.cinema.ui.screens.films.filmlist.FilmViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBarNav(
+    modifier: Modifier = Modifier.alpha(0.5f),
     openMenuClick: () -> Unit, sortByPopularityClick: () -> Unit,
     sortByUserRatingClick: () -> Unit,
     filmViewModel: FilmViewModel
@@ -123,6 +119,7 @@ fun TopAppBarNav(
             }
         },
         actions = {
+
             Row(modifier = Modifier.padding(16.dp)) {
                 if (!isTextField) {
                     IconButton(

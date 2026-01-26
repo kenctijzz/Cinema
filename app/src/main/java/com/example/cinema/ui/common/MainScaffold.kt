@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.windowInsetsTopHeight
@@ -45,17 +46,11 @@ fun MainScaffold(
     val isDetailScreen = currentDestination?.hasRoute<Screen.FilmDetail>() == true
     Scaffold(
         topBar = {
-            AnimatedVisibility(
-                visible = !isDetailScreen,
-                enter = fadeIn() + slideInVertically(),
-                exit = fadeOut() + slideOutVertically()
-            ) {
                 TopAppBarNav(
                     openMenuClick = openMenuClick,
                     sortByPopularityClick = { filmViewModel.changeFilmsSortType(SortType.POPULARITY)},
                     sortByUserRatingClick = { filmViewModel.changeFilmsSortType(SortType.USER_RATE) },
                     filmViewModel = filmViewModel)
-            }
         },
         modifier = Modifier
             .fillMaxSize(),
@@ -63,6 +58,7 @@ fun MainScaffold(
     ) { innerPadding ->
         Box(modifier = Modifier.fillMaxSize()) {
             AppNavigationGraph(
+                paddingValues = innerPadding,
                 snackBarHostState = snackBarHostState,
                 navController = navController,
                 filmViewModel = filmViewModel

@@ -3,6 +3,7 @@ package com.example.cinema.ui.navigation
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,9 +22,12 @@ import com.example.cinema.ui.screens.films.filmlist.FilmListScreen
 import com.example.cinema.ui.screens.films.filmlist.FilmViewModel
 
 @Composable
-fun AppNavigationGraph(snackBarHostState: SnackbarHostState, navController: NavHostController,
-                       filmViewModel: FilmViewModel) {
-   // val navController = rememberNavController()
+fun AppNavigationGraph(
+    snackBarHostState: SnackbarHostState, navController: NavHostController,
+    filmViewModel: FilmViewModel,
+    paddingValues: PaddingValues
+) {
+    // val navController = rememberNavController()
 
     LaunchedEffect(Unit) {
         NavigationManager.events.collect { event ->
@@ -50,7 +54,8 @@ fun AppNavigationGraph(snackBarHostState: SnackbarHostState, navController: NavH
         popExitTransition = { fadeOut(animationSpec = tween(100)) }
     ) {
         composable<Screen.FilmList> {
-            FilmListScreen(snackbarHostState = snackBarHostState, filmViewModel = filmViewModel)
+            FilmListScreen(snackbarHostState = snackBarHostState, filmViewModel = filmViewModel,
+                paddingValues = paddingValues)
         }
         composable<Screen.FilmDetail> {
             FilmDetailScreen(snackbarHostState = snackBarHostState)

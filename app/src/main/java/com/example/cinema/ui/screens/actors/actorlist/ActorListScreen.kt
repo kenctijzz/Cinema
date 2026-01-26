@@ -64,7 +64,7 @@ fun ActorListScreen(
             )
 
             else -> PagingDataVerticalGrid(anyPagingData = pagedActors, state = gridState,
-                sortType = SortType.POPULARITY, searchText = "") { actor ->
+                sortType = SortType.POPULARITY, searchText = "", paddingValues = PaddingValues()) { actor ->
                 ActorInfo(
                     actor = actor,
                     onLikeClick = { actorViewModel.toggleActorLike(actor) }
