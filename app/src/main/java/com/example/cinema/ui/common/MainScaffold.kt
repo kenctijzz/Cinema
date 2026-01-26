@@ -53,7 +53,8 @@ fun MainScaffold(
                 TopAppBarNav(
                     openMenuClick = openMenuClick,
                     sortByPopularityClick = { filmViewModel.changeFilmsSortType(SortType.POPULARITY)},
-                    sortByUserRatingClick = { filmViewModel.changeFilmsSortType(SortType.USER_RATE) })
+                    sortByUserRatingClick = { filmViewModel.changeFilmsSortType(SortType.USER_RATE) },
+                    filmViewModel = filmViewModel)
             }
         },
         modifier = Modifier

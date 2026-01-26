@@ -1,17 +1,15 @@
 package com.example.cinema.domain.usecases.films
 
-import androidx.paging.PagingData
-import com.example.cinema.data.repository.SortType
 import com.example.cinema.domain.model.Film
 import com.example.cinema.domain.repository.FilmRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-
-class GetFilmsUseCase @Inject constructor(
+/*
+class SearchFilmsUseCase @Inject constructor(
     private val repository: FilmRepository
 ) {
-    operator fun invoke(sortType: SortType, search: String): Flow<PagingData<Film>> {
-        return repository.getFilms(sortType, search)
+    operator fun invoke(search: String): Flow<Film> {
+        return repository.searchFilms(search)
     }
-}
+}*/
