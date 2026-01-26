@@ -20,17 +20,25 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.cinema.data.repository.SortType
 import com.example.cinema.ui.navigation.AppNavigationGraph
 import com.example.cinema.ui.navigation.Screen
 import com.example.cinema.ui.navigation.TopAppBarNav
+import com.example.cinema.ui.screens.films.filminfo.FilmDetailViewModel
+import com.example.cinema.ui.screens.films.filmlist.FilmViewModel
 
 @Composable
-fun MainScaffold(snackBarHostState: SnackbarHostState, openMenuClick: () -> Unit){
+fun MainScaffold(
+    snackBarHostState: SnackbarHostState, openMenuClick: () -> Unit,
+) {
+    val filmViewModel: FilmViewModel  =  hiltViewModel()
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -42,7 +50,10 @@ fun MainScaffold(snackBarHostState: SnackbarHostState, openMenuClick: () -> Unit
                 enter = fadeIn() + slideInVertically(),
                 exit = fadeOut() + slideOutVertically()
             ) {
-                TopAppBarNav(openMenuClick = openMenuClick)
+                TopAppBarNav(
+                    openMenuClick = openMenuClick,
+                    sortByPopularityClick = { filmViewModel.changeFilmsSortType(SortType.POPULARITY)},
+                    sortByUserRatingClick = { filmViewModel.changeFilmsSortType(SortType.USER_RATE) })
             }
         },
         modifier = Modifier
@@ -52,7 +63,8 @@ fun MainScaffold(snackBarHostState: SnackbarHostState, openMenuClick: () -> Unit
         Box(modifier = Modifier.fillMaxSize()) {
             AppNavigationGraph(
                 snackBarHostState = snackBarHostState,
-                navController = navController
+                navController = navController,
+                filmViewModel = filmViewModel
             )
             Box(
                 modifier = Modifier

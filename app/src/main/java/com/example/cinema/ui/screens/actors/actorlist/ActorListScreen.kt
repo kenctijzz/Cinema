@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +32,7 @@ fun ActorListScreen(
     snackbarHostState: SnackbarHostState,
     actorViewModel: ActorViewModel = hiltViewModel()
 ) {
+    val gridState = rememberLazyGridState()
     val pagedActors = actorViewModel.popularActorsList.collectAsLazyPagingItems()
     val isRefreshing =
         pagedActors.loadState.refresh is LoadState.Loading && pagedActors.itemCount > 0
@@ -60,7 +62,7 @@ fun ActorListScreen(
                 errorText = "Проблемы с доступом. Проверьте подключение к VPN"
             )
 
-            else -> PagingDataVerticalGrid(anyPagingData = actorViewModel.popularActorsList) { actor ->
+            else -> PagingDataVerticalGrid(anyPagingData = pagedActors, state = gridState) { actor ->
                 ActorInfo(
                     actor = actor,
                     onLikeClick = { actorViewModel.toggleActorLike(actor) }

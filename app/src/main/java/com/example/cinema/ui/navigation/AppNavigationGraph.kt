@@ -18,9 +18,11 @@ import com.example.cinema.ui.screens.actors.actorlist.ActorListScreen
 import com.example.cinema.ui.screens.films.favoritefilms.FavoriteFilms
 import com.example.cinema.ui.screens.films.filminfo.FilmDetailScreen
 import com.example.cinema.ui.screens.films.filmlist.FilmListScreen
+import com.example.cinema.ui.screens.films.filmlist.FilmViewModel
 
 @Composable
-fun AppNavigationGraph(snackBarHostState: SnackbarHostState, navController: NavHostController) {
+fun AppNavigationGraph(snackBarHostState: SnackbarHostState, navController: NavHostController,
+                       filmViewModel: FilmViewModel) {
    // val navController = rememberNavController()
 
     LaunchedEffect(Unit) {
@@ -48,7 +50,7 @@ fun AppNavigationGraph(snackBarHostState: SnackbarHostState, navController: NavH
         popExitTransition = { fadeOut(animationSpec = tween(100)) }
     ) {
         composable<Screen.FilmList> {
-            FilmListScreen(snackbarHostState = snackBarHostState)
+            FilmListScreen(snackbarHostState = snackBarHostState, filmViewModel = filmViewModel)
         }
         composable<Screen.FilmDetail> {
             FilmDetailScreen(snackbarHostState = snackBarHostState)

@@ -47,7 +47,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun AppNavigationDrawer(snackBarHostState: SnackbarHostState) {
-
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     ModalNavigationDrawer(

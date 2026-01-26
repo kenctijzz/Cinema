@@ -1,8 +1,10 @@
 package com.example.cinema.ui.navigation
 
+import android.R.attr.enabled
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
@@ -39,11 +42,24 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBarNav(openMenuClick: () -> Unit) {
+fun TopAppBarNav(
+    openMenuClick: () -> Unit, sortByPopularityClick: () -> Unit,
+    sortByUserRatingClick: () -> Unit
+) {
     val state = remember { TextFieldState("") }
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     var isTextField by remember { mutableStateOf(false) }
+    var sortDropDown by remember { mutableStateOf(false) }
+    if (sortDropDown) {
+        Box(modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp), contentAlignment = Alignment.TopEnd) {
+            TopBarDropMenu(
+                sortByPopularityClick = { sortByPopularityClick() },
+                sortByUserRatingClick = { sortByUserRatingClick() },
+                onDismiss = { sortDropDown = !sortDropDown }
+            )
+        }
+    }
     LaunchedEffect(isTextField) {
         focusRequester.requestFocus()
     }
@@ -94,7 +110,7 @@ fun TopAppBarNav(openMenuClick: () -> Unit) {
             }
         },
         actions = {
-            Row() {
+            Row(modifier = Modifier.padding(16.dp)) {
                 if (!isTextField) {
                     IconButton(
                         onClick = { isTextField = !isTextField },
@@ -105,7 +121,7 @@ fun TopAppBarNav(openMenuClick: () -> Unit) {
                             )
                         })
                     IconButton(
-                        onClick = {},
+                        onClick = { sortDropDown = !sortDropDown },
                         content = {
                             Icon(
                                 Icons.AutoMirrored.Filled.List, contentDescription = "Sort",

@@ -1,26 +1,34 @@
 package com.example.cinema.ui.screens.films.filmlist
 
+import android.R.attr.type
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.cinema.core.ui.UiEvent
+import com.example.cinema.data.repository.SortType
 import com.example.cinema.domain.model.Film
-import com.example.cinema.domain.usecases.films.GetPopularFilmsUseCase
+import com.example.cinema.domain.usecases.films.GetFilmsUseCase
 import com.example.cinema.domain.usecases.films.ToggleFilmLikeUseCase
 import com.example.cinema.ui.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
 class FilmViewModel @Inject constructor(
-    private val getPopularFilmsUseCase: GetPopularFilmsUseCase,
-    private val toggleFilmLikeUseCase: ToggleFilmLikeUseCase,
+    private val getFilmsUseCase: GetFilmsUseCase,
+    private val toggleFilmLikeUseCase: ToggleFilmLikeUseCase
 ) : BaseViewModel() {
     private val _snackBarEvent = MutableSharedFlow<UiEvent.ShowSnackBar>(
         replay = 0,
@@ -28,12 +36,22 @@ class FilmViewModel @Inject constructor(
     )
     val snackBarEvent: MutableSharedFlow<UiEvent.ShowSnackBar> = _snackBarEvent
 
+
     suspend fun showSnackBar(message: String) {
         _snackBarEvent.emit(UiEvent.ShowSnackBar(message))
     }
 
-    val filmsFlow: Flow<PagingData<Film>> =
-        getPopularFilmsUseCase().cachedIn(viewModelScope)
+    val filmsSortType = MutableStateFlow(SortType.USER_RATE)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val filmsFlow = filmsSortType.flatMapLatest { type ->
+            getFilmsUseCase(type)
+        }.cachedIn(viewModelScope)
+
+    fun changeFilmsSortType(sortType: SortType) {
+        filmsSortType.value = sortType
+        Log.d("DEBUG", "${filmsSortType.value}")
+    }
 
     fun toggleFilmLike(film: Film) {
         viewModelScope.launch {
@@ -46,7 +64,11 @@ class FilmViewModel @Inject constructor(
         }
     }
 
+    init {
+        Log.d("DEBUG", "VM Hash: ${this.hashCode()}")
+    }
+
     override fun load() {
-        
+
     }
 }
