@@ -15,6 +15,8 @@ interface FilmDao {
     @Query("SELECT * FROM films ORDER BY page ASC, id ASC")
     fun getPagingSource(): PagingSource<Int, FilmEntity>
 
+    @Query("SELECT * FROM films WHERE userRating IS NOT NULL ORDER BY userRating DESC, id ASC")
+    fun sortPagingByUserRating(): PagingSource<Int, FilmEntity>
     @Query("SELECT * FROM films LIMIT 1")
     suspend fun getAnyFilm(): FilmEntity?
 

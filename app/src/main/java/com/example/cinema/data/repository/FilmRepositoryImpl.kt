@@ -15,6 +15,7 @@ import com.example.cinema.di.ApiKey
 import com.example.cinema.domain.model.Film
 import com.example.cinema.domain.repository.FilmRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -82,7 +83,9 @@ fun Film.toEntity(): FilmEntity {
         userRating = this.userRating
     )
 }
-
+enum class SortType {
+    POPULARITY, USER_RATE
+}
 class FilmRepositoryImpl @Inject constructor(
     private val filmApi: FilmApi,
     private val filmDao: FilmDao,
@@ -91,13 +94,16 @@ class FilmRepositoryImpl @Inject constructor(
 ) :
     FilmRepository {
     @OptIn(ExperimentalPagingApi::class)
-    override fun getPopularMovies(): Flow<PagingData<Film>> {
+    override fun getFilms(sortType: SortType): Flow<PagingData<Film>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 20, enablePlaceholders = true, initialLoadSize = 20,
             ),
             remoteMediator = FilmRemoteMediator(filmApi, db, apiKey),
-            pagingSourceFactory = { db.filmDao().getPagingSource() }
+            pagingSourceFactory = {
+                when(sortType){
+                SortType.POPULARITY -> db.filmDao().getPagingSource()
+                SortType.USER_RATE -> db.filmDao().sortPagingByUserRating()}}
         ).flow.map { pagingData ->
             pagingData.map { entity ->
                 entity.toDomainModel()
@@ -105,6 +111,20 @@ class FilmRepositoryImpl @Inject constructor(
         }
     }
 
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getUserRateSortFilms(): Flow<PagingData<Film>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20, enablePlaceholders = true, initialLoadSize = 20,
+            ),
+            remoteMediator = FilmRemoteMediator(filmApi, db, apiKey),
+            pagingSourceFactory = { db.filmDao().sortPagingByUserRating() }
+        ).flow.map { pagingData ->
+            pagingData.map { entity ->
+                entity.toDomainModel()
+            }
+        }
+    }
 
     override suspend fun getFilmByIdFromLocal(id: Int): Film {
         val film = filmDao.getFilmById(id) ?: throw Exception("Фильм не найден")

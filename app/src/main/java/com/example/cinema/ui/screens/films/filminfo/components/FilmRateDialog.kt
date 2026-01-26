@@ -12,7 +12,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,9 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.cinema.core.ui.UiEvent
-import com.example.cinema.ui.screens.films.filminfo.FilmDetailViewModel
+import com.example.cinema.ui.screens.films.filminfo.components.detailbuttons.FilmRateButton
 import com.example.cinema.ui.theme.toRatingColor
 
 @OptIn(ExperimentalMaterial3Api::class)

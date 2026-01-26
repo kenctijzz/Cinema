@@ -58,7 +58,7 @@ fun FilmPhotos(photos: List<String>, showSnackBar: () -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = 8.dp)
     ) {
-        
+
         Text(text = "Photos and posters", fontSize = 16.sp, fontWeight = FontWeight.Bold)
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
@@ -66,7 +66,13 @@ fun FilmPhotos(photos: List<String>, showSnackBar: () -> Unit) {
         ) {
             items(items = photos, key = { it }) { photo ->
                 var dropDownMenuVisible by remember { mutableStateOf(false) }
-                Box(modifier = Modifier.size(height = 200.dp, width = 300.dp)) {
+
+                Box(
+                    modifier = Modifier
+                        .size(height = 200.dp, width = 300.dp)
+                )
+                {
+
                     AsyncImage(
                         modifier = Modifier.clip(RoundedCornerShape(8.dp)),
                         model = ImageRequest.Builder(LocalContext.current)

@@ -28,7 +28,7 @@ import com.example.cinema.core.ui.UiEvent
 import com.example.cinema.data.remote.ApiConstants
 import com.example.cinema.ui.common.UiState
 import com.example.cinema.ui.screens.films.filminfo.components.BackgroundPoster
-import com.example.cinema.ui.screens.films.filminfo.components.FilmDetailButtons
+import com.example.cinema.ui.screens.films.filminfo.components.detailbuttons.FilmDetailButtons
 import com.example.cinema.ui.screens.films.filminfo.components.FilmOverview
 import com.example.cinema.ui.screens.films.filminfo.components.FilmPhotos
 import com.example.cinema.ui.screens.films.filminfo.components.FilmPoster
