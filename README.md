@@ -12,9 +12,9 @@
 - **Images:** Coil 3
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/a899b5d7-7cda-442b-b10f-c937fcb4bb6f" alt="Страница информации о фильме(скрытое описание)" width="200""")/>
-  <img src="https://github.com/user-attachments/assets/6a77056a-3deb-4bf8-8c68-4f09edad0cdd" alt="Страница информации о фильме" width="200""")/>
-  <img src="https://github.com/user-attachments/assets/eea8d288-004b-40d3-9816-769774c4947d" alt="Главная страница с популярными фильмами" width="200""")/>
+  <img src="https://github.com/user-attachments/assets/fd4235df-1dfa-441e-af4e-52f93585565b" alt="Страница информации о фильме(скрытое описание)" width="200""")/>
+  <img src="https://github.com/user-attachments/assets/7a9e510e-18c5-43e4-9cea-b0d2a78080c7" alt="Страница информации о фильме" width="200""")/>
+  <img src="https://github.com/user-attachments/assets/6c0c62c3-02ae-4f4a-9a2d-e49eb664c42f" alt="Главная страница с популярными фильмами" width="200""")/>
   <img src="https://github.com/user-attachments/assets/a2b9fe05-9ddc-426c-8425-52b4bb166dbe" alt="Меню навигации приложения" width="200""")/>
 </p>
 
