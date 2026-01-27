@@ -20,6 +20,14 @@ data class FilmModel(
     val overview: String?
 )
 
+data class SearchResponse(
+    val page: Int,
+    val results: List<FilmModel>,
+    @SerializedName("total_pages")
+    val totalPages: Int,
+    @SerializedName("total_results")
+    val totalResults: Int
+)
 data class FilmVideoModel(
     @SerializedName("key")
     val videoKey: String?,

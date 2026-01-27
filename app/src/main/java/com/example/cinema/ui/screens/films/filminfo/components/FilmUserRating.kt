@@ -35,14 +35,14 @@ import java.util.Locale
 
 @Composable
 fun FilmUserRating(filmDetailViewModel: FilmDetailViewModel = hiltViewModel()) {
-    val film by filmDetailViewModel.filmFlow.collectAsStateWithLifecycle()
+    val film = filmDetailViewModel.filmFlow.collectAsStateWithLifecycle()
     Column(modifier = Modifier.size(width = 80.dp, height = 60.dp)) {
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(60.dp))
                 .size(60.dp)
                 .background(
-                    color = film.userRating?.toDouble()?.toRatingColor() ?: Color.Gray
+                    color = film.value?.userRating?.toDouble()?.toRatingColor() ?: Color.Gray
                 )
         ) {
             Column(
@@ -51,10 +51,10 @@ fun FilmUserRating(filmDetailViewModel: FilmDetailViewModel = hiltViewModel()) {
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = if (film.userRating == null) {
+                    text = if (film.value?.userRating == null) {
                         "-"
                     } else {
-                        film.userRating.toString()
+                        film.value?.userRating.toString()
                     },
                     fontWeight = FontWeight.ExtraBold,
                     textAlign = TextAlign.Center,
