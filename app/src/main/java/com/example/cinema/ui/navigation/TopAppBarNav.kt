@@ -72,6 +72,7 @@ fun TopAppBarNav(
     BackHandler(enabled = isTextField) {
         isTextField = !isTextField
         focusManager.clearFocus()
+        filmViewModel.searchTextChange("")
     }
     TopAppBar(
         title = {},
@@ -86,6 +87,7 @@ fun TopAppBarNav(
                         onClick = {
                             focusManager.clearFocus()
                             isTextField = !isTextField
+                            filmViewModel.searchTextChange("")
                         },
                         content = {
                             Icon(

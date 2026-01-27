@@ -1,5 +1,6 @@
 package com.example.cinema.domain.usecases.films
 
+import android.util.Log
 import androidx.compose.runtime.State
 import com.example.cinema.domain.model.Film
 import com.example.cinema.domain.repository.FilmRepository
@@ -10,6 +11,7 @@ class ToggleFilmLikeUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(film: Film?): Boolean {
         val newFavoriteStatus  = film?.let {!film.isFavorite} ?: false
+        Log.e("new favorite status:" , "$newFavoriteStatus")
         repository.toggleFilmLike(newFavoriteStatus, film?.id)
         return newFavoriteStatus
     }

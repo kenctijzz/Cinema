@@ -2,12 +2,16 @@ package com.example.cinema.data.local.dao
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.example.cinema.data.local.entities.FilmEntity
 import com.example.cinema.data.local.entities.IdRatingPair
+import com.example.cinema.data.local.entities.LikedFilmsEntity
+import com.example.cinema.data.local.entities.RatedFilmsEntity
+import com.example.cinema.domain.model.Film
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -17,6 +21,13 @@ interface FilmDao {
 
     @Query("SELECT * FROM films WHERE userRating IS NOT NULL ORDER BY userRating DESC, id ASC")
     fun sortPagingByUserRating(): PagingSource<Int, FilmEntity>
+    @Query("SELECT * FROM films WHERE title LIKE '%' || :search || '%' AND isSearchResult = 1 ORDER BY page ASC")
+    fun searchFilmsPagingSource(search: String): PagingSource<Int, FilmEntity>
+
+    @Query("DELETE FROM films WHERE isSearchResult = 1")
+    fun clearSearchFilms()
+    @Query("SELECT * FROM films")
+    suspend fun getAllFilms(): List<FilmEntity>
 
     @Query("SELECT * FROM films LIMIT 1")
     suspend fun getAnyFilm(): FilmEntity?
@@ -27,11 +38,17 @@ interface FilmDao {
     @Query("UPDATE films SET isFavorite =:likeStatus WHERE id =:id")
     suspend fun toggleFilmLike(likeStatus: Boolean, id: Int?)
 
-    @Query("SELECT * FROM films WHERE isFavorite = 1")
-    fun getAllLikedFilmsFlow(): Flow<List<FilmEntity>>
+/*    @Query("SELECT * FROM films WHERE isFavorite = 1")
+    fun getAllLikedFilmsFlow(): Flow<List<FilmEntity>>*/
 
-    @Query("SELECT id FROM films WHERE isFavorite = 1")
+    @Query("SELECT * FROM liked_films WHERE isFavorite = 1")
+    fun getAllLikedFilmsFlow(): Flow<List<LikedFilmsEntity>>
+
+    @Query("SELECT id FROM liked_films WHERE isFavorite = 1")
     suspend fun getAllLikedFilms(): List<Int>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addLikedFilm(film: LikedFilmsEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addFilm(film: FilmEntity)
@@ -54,7 +71,7 @@ interface FilmDao {
     suspend fun insertAll(films: List<FilmEntity>)
 
     @Query("SELECT * FROM films WHERE id = :id")
-    suspend fun getFilmById(id: Int): FilmEntity?
+    suspend fun getFilmById(id: Int?): FilmEntity?
 
     @Query("UPDATE films SET userRating = :newRating WHERE id = :id")
     suspend fun updateFilmRating(
@@ -62,6 +79,9 @@ interface FilmDao {
         id: Int
     )
 
-    @Query("SELECT id, userRating FROM films WHERE userRating IS NOT NULL")
+    @Query("SELECT id, userRating FROM rated_films WHERE userRating IS NOT NULL")
     suspend fun getAllRatedFilmsId(): List<IdRatingPair>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateFilmRatingEntities(film: RatedFilmsEntity)
 }

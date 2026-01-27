@@ -50,15 +50,16 @@ class FilmDetailViewModel @Inject constructor(
     private val _state = MutableStateFlow<UiState<Film>>(UiState.Loading)
 
     val filmFlow: StateFlow<Film?> = getFilmFlowUseCase(filmId).stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = Film(
-            0, 0, null, null, null, "",
-            adult = false, isFavorite = false, 0.0, 0.0, "",
-            0, video = null, photos = emptyList(), userRating = 0
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = Film(
+                0, 0, null, null, null, "",
+                adult = false, isFavorite = false, 0.0, 0.0, "",
+                0, video = null, photos = emptyList(), userRating = 0
+            )
         )
 
-    )
+
     val state: StateFlow<UiState<Film>> = _state
     override fun load() {
         viewModelScope.launch {

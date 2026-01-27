@@ -1,6 +1,7 @@
 package com.example.cinema.domain.repository
 
 import androidx.paging.PagingData
+import com.example.cinema.data.local.entities.LikedFilmsEntity
 import com.example.cinema.data.repository.SortType
 import com.example.cinema.domain.model.Film
 import kotlinx.coroutines.flow.Flow

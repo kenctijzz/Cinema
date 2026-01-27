@@ -28,7 +28,8 @@ data class FilmEntity(
     val runtime: Int,
     val video: String?,
     val photos: List<String>,
-    val userRating: Int?
+    val userRating: Int?,
+    val isSearchResult: Boolean = false
 )
 data class FilmRating(
     @ColumnInfo(name = "id") val id: Int,

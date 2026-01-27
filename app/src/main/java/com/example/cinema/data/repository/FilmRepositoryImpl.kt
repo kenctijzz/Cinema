@@ -1,6 +1,7 @@
 package com.example.cinema.data.repository
 
 import android.R.attr.apiKey
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -9,16 +10,20 @@ import androidx.paging.map
 import com.example.cinema.data.local.dao.FilmDao
 import com.example.cinema.data.local.db.CinemaDatabase
 import com.example.cinema.data.local.entities.FilmEntity
+import com.example.cinema.data.local.entities.LikedFilmsEntity
+import com.example.cinema.data.local.entities.RatedFilmsEntity
 import com.example.cinema.data.remote.films.FilmApi
 import com.example.cinema.data.remote.films.dto.FilmModel
 import com.example.cinema.data.repository.paging.FilmRemoteMediator
-import com.example.cinema.data.repository.paging.MovieSearchPagingSource
+import com.example.cinema.data.repository.paging.FilmSearchRemoteMediator
 import com.example.cinema.di.ApiKey
 import com.example.cinema.domain.model.Film
 import com.example.cinema.domain.repository.FilmRepository
+import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlin.Int
 
 private fun FilmEntity.toDomainModel(): Film {
     return Film(
@@ -38,6 +43,27 @@ private fun FilmEntity.toDomainModel(): Film {
         photos = this.photos,
         userRating = this.userRating
     )
+}
+
+private fun FilmEntity.toLikeEntity(): LikedFilmsEntity {
+    return LikedFilmsEntity(
+        id = this.id,
+        isFavorite = this.isFavorite,
+        image = this.image,
+        releaseDate = this.releaseDate,
+        adult = this.adult,
+        overview = this.overview,
+        page = this.page,
+        rating = this.rating,
+        popularity = this.popularity,
+        language = this.language,
+        runtime = this.runtime,
+        video = this.video,
+        photos = this.photos,
+        userRating = this.userRating,
+        title = this.title
+    )
+
 }
 
 private fun FilmModel.toDomainModel(
@@ -61,9 +87,30 @@ private fun FilmModel.toDomainModel(
         runtime = this.runtime,
         video = video,
         photos = photos,
-        userRating = 0
+        userRating = null
     )
 }
+
+private fun LikedFilmsEntity.toDomainModel(): Film {
+    return Film(
+        id = this.id,
+        title = this.title,
+        image = this.image,
+        releaseDate = this.releaseDate,
+        adult = this.adult,
+        overview = this.overview,
+        isFavorite = this.isFavorite,
+        page = this.page,
+        rating = this.rating,
+        popularity = this.popularity,
+        language = this.language,
+        runtime = this.runtime,
+        video = this.video,
+        photos = this.photos,
+        userRating = this.userRating
+    )
+}
+
 
 fun Film.toEntity(): FilmEntity {
     return FilmEntity(
@@ -99,28 +146,53 @@ class FilmRepositoryImpl @Inject constructor(
     @OptIn(ExperimentalPagingApi::class)
     override fun getFilms(sortType: SortType, search: String): Flow<PagingData<Film>> {
         return if (search.isEmpty()) {
-            Pager(
-                config = PagingConfig(
-                    pageSize = 20,
-                    enablePlaceholders = true,
-                    initialLoadSize = 20,
-                ),
-                remoteMediator = FilmRemoteMediator(filmApi, db, apiKey),
-                pagingSourceFactory =
-                    {
-                        when (sortType) {
-                            SortType.POPULARITY -> db.filmDao().getPagingSource()
-                            SortType.USER_RATE -> db.filmDao().sortPagingByUserRating()
-                        }
+            if (sortType == SortType.USER_RATE) {
+                Pager(
+                    config = PagingConfig(
+                        pageSize = 20,
+                        enablePlaceholders = true
+                    ),
+                    pagingSourceFactory = {
+                        db.filmDao().sortPagingByUserRating()
                     }).flow.map { pagingData ->
-                pagingData.map { entity ->
-                    entity.toDomainModel()
+                    pagingData.map { entity ->
+                        entity.toDomainModel()
+                    }
+                }
+
+            } else {
+                Pager(
+                    config = PagingConfig(
+                        pageSize = 20,
+                        enablePlaceholders = true,
+                        initialLoadSize = 20
+                    ),
+                    remoteMediator = FilmRemoteMediator(filmApi, db, apiKey),
+                    pagingSourceFactory =
+                        {
+                            db.filmDao().getPagingSource()
+                        }).flow.map { pagingData ->
+                    pagingData.map { entity ->
+                        entity.toDomainModel()
+                    }
                 }
             }
         } else {
             Pager(
-                config = PagingConfig(pageSize = 20, enablePlaceholders = true, initialLoadSize = 20),
-                pagingSourceFactory = { MovieSearchPagingSource(filmApi, search, apiKey) }
+                config = PagingConfig(
+                    pageSize = 20,
+                    enablePlaceholders = true,
+                    initialLoadSize = 20
+                ),
+                remoteMediator = FilmSearchRemoteMediator(
+                    filmApi,
+                    db,
+                    apiKey = apiKey,
+                    search = search
+                ),
+                pagingSourceFactory = {
+                    db.filmDao().searchFilmsPagingSource(search)
+                }
             ).flow.map { pagingData ->
                 pagingData.map { entity ->
                     entity.toDomainModel()
@@ -147,7 +219,7 @@ class FilmRepositoryImpl @Inject constructor(
             pageNumber = localFilm?.page ?: 0,
             video = video.results?.firstOrNull { it.type == "Trailer" }?.videoKey
                 ?: video.results?.firstOrNull()?.videoKey,
-            photos = photos
+            photos = photos,
         )
         val entity = gettedFilm.toEntity()
         val result = filmDao.insertInitialFilm(entity)
@@ -159,6 +231,7 @@ class FilmRepositoryImpl @Inject constructor(
                 photos = gettedFilm.photos
             )
         }
+        Log.e("FILMdbINSERTRESULT", "$result")
         return gettedFilm
 
     }
@@ -169,6 +242,8 @@ class FilmRepositoryImpl @Inject constructor(
 
     override suspend fun toggleFilmLike(likeStatus: Boolean, id: Int?) {
         filmDao.toggleFilmLike(likeStatus, id)
+        filmDao.getFilmById(id)?.toLikeEntity()?.let { filmDao.addLikedFilm(it) }
+        Log.e("newlikestatus in repo", "$likeStatus")
     }
 
     override fun getFilmFlow(id: Int): Flow<Film?> {
@@ -185,6 +260,7 @@ class FilmRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateFilmRating(id: Int, newRating: Int) {
+        filmDao.updateFilmRatingEntities(RatedFilmsEntity(id = id, userRating = newRating))
         filmDao.updateFilmRating(newRating, id)
         println(filmDao.getFilmById(id)?.userRating)
     }

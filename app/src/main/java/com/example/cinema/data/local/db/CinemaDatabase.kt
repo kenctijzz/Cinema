@@ -7,16 +7,18 @@ import com.example.cinema.data.local.dao.ActorDao
 import com.example.cinema.data.local.dao.FilmDao
 import com.example.cinema.data.local.entities.ActorEntity
 import com.example.cinema.data.local.entities.FilmEntity
+import com.example.cinema.data.local.entities.LikedFilmsEntity
+import com.example.cinema.data.local.entities.RatedFilmsEntity
 import com.example.cinema.data.remote.JsonConverters
 
 @Database(
-    entities = [FilmEntity::class, ActorEntity::class],
-    version = 8,
+    entities = [FilmEntity::class, ActorEntity::class, LikedFilmsEntity::class, RatedFilmsEntity::class],
+    version = 13,
     exportSchema = false
 )
 @TypeConverters(JsonConverters::class)
-abstract class CinemaDatabase : RoomDatabase(){
+abstract class CinemaDatabase : RoomDatabase() {
 
-    abstract fun filmDao() : FilmDao
-    abstract fun actorDao() : ActorDao
+    abstract fun filmDao(): FilmDao
+    abstract fun actorDao(): ActorDao
 }
