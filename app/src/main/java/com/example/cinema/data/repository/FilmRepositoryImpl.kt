@@ -12,11 +12,11 @@ import com.example.cinema.data.local.entities.FilmEntity
 import com.example.cinema.data.remote.films.FilmApi
 import com.example.cinema.data.remote.films.dto.FilmModel
 import com.example.cinema.data.repository.paging.FilmRemoteMediator
+import com.example.cinema.data.repository.paging.MovieSearchPagingSource
 import com.example.cinema.di.ApiKey
 import com.example.cinema.domain.model.Film
 import com.example.cinema.domain.repository.FilmRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -98,28 +98,41 @@ class FilmRepositoryImpl @Inject constructor(
     FilmRepository {
     @OptIn(ExperimentalPagingApi::class)
     override fun getFilms(sortType: SortType, search: String): Flow<PagingData<Film>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 20, enablePlaceholders = true, initialLoadSize = 20,
-            ),
-            remoteMediator = FilmRemoteMediator(filmApi, db, apiKey),
-            pagingSourceFactory =
-                {
-                    when (sortType) {
-                        SortType.POPULARITY -> db.filmDao().getPagingSource(search)
-                        SortType.USER_RATE -> db.filmDao().sortPagingByUserRating(search)
-                    }
+        return if (search.isEmpty()) {
+            Pager(
+                config = PagingConfig(
+                    pageSize = 20,
+                    enablePlaceholders = true,
+                    initialLoadSize = 20,
+                ),
+                remoteMediator = FilmRemoteMediator(filmApi, db, apiKey),
+                pagingSourceFactory =
+                    {
+                        when (sortType) {
+                            SortType.POPULARITY -> db.filmDao().getPagingSource()
+                            SortType.USER_RATE -> db.filmDao().sortPagingByUserRating()
+                        }
+                    }).flow.map { pagingData ->
+                pagingData.map { entity ->
+                    entity.toDomainModel()
                 }
-        ).flow.map { pagingData ->
-            pagingData.map { entity ->
-                entity.toDomainModel()
+            }
+        } else {
+            Pager(
+                config = PagingConfig(pageSize = 20, enablePlaceholders = true, initialLoadSize = 20),
+                pagingSourceFactory = { MovieSearchPagingSource(filmApi, search, apiKey) }
+            ).flow.map { pagingData ->
+                pagingData.map { entity ->
+                    entity.toDomainModel()
+                }
             }
         }
+
     }
 
-    override suspend fun getFilmByIdFromLocal(id: Int): Film {
-        val film = filmDao.getFilmById(id) ?: throw Exception("Фильм не найден")
-        return film.toDomainModel()
+    override suspend fun getFilmByIdFromLocal(id: Int): Film? {
+        val film = filmDao.getFilmById(id)
+        return film?.toDomainModel()
     }
 
     override suspend fun getFilmByIdFromRemote(id: Int): Film {
@@ -154,12 +167,12 @@ class FilmRepositoryImpl @Inject constructor(
         filmDao.addFilm(film.toEntity())
     }
 
-    override suspend fun toggleFilmLike(likeStatus: Boolean, id: Int) {
+    override suspend fun toggleFilmLike(likeStatus: Boolean, id: Int?) {
         filmDao.toggleFilmLike(likeStatus, id)
     }
 
-    override fun getFilmFlow(id: Int): Flow<Film> {
-        return filmDao.getFilmFlow(id).map { entity -> entity.toDomainModel() }
+    override fun getFilmFlow(id: Int): Flow<Film?> {
+        return filmDao.getFilmFlow(id).map { entity -> entity?.toDomainModel() }
     }
 
     override fun getFavoriteFilmsFlow(): Flow<List<Film>> {

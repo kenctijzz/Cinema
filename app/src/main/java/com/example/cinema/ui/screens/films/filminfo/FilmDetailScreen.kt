@@ -84,7 +84,7 @@ fun FilmDetailScreen(
                             FilmPoster(
                                 "${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image}",
                                 filmTitle = uiState.data.title,
-                                filmReleaseDate = uiState.data.releaseDate,
+                                filmReleaseDate = uiState.data.releaseDate?.replace('-', '.') ?: "Дата неизвестна",
                                 filmRunTime = uiState.data.runtime,
                                 filmRating = uiState.data.rating
                             )
@@ -92,7 +92,8 @@ fun FilmDetailScreen(
                             FilmDetailButtons(
                                 film = uiState.data,
                                 snackbarHostState = snackbarHostState,
-                                filmId = uiState.data.id)
+                                filmId = uiState.data.id
+                            )
                             FilmOverview(uiState.data.overview ?: "Film has no overview")
                             FilmPhotos(
                                 uiState.data.photos,

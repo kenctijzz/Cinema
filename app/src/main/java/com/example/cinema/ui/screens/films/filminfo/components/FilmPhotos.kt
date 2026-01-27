@@ -60,52 +60,56 @@ fun FilmPhotos(photos: List<String>, showSnackBar: () -> Unit) {
     ) {
 
         Text(text = "Кадры и постеры", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(items = photos, key = { it }) { photo ->
-                var dropDownMenuVisible by remember { mutableStateOf(false) }
+        if (photos.isEmpty()) {
+            Text("У фильма отсутствуют фото")
+        } else {
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(items = photos, key = { it }) { photo ->
+                    var dropDownMenuVisible by remember { mutableStateOf(false) }
 
-                Box(
-                    modifier = Modifier
-                        .size(height = 200.dp, width = 300.dp)
-                )
-                {
-
-                    AsyncImage(
-                        modifier = Modifier.clip(RoundedCornerShape(8.dp)),
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data("${ApiConstants.ORIGINAL_IMAGE_BASE_URL}$photo")
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = "filmPhoto",
-                        contentScale = ContentScale.Crop,
-                        placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceVariant)
-                    )
-                    Column(
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp),
-                        horizontalAlignment = Alignment.End,
-                        verticalArrangement = Arrangement.Top
-                    ) {
-                        Box(modifier = Modifier.width(110.dp)) {
-                            Icon(
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .clickable(onClick = {
-                                        dropDownMenuVisible = true
-                                    }),
-                                imageVector = Icons.Default.MoreVert,
-                                contentDescription = "photoDropDownMenu",
-                            )
-                            if (dropDownMenuVisible) {
-                                FilmPhotoDropDownMenu(
-                                    scope = scope,
-                                    showSnackBar = showSnackBar,
-                                    photo = "${ApiConstants.ORIGINAL_IMAGE_BASE_URL}$photo",
-                                    onDismissRequest = { dropDownMenuVisible = false })
+                            .size(height = 200.dp, width = 300.dp)
+                    )
+                    {
+
+                        AsyncImage(
+                            modifier = Modifier.clip(RoundedCornerShape(8.dp)),
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data("${ApiConstants.ORIGINAL_IMAGE_BASE_URL}$photo")
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "filmPhoto",
+                            contentScale = ContentScale.Crop,
+                            placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceVariant)
+                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp),
+                            horizontalAlignment = Alignment.End,
+                            verticalArrangement = Arrangement.Top
+                        ) {
+                            Box(modifier = Modifier.width(110.dp)) {
+                                Icon(
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .clickable(onClick = {
+                                            dropDownMenuVisible = true
+                                        }),
+                                    imageVector = Icons.Default.MoreVert,
+                                    contentDescription = "photoDropDownMenu",
+                                )
+                                if (dropDownMenuVisible) {
+                                    FilmPhotoDropDownMenu(
+                                        scope = scope,
+                                        showSnackBar = showSnackBar,
+                                        photo = "${ApiConstants.ORIGINAL_IMAGE_BASE_URL}$photo",
+                                        onDismissRequest = { dropDownMenuVisible = false })
+                                }
                             }
                         }
                     }

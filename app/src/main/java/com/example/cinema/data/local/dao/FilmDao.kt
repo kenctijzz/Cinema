@@ -5,18 +5,18 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
+import androidx.room.Transaction
 import com.example.cinema.data.local.entities.FilmEntity
 import com.example.cinema.data.local.entities.IdRatingPair
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FilmDao {
-    @Query("SELECT * FROM films WHERE title LIKE '%' || :search || '%' ORDER BY page ASC, id ASC")
-    fun getPagingSource(search: String): PagingSource<Int, FilmEntity>
+    @Query("SELECT * FROM films ORDER BY page ASC, id ASC")
+    fun getPagingSource(): PagingSource<Int, FilmEntity>
 
-    @Query("SELECT * FROM films WHERE title LIKE '%' || :search || '%' AND userRating IS NOT NULL ORDER BY userRating DESC, id ASC")
-    fun sortPagingByUserRating(search: String): PagingSource<Int, FilmEntity>
+    @Query("SELECT * FROM films WHERE userRating IS NOT NULL ORDER BY userRating DESC, id ASC")
+    fun sortPagingByUserRating(): PagingSource<Int, FilmEntity>
 
     @Query("SELECT * FROM films LIMIT 1")
     suspend fun getAnyFilm(): FilmEntity?
@@ -25,7 +25,7 @@ interface FilmDao {
     suspend fun clearAll()
 
     @Query("UPDATE films SET isFavorite =:likeStatus WHERE id =:id")
-    suspend fun toggleFilmLike(likeStatus: Boolean, id: Int)
+    suspend fun toggleFilmLike(likeStatus: Boolean, id: Int?)
 
     @Query("SELECT * FROM films WHERE isFavorite = 1")
     fun getAllLikedFilmsFlow(): Flow<List<FilmEntity>>
@@ -48,7 +48,7 @@ interface FilmDao {
     )
 
     @Query("SELECT * FROM films WHERE id = :id")
-    fun getFilmFlow(id: Int): Flow<FilmEntity>
+    fun getFilmFlow(id: Int): Flow<FilmEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(films: List<FilmEntity>)

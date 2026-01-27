@@ -1,6 +1,5 @@
 package com.example.cinema.ui.screens.films.favoritefilms
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cinema.core.ui.UiEvent
 import com.example.cinema.domain.model.Film

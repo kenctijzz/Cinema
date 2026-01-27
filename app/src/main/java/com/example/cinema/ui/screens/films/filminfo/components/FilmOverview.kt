@@ -1,5 +1,6 @@
 package com.example.cinema.ui.screens.films.filminfo.components
 
+import android.R.attr.maxLines
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -62,7 +63,7 @@ fun FilmOverview(overview: String) {
                         )
                     }
                 },
-            text = overview,
+            text = if(overview != "")overview else "У фильма отсутствует описание",
             textAlign = TextAlign.Start,
             maxLines = if (onFullOverview) 100 else 3,
             overflow = TextOverflow.Clip,

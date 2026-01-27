@@ -1,7 +1,7 @@
 package com.example.cinema.ui.screens.films.filminfo
 
-import android.R
 import android.util.Log
+import androidx.compose.runtime.State
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
@@ -49,7 +49,7 @@ class FilmDetailViewModel @Inject constructor(
     private val filmId: Int = savedStateHandle.toRoute<Screen.FilmDetail>().id
     private val _state = MutableStateFlow<UiState<Film>>(UiState.Loading)
 
-    val filmFlow: StateFlow<Film> = getFilmFlowUseCase(filmId).stateIn(
+    val filmFlow: StateFlow<Film?> = getFilmFlowUseCase(filmId).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = Film(
@@ -87,13 +87,13 @@ class FilmDetailViewModel @Inject constructor(
         }
     }
 
-    fun toggleFilmLike(film: Film) {
+    fun toggleFilmLike(film: Film?) {
         viewModelScope.launch {
             val favoriteStatus = toggleFilmLikeUseCase(film)
             if (favoriteStatus) {
-                showSnackBar("${film.title} добавлен в избранное")
+                showSnackBar("${film?.title} добавлен в избранное")
             } else {
-                showSnackBar("${film.title} удален из избранного")
+                showSnackBar("${film?.title} удален из избранного")
             }
         }
     }
