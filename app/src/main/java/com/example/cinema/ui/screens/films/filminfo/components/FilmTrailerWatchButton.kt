@@ -1,13 +1,17 @@
 package com.example.cinema.ui.screens.films.filminfo.components
 
+import android.R.attr.onClick
 import android.R.attr.text
 import android.R.attr.y
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -39,20 +43,22 @@ import com.example.cinema.ui.screens.films.filminfo.FilmDetailViewModel
 import androidx.core.net.toUri
 
 @Composable
-fun FilmTrailerWatchButton(video: String?) {
+fun FilmTrailerWatchButton(video: String?, title: String) {
     val context = LocalContext.current
     val haveVideos = !video.isNullOrBlank()
-    if (haveVideos) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (haveVideos) {
             Button(
-                modifier = Modifier.border(
-                    width = 2.dp,
-                    color = MaterialTheme.colorScheme.inverseSurface,
-                    RoundedCornerShape(24.dp)
-                ),
+                modifier = Modifier
+                    .border(
+                        width = 2.dp,
+                        color = MaterialTheme.colorScheme.inverseSurface,
+                        RoundedCornerShape(24.dp)
+                    ),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent,
                     contentColor = MaterialTheme.colorScheme.inverseSurface
@@ -66,10 +72,39 @@ fun FilmTrailerWatchButton(video: String?) {
 
                 }) {
                 Text(
-                    text = "Смотреть о фильме",
+                    text = "Смотреть трейлер",
                     fontWeight = FontWeight.Bold,
                 )
             }
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 80.dp)
+                .border
+                    (
+                    width = 2.dp,
+                    color = MaterialTheme.colorScheme.inverseSurface,
+                    RoundedCornerShape(24.dp)
+                ),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent,
+                contentColor = MaterialTheme.colorScheme.inverseSurface
+            ),
+            onClick = {
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    "${ApiConstants.VK_SEARCH}${title}".toUri()
+                )
+                context.startActivity(intent)
+
+            }) {
+            Text(
+                text = "Поиск в Вк Видео",
+                fontWeight = FontWeight.Bold,
+            )
         }
     }
 }

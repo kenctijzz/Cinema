@@ -16,16 +16,18 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FilmDao {
-    @Query("SELECT * FROM films ORDER BY page ASC, id ASC")
+    @Query("SELECT * FROM films WHERE isSearchResult = 0 ORDER BY page ASC, id ASC")
     fun getPagingSource(): PagingSource<Int, FilmEntity>
 
     @Query("SELECT * FROM films WHERE userRating IS NOT NULL ORDER BY userRating DESC, id ASC")
     fun sortPagingByUserRating(): PagingSource<Int, FilmEntity>
-    @Query("SELECT * FROM films WHERE title LIKE '%' || :search || '%' AND isSearchResult = 1 ORDER BY page ASC")
+    @Query("SELECT * FROM films WHERE isSearchResult = 1 AND title LIKE '%' || :search || '%' AND isSearchResult = 1 ORDER BY page ASC")
     fun searchFilmsPagingSource(search: String): PagingSource<Int, FilmEntity>
 
     @Query("DELETE FROM films WHERE isSearchResult = 1")
     fun clearSearchFilms()
+    @Query("DELETE FROM films WHERE isSearchResult = 0")
+    fun clearPopularFilms()
     @Query("SELECT * FROM films")
     suspend fun getAllFilms(): List<FilmEntity>
 

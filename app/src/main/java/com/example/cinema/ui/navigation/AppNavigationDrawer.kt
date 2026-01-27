@@ -69,7 +69,7 @@ fun AppNavigationDrawer(snackBarHostState: SnackbarHostState) {
                     },
                     icon = { Icon(Icons.Default.Album, contentDescription = null) }
                 )
-                NavigationDrawerItem(
+                /*NavigationDrawerItem(
                     label = { Text(text = "Лучшие Актеры") },
                     selected = false,
                     onClick = {
@@ -79,7 +79,7 @@ fun AppNavigationDrawer(snackBarHostState: SnackbarHostState) {
                         }
                     },
                     icon = { Icon(Icons.Default.People, contentDescription = null) }
-                )
+                )*/
                 NavigationDrawerItem(
                     label = { Text(text = "Любимые Фильмы") },
                     selected = false,

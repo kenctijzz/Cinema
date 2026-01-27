@@ -52,7 +52,6 @@ class FilmViewModel @Inject constructor(
 
     fun changeFilmsSortType(sortType: SortType) {
         filmsSortType.value = sortType
-        Log.d("DEBUG", "${filmsSortType.value}")
     }
 
     fun toggleFilmLike(film: Film) {

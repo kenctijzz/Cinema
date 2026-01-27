@@ -32,6 +32,7 @@ import com.example.cinema.data.repository.SortType
 import com.example.cinema.ui.navigation.AppNavigationGraph
 import com.example.cinema.ui.navigation.Screen
 import com.example.cinema.ui.navigation.TopAppBarNav
+import com.example.cinema.ui.navigation.TopAppBarNavDetail
 import com.example.cinema.ui.screens.films.filminfo.FilmDetailViewModel
 import com.example.cinema.ui.screens.films.filmlist.FilmViewModel
 
@@ -45,12 +46,24 @@ fun MainScaffold(
     val currentDestination = navBackStackEntry?.destination
     val isDetailScreen = currentDestination?.hasRoute<Screen.FilmDetail>() == true
     Scaffold(
+
         topBar = {
+            if(!isDetailScreen) {
                 TopAppBarNav(
                     openMenuClick = openMenuClick,
-                    sortByPopularityClick = { filmViewModel.changeFilmsSortType(SortType.POPULARITY)},
+                    sortByPopularityClick = { filmViewModel.changeFilmsSortType(SortType.POPULARITY) },
                     sortByUserRatingClick = { filmViewModel.changeFilmsSortType(SortType.USER_RATE) },
-                    filmViewModel = filmViewModel)
+                    filmViewModel = filmViewModel
+                )
+            }
+            else{
+                TopAppBarNavDetail(
+                    openMenuClick = openMenuClick,
+                    sortByPopularityClick = { filmViewModel.changeFilmsSortType(SortType.POPULARITY) },
+                    sortByUserRatingClick = { filmViewModel.changeFilmsSortType(SortType.USER_RATE) },
+                    filmViewModel = filmViewModel
+                )
+            }
         },
         modifier = Modifier
             .fillMaxSize(),

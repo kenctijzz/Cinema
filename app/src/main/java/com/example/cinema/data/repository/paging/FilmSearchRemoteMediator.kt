@@ -18,7 +18,8 @@ private fun FilmModel.toEntity(
     pageNumber: Int,
     videos: List<String> = emptyList(),
     photos: List<String> = emptyList(),
-    userRating: Int?
+    userRating: Int?,
+    isSearchResult: Boolean
 ): FilmEntity {
     return FilmEntity(
         id = this.id,
@@ -35,9 +36,11 @@ private fun FilmModel.toEntity(
         runtime = this.runtime,
         video = null,
         photos = photos,
-        userRating = userRating
+        userRating = userRating,
+        isSearchResult = isSearchResult
     )
 }
+
 @OptIn(ExperimentalPagingApi::class)
 class FilmSearchRemoteMediator(
     private val api: FilmApi,
@@ -46,55 +49,58 @@ class FilmSearchRemoteMediator(
     private val apiKey: String
 ) : RemoteMediator<Int, FilmEntity>() {
 
-        override suspend fun initialize(): InitializeAction {
-            return InitializeAction.SKIP_INITIAL_REFRESH
-        }
+    override suspend fun initialize(): InitializeAction {
+        return InitializeAction.SKIP_INITIAL_REFRESH
+    }
 
-        override suspend fun load(
-            loadType: LoadType,
-            state: PagingState<Int, FilmEntity>
-        ): MediatorResult {
-            return try {
-                val page = when (loadType) {
-                    LoadType.REFRESH -> 1
-                    LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
-                    LoadType.APPEND -> {
-                        val lastItem = state.lastItemOrNull()
-                        if (lastItem == null) 1 else lastItem.page + 1
-                    }
+    override suspend fun load(
+        loadType: LoadType,
+        state: PagingState<Int, FilmEntity>
+    ): MediatorResult {
+        return try {
+            val page = when (loadType) {
+                LoadType.REFRESH -> 1
+                LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
+                LoadType.APPEND -> {
+                    val lastItem = state.lastItemOrNull()
+                    if (lastItem == null) 1 else lastItem.page + 1
                 }
-
-                val response = api.searchMovies(search = search, page = page, apikey = apiKey)
-                val localFavorites = db.filmDao().getAllLikedFilms()
-                Log.e("Liked Films", "$localFavorites")
-                val localRated =
-                    db.filmDao().getAllRatedFilmsId().associate { it.id to it.userRating }
-                val localFilms = db.filmDao().getAllFilms()
-                val films = response.results.map { filmModel ->
-                    filmModel.toEntity(pageNumber = page, userRating = localRated[filmModel.id])
-                        .copy(
-                            isFavorite = localFavorites.contains(filmModel.id),
-                            isSearchResult = true
-                        )
-                }
-                db.withTransaction {
-                    if (loadType == LoadType.REFRESH) {
-                        db.filmDao().clearSearchFilms()
-                    }
-                    db.filmDao().insertAll(films)
-                }
-
-                MediatorResult.Success(endOfPaginationReached = films.isEmpty())
-            } catch (e: Exception) {
-                if (loadType == LoadType.REFRESH) {
-
-                    val hasData = db.filmDao().getAnyFilm()?.isSearchResult
-                    if (hasData == true) {
-                        return MediatorResult.Success(endOfPaginationReached = false)
-                    }
-
-                }
-                MediatorResult.Error(e)
             }
+
+            val response = api.searchMovies(search = search, page = page, apikey = apiKey)
+            val localFavorites = db.filmDao().getAllLikedFilms()
+            Log.e("Liked Films", "$localFavorites")
+            val localRated =
+                db.filmDao().getAllRatedFilmsId().associate { it.id to it.userRating }
+            val localFilms = db.filmDao().getAllFilms()
+            val films = response.results.map { filmModel ->
+                filmModel.toEntity(
+                    pageNumber = page,
+                    userRating = localRated[filmModel.id],
+                    isSearchResult = true
+                )
+                    .copy(
+                        isFavorite = localFavorites.contains(filmModel.id)
+                    )
+            }
+            db.withTransaction {
+                if (loadType == LoadType.REFRESH) {
+                    db.filmDao().clearSearchFilms()
+                }
+                db.filmDao().insertAll(films)
+            }
+
+            MediatorResult.Success(endOfPaginationReached = films.isEmpty())
+        } catch (e: Exception) {
+            if (loadType == LoadType.REFRESH) {
+
+                val hasData = db.filmDao().getAnyFilm()?.isSearchResult
+                if (hasData == true) {
+                    return MediatorResult.Success(endOfPaginationReached = false)
+                }
+
+            }
+            MediatorResult.Error(e)
         }
     }
+}

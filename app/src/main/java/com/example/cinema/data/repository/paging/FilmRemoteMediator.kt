@@ -1,6 +1,5 @@
 package com.example.cinema.data.repository.paging
 
-import android.R
 import android.R.attr.apiKey
 import android.util.Log
 import android.util.Log.e
@@ -22,7 +21,8 @@ private fun FilmModel.toEntity(
     pageNumber: Int,
     videos: List<String> = emptyList(),
     photos: List<String> = emptyList(),
-    userRating: Int?
+    userRating: Int?,
+    isSearchResult: Boolean
 ): FilmEntity {
     return FilmEntity(
         id = this.id,
@@ -39,7 +39,8 @@ private fun FilmModel.toEntity(
         runtime = this.runtime,
         video = null,
         photos = photos,
-        userRating = userRating
+        userRating = userRating,
+        isSearchResult = isSearchResult
     )
 }
 
@@ -75,14 +76,18 @@ class FilmRemoteMediator(
             val localRated = db.filmDao().getAllRatedFilmsId().associate { it.id to it.userRating }
             val localFilms = db.filmDao().getAllFilms()
             val films = response.results.map { filmModel ->
-                filmModel.toEntity(pageNumber = page, userRating = localRated[filmModel.id])
+                filmModel.toEntity(
+                    pageNumber = page,
+                    userRating = localRated[filmModel.id],
+                    isSearchResult = false
+                )
                     .copy(
                         isFavorite = localFavorites.contains(filmModel.id)
                     )
             }
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    db.filmDao().clearAll()
+                    db.filmDao().clearPopularFilms()
                 }
                 db.filmDao().insertAll(films)
             }

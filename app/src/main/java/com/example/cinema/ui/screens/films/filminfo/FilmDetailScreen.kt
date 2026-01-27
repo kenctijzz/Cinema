@@ -78,7 +78,7 @@ fun FilmDetailScreen(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .verticalScroll(scrollState),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             Spacer(modifier = Modifier.height(32.dp))
                             FilmPoster(
@@ -88,7 +88,7 @@ fun FilmDetailScreen(
                                 filmRunTime = uiState.data.runtime,
                                 filmRating = uiState.data.rating
                             )
-                            FilmTrailerWatchButton(uiState.data.video)
+                            FilmTrailerWatchButton(uiState.data.video, uiState.data.title)
                             FilmDetailButtons(
                                 film = uiState.data,
                                 snackbarHostState = snackbarHostState,
