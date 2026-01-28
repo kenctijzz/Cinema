@@ -1,4 +1,5 @@
-Современное Android-приложение для просмотра информации о популярных фильмах. Возможность оценки и сохранения любимых фильмов в избранное. (Приложение находится в стадии разработки)
+# CineRoom
+[Скачать последнюю версию (APK)](https://github.com/kenctijzz/Cinema/releases/download/v1.0.1/CineRoom_1.0.1.apk)
 
 Технологический стек
 
@@ -12,10 +13,10 @@
 - **Images:** Coil 3
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/fd4235df-1dfa-441e-af4e-52f93585565b" alt="Страница информации о фильме(скрытое описание)" width="200""")/>
-  <img src="https://github.com/user-attachments/assets/7a9e510e-18c5-43e4-9cea-b0d2a78080c7" alt="Страница информации о фильме" width="200""")/>
-  <img src="https://github.com/user-attachments/assets/6c0c62c3-02ae-4f4a-9a2d-e49eb664c42f" alt="Главная страница с популярными фильмами" width="200""")/>
-  <img src="https://github.com/user-attachments/assets/a2b9fe05-9ddc-426c-8425-52b4bb166dbe" alt="Меню навигации приложения" width="200""")/>
+  <img src="https://github.com/user-attachments/assets/6583a9af-c098-47a0-88c5-8cd1ef12cde7" alt="Страница информации о фильме(скрытое описание)" width="200""")/>
+  <img src="https://github.com/user-attachments/assets/c553f76f-e8d0-43b8-acb5-4be9a27b6d80" alt="Страница информации о фильме" width="200""")/>
+  <img src="https://github.com/user-attachments/assets/f307c9ff-3fe6-4980-8d9e-02c675aea0f5" alt="Главная страница с популярными фильмами" width="200""")/>
+  <img src="https://github.com/user-attachments/assets/0adee199-dd73-4c40-8bab-97096951becb" alt="Меню навигации приложения" width="200""")/>
 </p>
 
 Ключевые особенности
