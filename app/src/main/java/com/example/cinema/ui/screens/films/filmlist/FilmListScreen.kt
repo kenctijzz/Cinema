@@ -1,18 +1,14 @@
 package com.example.cinema.ui.screens.films.filmlist
 
-import android.util.Log
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -26,16 +22,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.cinema.core.ui.UiEvent
+import com.example.cinema.data.repository.SortType
 import com.example.cinema.ui.components.PagingDataVerticalGrid
-import com.example.cinema.ui.navigation.TopAppBarNav
 import com.example.cinema.ui.utils.UiError
 import com.example.cinema.ui.utils.UiLoading
 import kotlinx.coroutines.delay
@@ -81,32 +79,69 @@ fun FilmListScreen(
             pagedMovies.refresh()
         }
     ) {
-
-        when (pagedMovies.loadState.refresh) {
-
-            is LoadState.Loading -> {
-                if (pagedMovies.itemCount == 0) {
-                    UiLoading()
+        val mediatorRefreshState = pagedMovies.loadState.mediator?.refresh
+        val localRefreshState = pagedMovies.loadState.refresh
+        val isRefreshing = mediatorRefreshState is LoadState.Loading
+        var showErrorWithDelay by remember { mutableStateOf(false) }
+        val shouldShowError = (mediatorRefreshState is LoadState.Error ||
+                (localRefreshState is LoadState.NotLoading && pagedMovies.itemCount == 0)) &&
+                searchText.value.isEmpty() &&
+                sortType.value == SortType.POPULARITY &&
+                mediatorRefreshState !is LoadState.Loading
+        LaunchedEffect(shouldShowError) {
+            if (shouldShowError) {
+                delay(200)
+                showErrorWithDelay = true
+            } else {
+                showErrorWithDelay = false
+            }
+        }
+        if(showErrorWithDelay){
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    "Не удалось загрузить данные. Проверьте соединение и попробуйте снова.",
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    fontSize = 24.sp
+                )
+                Button(
+                    modifier = Modifier.border(
+                        width = 2.dp,
+                        color = MaterialTheme.colorScheme.inverseSurface,
+                        RoundedCornerShape(24.dp)
+                    ),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = MaterialTheme.colorScheme.inverseSurface
+                    ), onClick = { pagedMovies.refresh() }) {
+                    Text("Повторить")
                 }
             }
-
-            is LoadState.Error -> {
-                UiError(
-                    anyViewModel = filmViewModel,
-                    errorText = "Проблемы с доступом.Проверьте подключение к VPN"
-                )
+        }
+        when {
+            (localRefreshState is LoadState.Loading || mediatorRefreshState is LoadState.Loading)
+                    && pagedMovies.itemCount == 0 -> {
+                UiLoading()
             }
 
             else -> {
                 PagingDataVerticalGrid(
-                    anyPagingData = pagedMovies, state = gridState,
-                    sortType = sortType.value, searchText = searchText.value,
-                    paddingValues = paddingValues
+                    anyPagingData = pagedMovies,
+                    state = gridState,
+                    sortType = sortType.value,
+                    searchText = searchText.value,
+                    paddingValues = paddingValues,
+                    forceRefresh = { filmViewModel.manualRefresh() },
+                    textSearch = searchText.value
                 ) { film ->
                     FilmInfo(
                         film = film,
                         viewModel = filmViewModel,
-                        onLikeClick = { filmViewModel.toggleFilmLike(film)}
+                        onLikeClick = { filmViewModel.toggleFilmLike(film) }
                     )
                 }
             }

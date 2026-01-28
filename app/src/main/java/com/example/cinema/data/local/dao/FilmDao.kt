@@ -51,6 +51,8 @@ interface FilmDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addLikedFilm(film: LikedFilmsEntity)
+    @Query("DELETE FROM liked_films WHERE id = :id")
+    suspend fun deleteLikedFilm(id: Int?)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addFilm(film: FilmEntity)
@@ -80,10 +82,26 @@ interface FilmDao {
         newRating: Int,
         id: Int
     )
-
     @Query("SELECT id, userRating FROM rated_films WHERE userRating IS NOT NULL")
     suspend fun getAllRatedFilmsId(): List<IdRatingPair>
 
+    @Query("SELECT COUNT(*) FROM liked_films")
+    fun getLikedFilmsAmount(): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM rated_films")
+    fun getRatedFilmsAmount(): Flow<Int>
+
+    @Query("SELECT SUM(userRating) FROM rated_films")
+    fun getAllUserRatings(): Flow<Int>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateFilmRatingEntities(film: RatedFilmsEntity)
+
+    @Query("SELECT EXISTS(SELECT 1 FROM liked_films WHERE id = :id)")
+    suspend fun getFilmLikeInfo(id: Int): Boolean
+
+    @Query("SELECT EXISTS(SELECT 1 FROM liked_films WHERE id = :id)")
+    fun getLikeInfoFlow(id: Int): Flow<Boolean>
+
+    @Query("DELETE FROM films WHERE id = -1")
+    suspend fun invalidateFilms()
 }

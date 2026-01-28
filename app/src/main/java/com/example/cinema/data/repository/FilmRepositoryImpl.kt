@@ -1,6 +1,7 @@
 package com.example.cinema.data.repository
 
 import android.R.attr.apiKey
+import android.content.Context
 import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
@@ -20,7 +21,9 @@ import com.example.cinema.di.ApiKey
 import com.example.cinema.domain.model.Film
 import com.example.cinema.domain.repository.FilmRepository
 import com.google.gson.annotations.SerializedName
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import kotlin.Int
@@ -140,7 +143,8 @@ class FilmRepositoryImpl @Inject constructor(
     private val filmApi: FilmApi,
     private val filmDao: FilmDao,
     private val db: CinemaDatabase,
-    @param:ApiKey private val apiKey: String
+    @param:ApiKey private val apiKey: String,
+    @ApplicationContext private val context: Context
 ) :
     FilmRepository {
     @OptIn(ExperimentalPagingApi::class)
@@ -167,7 +171,7 @@ class FilmRepositoryImpl @Inject constructor(
                         enablePlaceholders = true,
                         initialLoadSize = 20
                     ),
-                    remoteMediator = FilmRemoteMediator(filmApi, db, apiKey),
+                    remoteMediator = FilmRemoteMediator(filmApi, db, apiKey, context),
                     pagingSourceFactory =
                         {
                             db.filmDao().getPagingSource()
@@ -211,11 +215,12 @@ class FilmRepositoryImpl @Inject constructor(
         val film = filmApi.getFilm(id, apiKey)
         val video = filmApi.getFilmVideos(id, apiKey)
         val localFilm = filmDao.getFilmById(id)
+        val likeInfo = filmDao.getFilmLikeInfo(id)
         val photos: List<String> =
             filmApi.getFilmImages(id, apiKey).backdrops?.mapNotNull { it -> it.photo }
                 ?: emptyList()
         val gettedFilm = film.toDomainModel(
-            isFavorite = localFilm?.isFavorite ?: false,
+            isFavorite = likeInfo,
             pageNumber = localFilm?.page ?: 0,
             video = video.results?.firstOrNull { it.type == "Trailer" }?.videoKey
                 ?: video.results?.firstOrNull()?.videoKey,
@@ -242,12 +247,22 @@ class FilmRepositoryImpl @Inject constructor(
 
     override suspend fun toggleFilmLike(likeStatus: Boolean, id: Int?) {
         filmDao.toggleFilmLike(likeStatus, id)
-        filmDao.getFilmById(id)?.toLikeEntity()?.let { filmDao.addLikedFilm(it) }
+        if (likeStatus) {
+            filmDao.getFilmById(id)?.toLikeEntity()?.let {
+                filmDao.addLikedFilm(it)
+            }
+        } else {
+            filmDao.deleteLikedFilm(id)
+        }
         Log.e("newlikestatus in repo", "$likeStatus")
     }
 
     override fun getFilmFlow(id: Int): Flow<Film?> {
-        return filmDao.getFilmFlow(id).map { entity -> entity?.toDomainModel() }
+        return filmDao.getFilmFlow(id)
+            .combine(filmDao.getLikeInfoFlow(id)) { entity, isLiked ->
+                entity?.toDomainModel()?.copy(isFavorite = isLiked)
+            }
+
     }
 
     override fun getFavoriteFilmsFlow(): Flow<List<Film>> {
@@ -265,4 +280,23 @@ class FilmRepositoryImpl @Inject constructor(
         println(filmDao.getFilmById(id)?.userRating)
     }
 
+    override suspend fun getLikeInfoById(id: Int): Boolean {
+       return filmDao.getFilmLikeInfo(id)
+    }
+
+    override fun getAllUserRatingsSum(): Flow<Int> {
+        return filmDao.getAllUserRatings()
+    }
+
+    override fun getLikedFilmsAmount(): Flow<Int> {
+        return filmDao.getLikedFilmsAmount()
+    }
+
+    override fun getRatedFilmsAmount(): Flow<Int> {
+        return filmDao.getRatedFilmsAmount()
+    }
+
+    override suspend fun manualRefresh() {
+        filmDao.invalidateFilms()
+    }
 }

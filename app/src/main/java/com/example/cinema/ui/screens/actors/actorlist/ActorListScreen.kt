@@ -1,24 +1,13 @@
 package com.example.cinema.ui.screens.actors.actorlist
 
-import android.util.Log
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextFieldDefaults.contentPadding
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -63,8 +52,10 @@ fun ActorListScreen(
                 errorText = "Проблемы с доступом. Проверьте подключение к VPN"
             )
 
-            else -> PagingDataVerticalGrid(anyPagingData = pagedActors, state = gridState,
-                sortType = SortType.POPULARITY, searchText = "", paddingValues = PaddingValues()) { actor ->
+            else -> PagingDataVerticalGrid(
+                anyPagingData = pagedActors, state = gridState,
+                sortType = SortType.POPULARITY, searchText = "", paddingValues = PaddingValues(),
+                forceRefresh = {}, textSearch = "") { actor ->
                 ActorInfo(
                     actor = actor,
                     onLikeClick = { actorViewModel.toggleActorLike(actor) }

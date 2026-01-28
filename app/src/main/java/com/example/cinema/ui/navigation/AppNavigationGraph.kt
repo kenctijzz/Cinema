@@ -20,6 +20,7 @@ import com.example.cinema.ui.screens.films.favoritefilms.FavoriteFilms
 import com.example.cinema.ui.screens.films.filminfo.FilmDetailScreen
 import com.example.cinema.ui.screens.films.filmlist.FilmListScreen
 import com.example.cinema.ui.screens.films.filmlist.FilmViewModel
+import com.example.cinema.ui.screens.user.stats.UserStatsScreen
 
 @Composable
 fun AppNavigationGraph(
@@ -53,6 +54,9 @@ fun AppNavigationGraph(
         popEnterTransition = { fadeIn(animationSpec = tween(100)) },
         popExitTransition = { fadeOut(animationSpec = tween(100)) }
     ) {
+        composable<Screen.UserStats>{
+            UserStatsScreen()
+        }
         composable<Screen.FilmList> {
             FilmListScreen(snackbarHostState = snackBarHostState, filmViewModel = filmViewModel,
                 paddingValues = paddingValues)

@@ -13,14 +13,17 @@ class GetFilmDetailsUseCase @Inject constructor(
     suspend operator fun invoke(id: Int): Result<Film> {
         return try {
             val localFilmEntity = repository.getFilmByIdFromLocal(id)
+            val likeInfo = repository.getLikeInfoById(id)
             if (localFilmEntity != null
                 && localFilmEntity.runtime != 0
                 && localFilmEntity.video != null
                 && localFilmEntity.photos.isNotEmpty()
             ) {
-                Result.success(localFilmEntity)
+                Result.success(localFilmEntity.copy(isFavorite = likeInfo))
             } else {
-                val remoteFilm = repository.getFilmByIdFromRemote(id).copy()
+
+                val remoteFilm = repository.getFilmByIdFromRemote(id).copy(isFavorite = likeInfo)
+                Log.e("likedInfo", "$likeInfo")
                 Result.success(remoteFilm)
             }
         } catch (e: Exception) {

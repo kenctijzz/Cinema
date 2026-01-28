@@ -1,6 +1,7 @@
 package com.example.cinema.data.repository.paging
 
 import android.R.attr.apiKey
+import android.content.Context
 import android.util.Log
 import android.util.Log.e
 import androidx.paging.ExperimentalPagingApi
@@ -14,8 +15,11 @@ import com.example.cinema.data.local.entities.FilmEntity
 import com.example.cinema.data.remote.films.FilmApi
 import com.example.cinema.data.remote.films.dto.FilmModel
 import com.example.cinema.data.repository.paging.toEntity
+import com.example.cinema.ui.utils.isNetworkAvailable
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 import kotlinx.coroutines.delay
+import javax.inject.Inject
 
 private fun FilmModel.toEntity(
     pageNumber: Int,
@@ -46,10 +50,11 @@ private fun FilmModel.toEntity(
 
 
 @OptIn(ExperimentalPagingApi::class)
-class FilmRemoteMediator(
+class FilmRemoteMediator (
     private val api: FilmApi,
     private val db: CinemaDatabase,
-    private val apiKey: String
+    private val apiKey: String,
+    private val context: Context
 ) : RemoteMediator<Int, FilmEntity>() {
 
     override suspend fun initialize(): InitializeAction {
@@ -60,6 +65,13 @@ class FilmRemoteMediator(
         loadType: LoadType,
         state: PagingState<Int, FilmEntity>
     ): MediatorResult {
+        if (!isNetworkAvailable(context)) {
+            return if (loadType == LoadType.REFRESH && db.filmDao().getAnyFilm() != null) {
+                MediatorResult.Success(endOfPaginationReached = false)
+            } else {
+                MediatorResult.Error(java.io.IOException("Отсутствует интернет соединение"))
+            }
+        }
         return try {
             val page = when (loadType) {
                 LoadType.REFRESH -> 1
@@ -94,15 +106,15 @@ class FilmRemoteMediator(
 
             MediatorResult.Success(endOfPaginationReached = films.isEmpty())
         } catch (e: Exception) {
-            if (loadType == LoadType.REFRESH) {
+            Log.e("Mediator", "Network failed: ${e.message}")
+            /*if (loadType == LoadType.REFRESH) {
 
                 val hasData = db.filmDao().getAnyFilm() != null
                 if (hasData) {
                     return MediatorResult.Success(endOfPaginationReached = false)
-                }
-
-            }
+                }*/
             MediatorResult.Error(e)
+            }
+
         }
     }
-}

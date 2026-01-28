@@ -1,5 +1,6 @@
 package com.example.cinema.ui.screens.films.favoritefilms
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,7 +8,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
@@ -18,8 +21,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -64,13 +70,23 @@ fun FavoriteFilms(
                         text = "Ваш список любимых фильмов пуст",
                         modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.error,
-                        fontSize = 32.sp, fontFamily = FontFamily.Monospace
+                        fontSize = 32.sp, fontWeight = FontWeight.Bold
                     )
-                    Button(onClick = {
-                        scope.launch {
-                            NavigationManager.navigateTo(Screen.FilmList)
-                        }
-                    }) {
+                    Button(
+                        modifier = Modifier
+                            .border(
+                                width = 2.dp,
+                                color = MaterialTheme.colorScheme.inverseSurface,
+                                RoundedCornerShape(24.dp)
+                            ),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = MaterialTheme.colorScheme.inverseSurface
+                        ), onClick = {
+                            scope.launch {
+                                NavigationManager.navigateTo(Screen.FilmList)
+                            }
+                        }) {
                         Text("Вернуться на главную")
                     }
                 }

@@ -17,4 +17,9 @@ interface FilmRepository {
     suspend fun toggleFilmLike(likeStatus: Boolean, id: Int?)
 /*    suspend fun getFilmVideos(id: Int): List<FilmVideo>*/
     suspend fun updateFilmRating(id: Int, newRating: Int)
+    suspend fun getLikeInfoById(id: Int): Boolean
+    fun getLikedFilmsAmount() : Flow<Int>
+    fun getRatedFilmsAmount(): Flow<Int>
+    fun getAllUserRatingsSum(): Flow<Int>
+    suspend fun manualRefresh()
 }

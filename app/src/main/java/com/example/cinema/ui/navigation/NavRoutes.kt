@@ -6,6 +6,8 @@ import kotlinx.serialization.Serializable
 
 sealed class Screen {
     @Serializable
+    data object UserStats
+    @Serializable
     data object FilmList
 
     @Serializable
@@ -16,7 +18,6 @@ sealed class Screen {
 
     @Serializable
     data object FavoriteFilms
-
 
     @Serializable
     data class FilmDetail(val id: Int)

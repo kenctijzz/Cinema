@@ -52,11 +52,7 @@ class FilmDetailViewModel @Inject constructor(
     val filmFlow: StateFlow<Film?> = getFilmFlowUseCase(filmId).stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = Film(
-                0, 0, null, null, null, "",
-                adult = false, isFavorite = false, 0.0, 0.0, "",
-                0, video = null, photos = emptyList(), userRating = 0
-            )
+            initialValue = null
         )
 
 

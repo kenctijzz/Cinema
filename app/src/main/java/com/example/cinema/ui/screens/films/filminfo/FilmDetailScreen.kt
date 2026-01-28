@@ -46,6 +46,7 @@ fun FilmDetailScreen(
     val scope = rememberCoroutineScope()
     val backgroundAlpha = (1f - (scrollState.value / 1000f)).coerceIn(0f, 1f)
     val state = filmDetailViewModel.state.collectAsStateWithLifecycle()
+    val filmFlow = filmDetailViewModel.filmFlow.collectAsStateWithLifecycle()
     Box() {
         LaunchedEffect(Unit) {
             filmDetailViewModel.snackBarEvent.collect { event ->
@@ -80,7 +81,7 @@ fun FilmDetailScreen(
                                 .verticalScroll(scrollState),
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            Spacer(modifier = Modifier.height(32.dp))
+                            Spacer(modifier = Modifier.height(72.dp))
                             FilmPoster(
                                 "${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image}",
                                 filmTitle = uiState.data.title,

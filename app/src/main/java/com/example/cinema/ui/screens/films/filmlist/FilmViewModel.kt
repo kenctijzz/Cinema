@@ -7,6 +7,7 @@ import com.example.cinema.core.ui.UiEvent
 import com.example.cinema.data.repository.SortType
 import com.example.cinema.domain.model.Film
 import com.example.cinema.domain.usecases.films.GetFilmsUseCase
+import com.example.cinema.domain.usecases.films.ManualRefreshUseCase
 import com.example.cinema.domain.usecases.films.ToggleFilmLikeUseCase
 import com.example.cinema.ui.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +26,8 @@ import javax.inject.Inject
 @HiltViewModel
 class FilmViewModel @Inject constructor(
     private val getFilmsUseCase: GetFilmsUseCase,
-    private val toggleFilmLikeUseCase: ToggleFilmLikeUseCase
+    private val toggleFilmLikeUseCase: ToggleFilmLikeUseCase,
+    private val manualRefreshUseCase: ManualRefreshUseCase
 ) : BaseViewModel() {
     private val _snackBarEvent = MutableSharedFlow<UiEvent.ShowSnackBar>(
         replay = 0,
@@ -71,8 +73,15 @@ class FilmViewModel @Inject constructor(
 
     override fun load() {
     }
-
+    fun manualRefresh() {
+        viewModelScope.launch {
+            manualRefreshUseCase()
+        }
+    }
     fun searchTextChange(search: String) {
         searchText.value = search
+    }
+    fun forceRefresh() {
+        filmsSortType.value = filmsSortType.value
     }
 }

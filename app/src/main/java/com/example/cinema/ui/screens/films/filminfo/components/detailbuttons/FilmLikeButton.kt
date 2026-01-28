@@ -36,7 +36,7 @@ fun FilmLikeButton(
                 content = {
                     Icon(
                         modifier = Modifier.size(40.dp),
-                        imageVector = if (film?.value?.isFavorite ?: false) {
+                        imageVector = if (film?.value?.isFavorite == true) {
                             Icons.Default.Favorite
                         } else {
                             Icons.Default.FavoriteBorder
