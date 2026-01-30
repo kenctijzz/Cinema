@@ -45,6 +45,7 @@ import androidx.core.net.toUri
 @Composable
 fun FilmTrailerWatchButton(video: String?, title: String, releaseYear: String) {
     val context = LocalContext.current
+
     val haveVideos = !video.isNullOrBlank()
 
     Column(
@@ -94,9 +95,10 @@ fun FilmTrailerWatchButton(video: String?, title: String, releaseYear: String) {
                 contentColor = MaterialTheme.colorScheme.inverseSurface
             ),
             onClick = {
+                val query = Uri.encode("$title $releaseYear")
                 val intent = Intent(
                     Intent.ACTION_VIEW,
-                    "${ApiConstants.VK_SEARCH}${title} $releaseYear".toUri()
+                    "${ApiConstants.VK_SEARCH}$query".toUri()
                 )
                 context.startActivity(intent)
 
