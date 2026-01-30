@@ -1,5 +1,6 @@
 package com.example.cinema.ui.screens.films.filmlist
 
+import com.example.cinema.R
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -67,7 +70,7 @@ fun FilmInfo(
                     scope.launch {
                         NavigationManager.navigateTo(Screen.FilmDetail(id = film.id))
                     }
-                }
+                },
         ) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 AsyncImage(
@@ -78,6 +81,8 @@ fun FilmInfo(
                         .crossfade(true)
                         .build(),
                     contentDescription = "${film.title} image",
+                    error = painterResource(id = R.drawable.ic_no_video),
+                    placeholder = painterResource(id = R.drawable.ic_no_video),
                     contentScale = ContentScale.Crop
                 )
                 Column(

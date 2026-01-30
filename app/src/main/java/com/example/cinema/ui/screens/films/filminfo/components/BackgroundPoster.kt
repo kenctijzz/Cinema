@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
@@ -46,6 +47,7 @@ fun BackgroundPoster(poster: String) {
                 .crossfade(true)
                 .build(),
             contentDescription = "backgroundPoster",
+            error = painterResource(id = com.example.cinema.R.drawable.ic_no_video),
             placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceVariant),
             contentScale = ContentScale.Crop,
             alpha = 0.4f

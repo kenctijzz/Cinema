@@ -211,10 +211,17 @@ fun UserStatsScreen(userStatsViewModel: UserStatsViewModel = hiltViewModel()) {
                             ) {
                                 Text(
                                     text = if(userRatingSum > 0){
+                                        if((userRatingSum.toDouble() / userRatedFilmsAmount) == 10.0){
+                                            String.format(
+                                                Locale.US, "%.0f",
+                                                (userRatingSum.toDouble() / userRatedFilmsAmount))
+                                        }
+                                        else{
                                         String.format(
                                         Locale.US, "%.1f",
                                         (userRatingSum.toDouble() / userRatedFilmsAmount)
-                                    )} else {
+
+                                    )}} else {
                                         "-"
                                     },
                                     modifier = Modifier.fillMaxWidth(),
