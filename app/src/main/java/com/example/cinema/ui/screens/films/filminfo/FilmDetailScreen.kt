@@ -89,7 +89,8 @@ fun FilmDetailScreen(
                                 filmRunTime = uiState.data.runtime,
                                 filmRating = uiState.data.rating
                             )
-                            FilmTrailerWatchButton(uiState.data.video, uiState.data.title)
+                            FilmTrailerWatchButton(uiState.data.video, uiState.data.title, releaseYear = uiState.data.releaseDate?.substringBefore("-")
+                                ?: "")
                             FilmDetailButtons(
                                 film = uiState.data,
                                 snackbarHostState = snackbarHostState,

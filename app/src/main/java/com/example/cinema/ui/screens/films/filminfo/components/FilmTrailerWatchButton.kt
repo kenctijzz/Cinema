@@ -5,6 +5,7 @@ import android.R.attr.text
 import android.R.attr.y
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -43,8 +44,9 @@ import com.example.cinema.ui.screens.films.filminfo.FilmDetailViewModel
 import androidx.core.net.toUri
 
 @Composable
-fun FilmTrailerWatchButton(video: String?, title: String) {
+fun FilmTrailerWatchButton(video: String?, title: String, releaseYear: String) {
     val context = LocalContext.current
+
     val haveVideos = !video.isNullOrBlank()
 
     Column(
@@ -94,9 +96,11 @@ fun FilmTrailerWatchButton(video: String?, title: String) {
                 contentColor = MaterialTheme.colorScheme.inverseSurface
             ),
             onClick = {
+                Toast.makeText(context, "Ищем фильм в Вк Видео...", Toast.LENGTH_SHORT).show()
+                val query = Uri.encode("$title $releaseYear")
                 val intent = Intent(
                     Intent.ACTION_VIEW,
-                    "${ApiConstants.VK_SEARCH}${title}".toUri()
+                    "${ApiConstants.VK_SEARCH}$query".toUri()
                 )
                 context.startActivity(intent)
 
