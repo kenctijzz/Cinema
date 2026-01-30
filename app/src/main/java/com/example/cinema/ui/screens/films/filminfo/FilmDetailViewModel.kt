@@ -15,6 +15,7 @@ import com.example.cinema.domain.usecases.films.ToggleFilmLikeUseCase
 import com.example.cinema.domain.usecases.films.UpdateFilmRatingUseCase
 import com.example.cinema.ui.common.BaseViewModel
 import com.example.cinema.ui.common.UiState
+import com.example.cinema.ui.common.mockMovies
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
@@ -61,22 +62,25 @@ class FilmDetailViewModel @Inject constructor(
     val state: StateFlow<UiState<Film>> = _state
     override fun load() {
         viewModelScope.launch {
-            _state.update {
-                UiState.Loading
-            }
+            _state.update { UiState.Loading }
 
-            getFilmDetailsUseCase(filmId).onSuccess { data ->
-                _state.update {
-                    UiState.Success(data)
-                }
-            }.onFailure { error ->
-                _state.update {
-                    Log.e("ERROR OF LOADING FILM INFO", "$error")
-                    UiState.Error("$error")
+            val mockFilm = mockMovies.find { it.id == filmId }
+
+            if (mockFilm != null) {
+                _state.update { UiState.Success(mockFilm) }
+            } else {
+                getFilmDetailsUseCase(filmId).onSuccess { data ->
+                    _state.update { UiState.Success(data) }
+                }.onFailure { error ->
+                    _state.update {
+                        Log.e("ERROR OF LOADING FILM INFO", "$error")
+                        UiState.Error("$error")
+                    }
                 }
             }
         }
     }
+
 
     fun updateFilmRating(newRating: Int, id: Int) {
         viewModelScope.launch {

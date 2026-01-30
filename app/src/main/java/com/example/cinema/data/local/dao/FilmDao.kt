@@ -105,4 +105,7 @@ interface FilmDao {
 
     @Query("DELETE FROM films WHERE id = -1")
     suspend fun invalidateFilms()
+
+    @Query("DELETE FROM films WHERE id = :id")
+    suspend fun deleteFilm(id: Int)
 }

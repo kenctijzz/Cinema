@@ -20,6 +20,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -86,9 +87,10 @@ fun <T : VisualModels> PagingDataVerticalGrid(
             }
         }
     }
+    val isOffline = anyPagingData.itemSnapshotList.items.any { it.id == 101 }
+
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Основной список
         LazyVerticalGrid(
             state = state,
             columns = GridCells.Fixed(2),
@@ -99,27 +101,76 @@ fun <T : VisualModels> PagingDataVerticalGrid(
                 bottom = paddingValues.calculateBottomPadding() + 16.dp
             )
         ) {
-            // Отрисовка элементов
+
+            if (isOffline) {
+                item(span = { GridItemSpan(2) }) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 104.dp),
+                        color = MaterialTheme.colorScheme.errorContainer,
+                        shape = RoundedCornerShape(12.dp),
+                        tonalElevation = 4.dp
+                    ) {
+                        Text(
+                            text = "Офлайн-Режим: Вам доступны 4 фильма для теста функций рейтинга, избранного и экрана профиля." +
+                                    " Для полной базы проверьте состояние сети, затем используйте кнопку «Повторить» в конце списка, либо потяните список сверху вниз.",
+                            modifier = Modifier.padding(16.dp),
+                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
             items(
                 count = anyPagingData.itemCount,
                 key = anyPagingData.itemKey { it.id }
             ) { index ->
                 anyPagingData[index]?.let { content(it) }
             }
-
-            // Логика подгрузки новых страниц (APPEND)
+            if (isOffline || anyPagingData.loadState.append is LoadState.Error || anyPagingData.loadState.refresh is LoadState.Error) {
+                item(span = { GridItemSpan(2) }) {
+                    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                        Text(
+                            text = "Ошибка загрузки актуальных данных",
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Button(
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(horizontal = 64.dp)
+                                .border(
+                                    width = 2.dp,
+                                    color = MaterialTheme.colorScheme.inverseSurface,
+                                    shape = RoundedCornerShape(24.dp)),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent,
+                                contentColor = MaterialTheme.colorScheme.inverseSurface
+                            ),
+                            onClick = { anyPagingData.refresh() }
+                        ) {
+                            Text("Повторить")
+                        }
+                    }
+                }
+            }
             item(span = { GridItemSpan(2) }) {
+
                 when (val appendState = anyPagingData.loadState.append) {
                     is LoadState.Loading -> {
-                        // Показываем лоадер, если это не первая страница
                         if (anyPagingData.itemCount > 0) {
                             UiLoading()
                         }
                     }
 
-                    is LoadState.Error -> {
-                        if (anyPagingData.itemCount > 0) {
-                            Column(modifier = Modifier.fillMaxWidth().align(Alignment.Center)) {
+                    is LoadState.Error -> {}/*{
+                        if (anyPagingData.itemCount > 0 && !isOffline) {
+                            Column(modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.Center)) {
                                 Text(
                                     modifier = Modifier.fillMaxWidth(),
                                     text = "Ошибка загрузки",
@@ -127,7 +178,8 @@ fun <T : VisualModels> PagingDataVerticalGrid(
                                     textAlign = TextAlign.Center
                                 )
                                 Button(
-                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                    modifier = Modifier
+                                        .align(Alignment.CenterHorizontally)
                                         .padding(horizontal = 64.dp)
                                         .border(
                                             width = 2.dp,
@@ -147,14 +199,13 @@ fun <T : VisualModels> PagingDataVerticalGrid(
                                 }
                             }
                         }
-                    }
+                    }*/
 
                     else -> {}
                 }
             }
         }
 
-        // Логика состояния всего экрана (REFRESH)
         when (val refreshState = anyPagingData.loadState.refresh) {
             is LoadState.Loading -> {
                 if (anyPagingData.itemCount == 0) {
@@ -166,9 +217,11 @@ fun <T : VisualModels> PagingDataVerticalGrid(
 
             is LoadState.Error -> {
                 if (anyPagingData.itemCount == 0 && textSearch.isEmpty()) {
-                    Column(modifier = Modifier.fillMaxSize(),
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center) {
+                        verticalArrangement = Arrangement.Center
+                    ) {
                         Text(
                             text = "Не удалось загрузить данные. Проверьте соединение и попробуйте снова",
                             fontWeight = FontWeight.Bold,

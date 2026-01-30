@@ -50,7 +50,9 @@ fun FilmListScreen(
     val sortType = filmViewModel.filmsSortType.collectAsStateWithLifecycle()
     val searchText = filmViewModel.searchText.collectAsStateWithLifecycle()
     val pagedMovies = filmViewModel.filmsFlow.collectAsLazyPagingItems()
+
     val gridState = rememberLazyGridState()
+
     val currentSort by filmViewModel.filmsSortType.collectAsState()
     var isFirstComposition by remember { mutableStateOf(true) }
     LaunchedEffect(currentSort) {
@@ -85,20 +87,24 @@ fun FilmListScreen(
         val localRefreshState = pagedMovies.loadState.refresh
         val isRefreshing = mediatorRefreshState is LoadState.Loading
         var showErrorWithDelay by remember { mutableStateOf(false) }
-        val shouldShowError = (mediatorRefreshState is LoadState.Error ||
-                (localRefreshState is LoadState.NotLoading && pagedMovies.itemCount == 0)) &&
+        val isNetworkError =
+            mediatorRefreshState is LoadState.Error || localRefreshState is LoadState.Error
+        val isOffline = pagedMovies.itemSnapshotList.items.any { it.id == 101 }
+        val shouldShowError = isNetworkError &&
+                pagedMovies.itemCount == 0 &&
+                !isOffline &&
                 searchText.value.isEmpty() &&
                 sortType.value == SortType.POPULARITY &&
                 mediatorRefreshState !is LoadState.Loading
         LaunchedEffect(shouldShowError) {
             if (shouldShowError) {
-                delay(200)
+                delay(2000)
                 showErrorWithDelay = true
             } else {
                 showErrorWithDelay = false
             }
         }
-        if (showErrorWithDelay) {
+        if (showErrorWithDelay && !isOffline) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -126,12 +132,14 @@ fun FilmListScreen(
         }
         when {
             (localRefreshState is LoadState.Loading || mediatorRefreshState is LoadState.Loading)
-                    && pagedMovies.itemCount == 0 -> {
+                    && pagedMovies.itemCount == 0 && !isOffline-> {
                 UiLoading()
             }
 
             else -> {
-                if ((sortType.value == SortType.POPULARITY && pagedMovies.itemCount > 0) || (sortType.value == SortType.USER_RATE && pagedMovies.itemCount > 0)) {
+                val canShowGrid = pagedMovies.itemCount > 0 || isOffline || isNetworkError
+                if (canShowGrid){
+                    if ((sortType.value == SortType.POPULARITY) || (sortType.value == SortType.USER_RATE && pagedMovies.itemCount > 0)) {
                     PagingDataVerticalGrid(
                         anyPagingData = pagedMovies,
                         state = gridState,
@@ -148,6 +156,8 @@ fun FilmListScreen(
                             onLikeClick = { filmViewModel.toggleFilmLike(film) }
                         )
                     }
+                }
+
                 }
                 if (sortType.value == SortType.USER_RATE && pagedMovies.itemCount == 0) {
                     Column(
@@ -181,7 +191,6 @@ fun FilmListScreen(
                         }
                     }
                 }
-
             }
         }
     }
