@@ -37,7 +37,7 @@ fun FilmPhotoDropDownMenu(
         expanded = true
     ) {
         DropdownMenuItem(
-            text = { Text("Скачать") },
+            text = { Text("Сохранить") },
             onClick = {
                 onDismissRequest()
                 scope.launch {

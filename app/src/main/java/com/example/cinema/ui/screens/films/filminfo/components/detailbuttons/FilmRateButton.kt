@@ -26,14 +26,22 @@ fun FilmRateButton(
     val scope = rememberCoroutineScope()
     Button(
         onClick = {
-            scope.launch {
-                filmDetailViewModel.updateFilmRating(newRating = selectedRate, id = filmId)
-            }
+                scope.launch {
+                    if(selectedRate < 100) {
+                        println("$selectedRate")
+                        filmDetailViewModel.updateFilmRating(newRating = selectedRate, id = filmId)
+                    }
+                    else{
+                        println("$selectedRate")
+                        filmDetailViewModel.deleteFilmUserRating(id = filmId)
+                    }
+
+                }
             onDismiss()
         },
         modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (!isSelectRate) {
+            containerColor = if (!isSelectRate || selectedRate == 100) {
                 Color.Gray
             } else {
                 selectedRate.toDouble().toRatingColor()
@@ -41,6 +49,6 @@ fun FilmRateButton(
             contentColor = Color.White
         )
     ) {
-        Text("Оценить")
+        Text(if(selectedRate != 100)"Оценить" else "Удалить оценку")
     }
 }

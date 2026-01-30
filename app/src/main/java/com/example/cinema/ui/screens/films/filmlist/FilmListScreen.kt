@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.cinema.core.ui.UiEvent
@@ -96,7 +98,7 @@ fun FilmListScreen(
                 showErrorWithDelay = false
             }
         }
-        if(showErrorWithDelay){
+        if (showErrorWithDelay) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -129,21 +131,57 @@ fun FilmListScreen(
             }
 
             else -> {
-                PagingDataVerticalGrid(
-                    anyPagingData = pagedMovies,
-                    state = gridState,
-                    sortType = sortType.value,
-                    searchText = searchText.value,
-                    paddingValues = paddingValues,
-                    forceRefresh = { filmViewModel.manualRefresh() },
-                    textSearch = searchText.value
-                ) { film ->
-                    FilmInfo(
-                        film = film,
-                        viewModel = filmViewModel,
-                        onLikeClick = { filmViewModel.toggleFilmLike(film) }
-                    )
+                if ((sortType.value == SortType.POPULARITY && pagedMovies.itemCount > 0) || (sortType.value == SortType.USER_RATE && pagedMovies.itemCount > 0)) {
+                    PagingDataVerticalGrid(
+                        anyPagingData = pagedMovies,
+                        state = gridState,
+                        sortType = sortType.value,
+                        searchText = searchText.value,
+                        paddingValues = paddingValues,
+                        forceRefresh = { filmViewModel.manualRefresh() },
+                        textSearch = searchText.value,
+                        sortTypeChangeToPopular = { filmViewModel.changeFilmsSortType(SortType.POPULARITY) }
+                    ) { film ->
+                        FilmInfo(
+                            film = film,
+                            viewModel = filmViewModel,
+                            onLikeClick = { filmViewModel.toggleFilmLike(film) }
+                        )
+                    }
                 }
+                if (sortType.value == SortType.USER_RATE && pagedMovies.itemCount == 0) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "Вы еще не оценили ни одного фильма. Поставьте свою первую оценку, чтобы сформировать личный рейтинг!",
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            fontSize = 24.sp
+                        )
+                        Button(
+                            modifier = Modifier
+                                .padding(horizontal = 64.dp)
+                                .border(
+                                    width = 2.dp,
+                                    color = MaterialTheme.colorScheme.inverseSurface,
+                                    shape = RoundedCornerShape(24.dp)
+                                ),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent,
+                                contentColor = MaterialTheme.colorScheme.inverseSurface
+                            ),
+                            onClick = {
+                                filmViewModel.changeFilmsSortType(SortType.POPULARITY)
+                            }
+                        ) {
+                            Text("К популярным")
+                        }
+                    }
+                }
+
             }
         }
     }

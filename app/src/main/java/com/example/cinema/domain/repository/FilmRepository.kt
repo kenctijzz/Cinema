@@ -22,4 +22,5 @@ interface FilmRepository {
     fun getRatedFilmsAmount(): Flow<Int>
     fun getAllUserRatingsSum(): Flow<Int>
     suspend fun manualRefresh()
+    suspend fun deleteFilmUserRating(id: Int)
 }

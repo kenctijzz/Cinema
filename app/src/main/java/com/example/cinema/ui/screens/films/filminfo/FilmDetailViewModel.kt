@@ -8,6 +8,7 @@ import androidx.navigation.toRoute
 import com.example.cinema.core.ui.UiEvent
 import com.example.cinema.ui.navigation.Screen
 import com.example.cinema.domain.model.Film
+import com.example.cinema.domain.usecases.films.DeleteFilmUserRatingUseCase
 import com.example.cinema.domain.usecases.films.GetFilmDetailsUseCase
 import com.example.cinema.domain.usecases.films.GetFilmFlowUseCase
 import com.example.cinema.domain.usecases.films.ToggleFilmLikeUseCase
@@ -34,7 +35,8 @@ class FilmDetailViewModel @Inject constructor(
     private val getFilmDetailsUseCase: GetFilmDetailsUseCase,
     private val toggleFilmLikeUseCase: ToggleFilmLikeUseCase,
     private val getFilmFlowUseCase: GetFilmFlowUseCase,
-    private val updateFilmRatingUseCase: UpdateFilmRatingUseCase
+    private val updateFilmRatingUseCase: UpdateFilmRatingUseCase,
+    private val deleteFilmUserRatingUseCase: DeleteFilmUserRatingUseCase
 ) : BaseViewModel() {
     private val _snackBarEvent = MutableSharedFlow<UiEvent.ShowSnackBar>(
         replay = 0,
@@ -83,7 +85,13 @@ class FilmDetailViewModel @Inject constructor(
             }
         }
     }
-
+    fun deleteFilmUserRating(id: Int){
+        viewModelScope.launch {
+            withContext(Dispatchers.IO){
+                deleteFilmUserRatingUseCase(id)
+            }
+        }
+    }
     fun toggleFilmLike(film: Film?) {
         viewModelScope.launch {
             val favoriteStatus = toggleFilmLikeUseCase(film)

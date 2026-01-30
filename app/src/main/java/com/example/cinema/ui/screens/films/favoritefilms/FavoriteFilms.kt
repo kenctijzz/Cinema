@@ -30,10 +30,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.cinema.core.ui.UiEvent
+import com.example.cinema.data.repository.SortType
 import com.example.cinema.ui.common.UiState
 import com.example.cinema.ui.navigation.NavigationManager
 import com.example.cinema.ui.navigation.Screen
 import com.example.cinema.ui.screens.films.filmlist.FilmInfo
+import com.example.cinema.ui.screens.films.filmlist.FilmViewModel
 import com.example.cinema.ui.utils.UiError
 import com.example.cinema.ui.utils.UiLoading
 import kotlinx.coroutines.launch
@@ -41,7 +43,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun FavoriteFilms(
     favoriteFilmsViewModel: FavoriteFilmsViewModel = hiltViewModel(),
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    filmViewModel : FilmViewModel
 ) {
     val scope = rememberCoroutineScope()
 
@@ -67,10 +70,10 @@ fun FavoriteFilms(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Ваш список любимых фильмов пуст",
-                        modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.error,
-                        fontSize = 32.sp, fontWeight = FontWeight.Bold
+                        text = "Ваш список любимых фильмов пуст. Оцените свой первый фильм, чтобы сформировать личную коллекцию!",
+                        modifier = Modifier.fillMaxWidth(), fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        fontSize = 24.sp
                     )
                     Button(
                         modifier = Modifier
@@ -84,10 +87,12 @@ fun FavoriteFilms(
                             contentColor = MaterialTheme.colorScheme.inverseSurface
                         ), onClick = {
                             scope.launch {
+                                filmViewModel.changeFilmsSortType(SortType.POPULARITY)
                                 NavigationManager.navigateTo(Screen.FilmList)
+
                             }
                         }) {
-                        Text("Вернуться на главную")
+                        Text("К популярным")
                     }
                 }
             } else {

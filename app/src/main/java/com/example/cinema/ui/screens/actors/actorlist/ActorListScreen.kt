@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.cinema.core.ui.UiEvent
@@ -55,7 +56,7 @@ fun ActorListScreen(
             else -> PagingDataVerticalGrid(
                 anyPagingData = pagedActors, state = gridState,
                 sortType = SortType.POPULARITY, searchText = "", paddingValues = PaddingValues(),
-                forceRefresh = {}, textSearch = "") { actor ->
+                forceRefresh = {}, textSearch = "", sortTypeChangeToPopular = {}) { actor ->
                 ActorInfo(
                     actor = actor,
                     onLikeClick = { actorViewModel.toggleActorLike(actor) }

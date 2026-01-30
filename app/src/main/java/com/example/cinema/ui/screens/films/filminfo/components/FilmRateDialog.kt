@@ -1,5 +1,6 @@
 package com.example.cinema.ui.screens.films.filminfo.components
 
+import android.R.attr.fontWeight
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -65,7 +66,7 @@ fun FilmRateDialog(
                         selectedRate = { newRate -> selectedRate = newRate },
                         isSelectRate = { isSelectRate = true })
 
-                if (isSelectRate) {
+                if (isSelectRate && selectedRate != 100) {
                     Text(
                         text = "$selectedRate",
                         fontWeight = FontWeight.ExtraBold,

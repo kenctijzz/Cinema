@@ -127,7 +127,7 @@ fun TopAppBarNav(
                             }
                             .background(color = Color.Transparent.copy(0.65f)),
                         singleLine = true,
-                        placeholder = { Text("Search") }
+                        placeholder = { Text("Поиск") }
                     )
                 }
             } else {

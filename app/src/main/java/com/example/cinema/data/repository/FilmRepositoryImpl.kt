@@ -277,7 +277,6 @@ class FilmRepositoryImpl @Inject constructor(
     override suspend fun updateFilmRating(id: Int, newRating: Int) {
         filmDao.updateFilmRatingEntities(RatedFilmsEntity(id = id, userRating = newRating))
         filmDao.updateFilmRating(newRating, id)
-        println(filmDao.getFilmById(id)?.userRating)
     }
 
     override suspend fun getLikeInfoById(id: Int): Boolean {
@@ -298,5 +297,10 @@ class FilmRepositoryImpl @Inject constructor(
 
     override suspend fun manualRefresh() {
         filmDao.invalidateFilms()
+    }
+
+    override suspend fun deleteFilmUserRating(id: Int) {
+        filmDao.deleteFilmUserRating(id)
+        filmDao.updateFilmRating(id = id, newRating = null)
     }
 }

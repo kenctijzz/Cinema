@@ -87,6 +87,7 @@ class FilmRemoteMediator (
             val localFavorites = db.filmDao().getAllLikedFilms()
             Log.e("Liked Films", "$localFavorites")
             val localRated = db.filmDao().getAllRatedFilmsId().associate { it.id to it.userRating }
+            println(localRated)
             val localFilms = db.filmDao().getAllFilms()
             val films = response.results.map { filmModel ->
                 filmModel.toEntity(

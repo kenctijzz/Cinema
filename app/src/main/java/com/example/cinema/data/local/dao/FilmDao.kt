@@ -24,9 +24,9 @@ interface FilmDao {
     @Query("SELECT * FROM films WHERE isSearchResult = 1 AND title LIKE '%' || :search || '%' AND isSearchResult = 1 ORDER BY page ASC")
     fun searchFilmsPagingSource(search: String): PagingSource<Int, FilmEntity>
 
-    @Query("DELETE FROM films WHERE isSearchResult = 1")
+    @Query("DELETE FROM films WHERE isSearchResult = 1 AND userRating IS NULL")
     fun clearSearchFilms()
-    @Query("DELETE FROM films WHERE isSearchResult = 0")
+    @Query("DELETE FROM films WHERE isSearchResult = 0 AND userRating IS NULL")
     fun clearPopularFilms()
     @Query("SELECT * FROM films")
     suspend fun getAllFilms(): List<FilmEntity>
@@ -79,7 +79,7 @@ interface FilmDao {
 
     @Query("UPDATE films SET userRating = :newRating WHERE id = :id")
     suspend fun updateFilmRating(
-        newRating: Int,
+        newRating: Int?,
         id: Int
     )
     @Query("SELECT id, userRating FROM rated_films WHERE userRating IS NOT NULL")
@@ -95,7 +95,8 @@ interface FilmDao {
     fun getAllUserRatings(): Flow<Int>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateFilmRatingEntities(film: RatedFilmsEntity)
-
+    @Query("DELETE FROM rated_films WHERE id = :id")
+    suspend fun deleteFilmUserRating(id: Int)
     @Query("SELECT EXISTS(SELECT 1 FROM liked_films WHERE id = :id)")
     suspend fun getFilmLikeInfo(id: Int): Boolean
 

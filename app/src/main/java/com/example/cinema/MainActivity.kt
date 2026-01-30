@@ -41,7 +41,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             val snackBarHostState = remember { SnackbarHostState() }
             MyApplicationTheme {
-                AppNavigationDrawer(snackBarHostState = snackBarHostState, filmViewModel = viewModel)
+                AppNavigationDrawer(
+                    snackBarHostState = snackBarHostState,
+                    filmViewModel = viewModel
+                )
             }
         }
     }

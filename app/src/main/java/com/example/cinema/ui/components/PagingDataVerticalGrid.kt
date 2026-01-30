@@ -42,11 +42,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
 import com.example.cinema.data.repository.SortType
+import com.example.cinema.ui.common.BaseViewModel
 import com.example.cinema.ui.common.VisualModels
+import com.example.cinema.ui.screens.films.filmlist.FilmViewModel
 import com.example.cinema.ui.utils.UiError
 import com.example.cinema.ui.utils.UiLoading
 import com.google.android.material.loadingindicator.LoadingIndicator
@@ -63,10 +66,11 @@ fun <T : VisualModels> PagingDataVerticalGrid(
     anyPagingData: LazyPagingItems<T>,
     state: LazyGridState,
     forceRefresh: () -> Unit,
-    sortType: SortType,
     searchText: String,
     paddingValues: PaddingValues,
     textSearch: String,
+    sortType: SortType,
+    sortTypeChangeToPopular: () -> Unit,
     content: @Composable ((T) -> Unit)
 
 ) {

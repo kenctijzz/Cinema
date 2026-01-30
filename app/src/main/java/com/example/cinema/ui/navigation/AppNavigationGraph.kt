@@ -65,7 +65,8 @@ fun AppNavigationGraph(
             FilmDetailScreen(snackbarHostState = snackBarHostState)
         }
         composable<Screen.FavoriteFilms> {
-            FavoriteFilms(snackbarHostState = snackBarHostState)
+            FavoriteFilms(snackbarHostState = snackBarHostState,
+                filmViewModel = filmViewModel)
         }
         composable<Screen.ActorList> {
             ActorListScreen(snackbarHostState = snackBarHostState)

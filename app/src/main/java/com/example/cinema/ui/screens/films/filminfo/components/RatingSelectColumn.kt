@@ -36,6 +36,31 @@ fun RatingSelectColumn(
         verticalArrangement = Arrangement.spacedBy(50.dp)
     )
     {
+        item() {
+            Box(modifier = Modifier, contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(color = MaterialTheme.colorScheme.surfaceVariant)
+                        .size(60.dp)
+                        .clickable(onClick = {
+                            showValidText()
+                            isSelectRate()
+                            selectedRate(100)
+                        })
+                )
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(15.dp),
+                    text = "-",
+                    color = 0.toDouble().toRatingColor(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                )
+            }
+        }
         items(items = rateNumbers) { number ->
             key(number) {
                 Box(modifier = Modifier, contentAlignment = Alignment.Center) {
@@ -63,5 +88,6 @@ fun RatingSelectColumn(
                 }
             }
         }
-    }
+
+}
 }
