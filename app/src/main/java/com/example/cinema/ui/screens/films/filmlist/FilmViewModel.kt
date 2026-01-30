@@ -14,8 +14,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
@@ -29,6 +31,7 @@ class FilmViewModel @Inject constructor(
     private val toggleFilmLikeUseCase: ToggleFilmLikeUseCase,
     private val manualRefreshUseCase: ManualRefreshUseCase
 ) : BaseViewModel() {
+    val isReady = MutableStateFlow(false)
     private val _snackBarEvent = MutableSharedFlow<UiEvent.ShowSnackBar>(
         replay = 0,
         extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST
@@ -68,6 +71,14 @@ class FilmViewModel @Inject constructor(
     }
 
     init {
+        viewModelScope.launch {
+            filmsFlow.cachedIn(viewModelScope).collectLatest {
+                delay(1200)
+                isReady.value = true
+            }
+        }
+
+
         Log.d("DEBUG", "VM Hash: ${this.hashCode()}")
     }
 

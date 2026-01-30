@@ -61,8 +61,8 @@ import com.example.cinema.ui.screens.films.filmlist.FilmViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun AppNavigationDrawer(snackBarHostState: SnackbarHostState) {
-    val filmViewModel: FilmViewModel = hiltViewModel()
+fun AppNavigationDrawer(snackBarHostState: SnackbarHostState, filmViewModel: FilmViewModel) {
+
     val focusManager = LocalFocusManager.current
     val sortType = filmViewModel.filmsSortType.collectAsStateWithLifecycle()
     val searchText = filmViewModel.searchText.collectAsStateWithLifecycle()

@@ -22,7 +22,7 @@ android {
         minSdk = 26
         targetSdk = 36
         versionCode = 5
-        versionName = "1.0.2"
+        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -101,4 +101,5 @@ dependencies {
     implementation("androidx.paging:paging-common:3.3.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     implementation("androidx.room:room-paging:2.6.1")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 }

@@ -65,6 +65,7 @@ class FilmRemoteMediator (
         loadType: LoadType,
         state: PagingState<Int, FilmEntity>
     ): MediatorResult {
+        Log.d("Mediator", "Pull-to-refresh triggered!")
         if (!isNetworkAvailable(context)) {
             return if (loadType == LoadType.REFRESH && db.filmDao().getAnyFilm() != null) {
                 MediatorResult.Success(endOfPaginationReached = false)
