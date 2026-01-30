@@ -43,7 +43,7 @@ import com.example.cinema.ui.screens.films.filminfo.FilmDetailViewModel
 import androidx.core.net.toUri
 
 @Composable
-fun FilmTrailerWatchButton(video: String?, title: String) {
+fun FilmTrailerWatchButton(video: String?, title: String, releaseYear: String) {
     val context = LocalContext.current
     val haveVideos = !video.isNullOrBlank()
 
@@ -96,7 +96,7 @@ fun FilmTrailerWatchButton(video: String?, title: String) {
             onClick = {
                 val intent = Intent(
                     Intent.ACTION_VIEW,
-                    "${ApiConstants.VK_SEARCH}${title}".toUri()
+                    "${ApiConstants.VK_SEARCH}${title} $releaseYear".toUri()
                 )
                 context.startActivity(intent)
 
