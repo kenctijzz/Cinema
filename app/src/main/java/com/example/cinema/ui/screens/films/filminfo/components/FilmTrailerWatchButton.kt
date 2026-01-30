@@ -5,6 +5,7 @@ import android.R.attr.text
 import android.R.attr.y
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -95,6 +96,7 @@ fun FilmTrailerWatchButton(video: String?, title: String, releaseYear: String) {
                 contentColor = MaterialTheme.colorScheme.inverseSurface
             ),
             onClick = {
+                Toast.makeText(context, "Ищем фильм в Вк Видео...", Toast.LENGTH_SHORT).show()
                 val query = Uri.encode("$title $releaseYear")
                 val intent = Intent(
                     Intent.ACTION_VIEW,
