@@ -1,5 +1,5 @@
 # CineRoom
-[Скачать последнюю версию (APK)](https://github.com/kenctijzz/Cinema/releases/download/v1.0.1/CineRoom_1.0.1.apk)
+## [Скачать последнюю версию (APK)](https://github.com/kenctijzz/CineRoom/releases/download/v1.0.2/cineroom-release.apk)
 
 Технологический стек
 
