@@ -144,41 +144,7 @@ fun <T : VisualModels> PagingDataVerticalGrid(
                         }
                     }
 
-                    is LoadState.Error -> {}/*{
-                        if (anyPagingData.itemCount > 0 && !isOffline) {
-                            Column(modifier = Modifier
-                                .fillMaxWidth()
-                                .align(Alignment.Center)) {
-                                Text(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    text = "Ошибка загрузки",
-                                    fontWeight = FontWeight.Bold,
-                                    textAlign = TextAlign.Center
-                                )
-                                Button(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterHorizontally)
-                                        .padding(horizontal = 64.dp)
-                                        .border(
-                                            width = 2.dp,
-                                            color = MaterialTheme.colorScheme.inverseSurface,
-                                            shape = RoundedCornerShape(24.dp)
-                                        ),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color.Transparent,
-                                        contentColor = MaterialTheme.colorScheme.inverseSurface
-                                    ),
-                                    onClick = {
-                                        Log.e("Refresh list append state", "working")
-                                        anyPagingData.retry()
-                                    }
-                                ) {
-                                    Text("Повторить")
-                                }
-                            }
-                        }
-                    }*/
-
+                    is LoadState.Error -> {}
                     else -> {}
                 }
             }
