@@ -107,7 +107,7 @@ fun FilmPhotos(photos: List<String>, showSnackBar: () -> Unit) {
                                     FilmPhotoDropDownMenu(
                                         scope = scope,
                                         showSnackBar = showSnackBar,
-                                        photo = "${ApiConstants.ORIGINAL_IMAGE_BASE_URL}$photo",
+                                        photo = photo,
                                         onDismissRequest = { dropDownMenuVisible = false })
                                 }
                             }
