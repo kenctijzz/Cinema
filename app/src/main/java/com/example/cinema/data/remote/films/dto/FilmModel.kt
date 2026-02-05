@@ -3,25 +3,27 @@ package com.example.cinema.data.remote.films.dto
 import com.google.gson.annotations.SerializedName
 
 data class FilmModel(
-    val id: Int,
-    @SerializedName("runtime")
-    val runtime: Int,
-    @SerializedName("vote_average")
+    @SerializedName(value = "filmId", alternate = ["kinopoiskId"])
+    val kinopoiskId: Int,
+    @SerializedName("filmLength")
+    val runtime: String,
+    @SerializedName("ratingKinopoisk")
     val rating: Double,
-    val title: String,
+    val nameRu: String,
     val popularity: Double,
     @SerializedName("original_language")
     val language: String,
-    @SerializedName("poster_path")
-    val image: String?,
-    @SerializedName("release_date")
+    @SerializedName("posterUrlPreview")
+    val posterUrl: String?,
+    @SerializedName("year")
     val releaseDate: String?,
     val adult: Boolean,
-    val overview: String?
+    val description: String?
 )
 
 data class SearchResponse(
     val page: Int,
+    @SerializedName("films")
     val results: List<FilmModel>,
     @SerializedName("total_pages")
     val totalPages: Int,
@@ -35,6 +37,6 @@ data class FilmVideoModel(
     val type: String?
 )
 data class FilmPhotoModel(
-    @SerializedName("file_path")
+    @SerializedName("imageUrl")
     val photo: String?
 )

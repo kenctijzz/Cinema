@@ -22,12 +22,12 @@ private fun FilmModel.toEntity(
     isSearchResult: Boolean
 ): FilmEntity {
     return FilmEntity(
-        id = this.id,
-        title = this.title,
-        image = this.image,
+        id = this.kinopoiskId,
+        title = this.nameRu,
+        image = this.posterUrl,
         releaseDate = this.releaseDate,
         adult = this.adult,
-        overview = this.overview,
+        overview = this.description,
         isFavorite = false,
         page = pageNumber,
         rating = this.rating,
@@ -74,13 +74,14 @@ class FilmSearchRemoteMediator(
                 db.filmDao().getAllRatedFilmsId().associate { it.id to it.userRating }
             val localFilms = db.filmDao().getAllFilms()
             val films = response.results.map { filmModel ->
+                Log.d("CHECK_ID", "Фильм: ${filmModel.nameRu}, ID: ${filmModel.kinopoiskId}")
                 filmModel.toEntity(
                     pageNumber = page,
-                    userRating = localRated[filmModel.id],
+                    userRating = localRated[filmModel.kinopoiskId],
                     isSearchResult = true
                 )
                     .copy(
-                        isFavorite = localFavorites.contains(filmModel.id)
+                        isFavorite = localFavorites.contains(filmModel.kinopoiskId)
                     )
             }
             db.withTransaction {
@@ -92,7 +93,9 @@ class FilmSearchRemoteMediator(
 
             MediatorResult.Success(endOfPaginationReached = films.isEmpty())
         } catch (e: Exception) {
+            Log.e("SEARCH ERROR", "$e")
             if (loadType == LoadType.REFRESH) {
+
 
                 val hasData = db.filmDao().getAnyFilm()?.isSearchResult
                 if (hasData == true) {

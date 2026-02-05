@@ -1,6 +1,5 @@
 package com.example.cinema.data.repository
 
-import android.R.attr.apiKey
 import android.content.Context
 import android.util.Log
 import androidx.paging.ExperimentalPagingApi
@@ -20,7 +19,6 @@ import com.example.cinema.data.repository.paging.FilmSearchRemoteMediator
 import com.example.cinema.di.ApiKey
 import com.example.cinema.domain.model.Film
 import com.example.cinema.domain.repository.FilmRepository
-import com.google.gson.annotations.SerializedName
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -76,12 +74,12 @@ private fun FilmModel.toDomainModel(
     isFavorite: Boolean
 ): Film {
     return Film(
-        id = this.id,
-        title = this.title,
-        image = this.image,
+        id = this.kinopoiskId,
+        title = this.nameRu,
+        image = this.posterUrl,
         releaseDate = this.releaseDate,
         adult = this.adult,
-        overview = this.overview,
+        overview = this.description,
         isFavorite = false,
         page = pageNumber,
         rating = this.rating,
@@ -217,7 +215,7 @@ class FilmRepositoryImpl @Inject constructor(
         val localFilm = filmDao.getFilmById(id)
         val likeInfo = filmDao.getFilmLikeInfo(id)
         val photos: List<String> =
-            filmApi.getFilmImages(id, apiKey).backdrops?.mapNotNull { it -> it.photo }
+            filmApi.getFilmImages(id = id, apikey = apiKey).backdrops?.mapNotNull { it -> it.photo }
                 ?: emptyList()
         val gettedFilm = film.toDomainModel(
             isFavorite = likeInfo,

@@ -17,7 +17,6 @@ import com.example.cinema.data.remote.films.FilmApi
 import com.example.cinema.data.remote.films.dto.FilmModel
 import com.example.cinema.data.repository.paging.toEntity
 import com.example.cinema.data.repository.toEntity
-import com.example.cinema.ui.common.mockMovies
 import com.example.cinema.ui.utils.isNetworkAvailable
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -34,12 +33,12 @@ private fun FilmModel.toEntity(
     isSearchResult: Boolean
 ): FilmEntity {
     return FilmEntity(
-        id = this.id,
-        title = this.title,
-        image = this.image,
+        id = this.kinopoiskId,
+        title = this.nameRu,
+        image = this.posterUrl,
         releaseDate = this.releaseDate,
         adult = this.adult,
-        overview = this.overview,
+        overview = this.description,
         isFavorite = false,
         page = pageNumber,
         rating = this.rating,
@@ -73,29 +72,6 @@ class FilmRemoteMediator (
         Log.d("Mediator", "Pull-to-refresh triggered!")
         if (!isNetworkAvailable(context)) {
             if(loadType == LoadType.REFRESH && db.filmDao().getAnyFilm() == null) {
-                val entities = mockMovies.map { film ->
-                    FilmEntity(
-                        id = film.id,
-                        title = film.title,
-                        image = film.image,
-                        releaseDate = film.releaseDate,
-                        adult = film.adult,
-                        overview = film.overview,
-                        isFavorite = false,
-                        page = 1,
-                        rating = film.rating,
-                        popularity = film.popularity,
-                        language = film.language,
-                        runtime = film.runtime,
-                        video = film.video,
-                        photos = film.photos,
-                        userRating = null,
-                        isSearchResult = false)
-                }
-
-                db.withTransaction {
-                    db.filmDao().insertAll(entities)
-                }
                 return MediatorResult.Success(endOfPaginationReached = false)
             }
             return if (loadType == LoadType.REFRESH && db.filmDao().getAnyFilm() != null) {
@@ -123,11 +99,11 @@ class FilmRemoteMediator (
             val films = response.results.map { filmModel ->
                 filmModel.toEntity(
                     pageNumber = page,
-                    userRating = localRated[filmModel.id],
+                    userRating = localRated[filmModel.kinopoiskId],
                     isSearchResult = false
                 )
                     .copy(
-                        isFavorite = localFavorites.contains(filmModel.id)
+                        isFavorite = localFavorites.contains(filmModel.kinopoiskId)
                     )
             }
             db.withTransaction {
@@ -149,31 +125,9 @@ class FilmRemoteMediator (
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Загружен офлайн-каталог", Toast.LENGTH_LONG).show()
                 }
-                val entities = mockMovies.map { film ->
-                    FilmEntity(
-                        id = film.id,
-                        title = film.title,
-                        image = film.image,
-                        releaseDate = film.releaseDate,
-                        adult = film.adult,
-                        overview = film.overview,
-                        isFavorite = false,
-                        page = 1,
-                        rating = film.rating,
-                        popularity = film.popularity,
-                        language = film.language,
-                        runtime = film.runtime,
-                        video = film.video,
-                        photos = film.photos,
-                        userRating = null,
-                        isSearchResult = false
-                    )
-                }
-                db.withTransaction {
-                    db.filmDao().insertAll(entities)
-                }
+
                 delay(500)
-                Log.d("Mediator", "Mocks inserted, count: ${db.filmDao().getAllFilms().size}")
+                Log.d("ERROR_MEDIATOR", "$e")
                 return MediatorResult.Success(endOfPaginationReached = false)
             }
             MediatorResult.Error(e)

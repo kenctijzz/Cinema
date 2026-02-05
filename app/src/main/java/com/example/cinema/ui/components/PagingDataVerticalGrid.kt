@@ -101,28 +101,6 @@ fun <T : VisualModels> PagingDataVerticalGrid(
                 bottom = paddingValues.calculateBottomPadding() + 16.dp
             )
         ) {
-
-            if (isOffline) {
-                item(span = { GridItemSpan(2) }) {
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 104.dp),
-                        color = MaterialTheme.colorScheme.errorContainer,
-                        shape = RoundedCornerShape(12.dp),
-                        tonalElevation = 4.dp
-                    ) {
-                        Text(
-                            text = "Офлайн-Режим: Вам доступны 4 фильма для теста функций рейтинга, избранного и экрана профиля." +
-                                    " Для полной базы проверьте состояние сети, затем используйте кнопку «Повторить» в конце списка, либо потяните список сверху вниз.",
-                            modifier = Modifier.padding(16.dp),
-                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                            color = MaterialTheme.colorScheme.onErrorContainer,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-            }
             items(
                 count = anyPagingData.itemCount,
                 key = anyPagingData.itemKey { it.id }
@@ -166,41 +144,7 @@ fun <T : VisualModels> PagingDataVerticalGrid(
                         }
                     }
 
-                    is LoadState.Error -> {}/*{
-                        if (anyPagingData.itemCount > 0 && !isOffline) {
-                            Column(modifier = Modifier
-                                .fillMaxWidth()
-                                .align(Alignment.Center)) {
-                                Text(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    text = "Ошибка загрузки",
-                                    fontWeight = FontWeight.Bold,
-                                    textAlign = TextAlign.Center
-                                )
-                                Button(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterHorizontally)
-                                        .padding(horizontal = 64.dp)
-                                        .border(
-                                            width = 2.dp,
-                                            color = MaterialTheme.colorScheme.inverseSurface,
-                                            shape = RoundedCornerShape(24.dp)
-                                        ),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color.Transparent,
-                                        contentColor = MaterialTheme.colorScheme.inverseSurface
-                                    ),
-                                    onClick = {
-                                        Log.e("Refresh list append state", "working")
-                                        anyPagingData.retry()
-                                    }
-                                ) {
-                                    Text("Повторить")
-                                }
-                            }
-                        }
-                    }*/
-
+                    is LoadState.Error -> {}
                     else -> {}
                 }
             }

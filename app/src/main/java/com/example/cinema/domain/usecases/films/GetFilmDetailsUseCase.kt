@@ -15,7 +15,7 @@ class GetFilmDetailsUseCase @Inject constructor(
             val localFilmEntity = repository.getFilmByIdFromLocal(id)
             val likeInfo = repository.getLikeInfoById(id)
             if (localFilmEntity != null
-                && localFilmEntity.runtime != 0
+                && localFilmEntity.runtime != null
                 && localFilmEntity.video != null
                 && localFilmEntity.photos.isNotEmpty()
             ) {
