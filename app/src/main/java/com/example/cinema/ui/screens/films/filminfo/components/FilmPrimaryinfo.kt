@@ -60,7 +60,7 @@ fun FilmPrimaryInfo(
             textAlign = TextAlign.Center
         )
         Text(
-            text = "${filmReleaseDate}г. ${filmRunTime?.runTimeToString()}",
+            text = "${filmReleaseDate}г. ${filmRunTime?.runTimeToString() ?: "Неизвестно"}",
             textAlign = TextAlign.Center
         )
     }
