@@ -44,7 +44,7 @@ fun BackgroundPoster(poster: String?) {
                     brush = Brush.verticalGradient(
                         0.0f to Color.Black.copy(alpha = 0.2f),
                         0.5f to Color.Transparent,
-                        1.0f to Color.Black
+                        1.0f to MaterialTheme.colorScheme.surfaceVariant
                     )
                 )
         )

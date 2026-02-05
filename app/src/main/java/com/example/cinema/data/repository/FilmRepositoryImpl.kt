@@ -29,7 +29,7 @@ import kotlin.Int
 private fun FilmEntity.toDomainModel(): Film {
     return Film(
         id = this.id,
-        title = this.title,
+        title = this.title ?: "Без названия",
         image = this.image,
         releaseDate = this.releaseDate,
         adult = this.adult,
@@ -62,7 +62,7 @@ private fun FilmEntity.toLikeEntity(): LikedFilmsEntity {
         video = this.video,
         photos = this.photos,
         userRating = this.userRating,
-        title = this.title
+        title = this.title ?: "Без названия"
     )
 
 }

@@ -16,7 +16,7 @@ data class FilmEntity(
     @SerializedName("release_date")
     val releaseDate: String?,
     val overview: String?,
-    val title: String,
+    val title: String?,
     val adult: Boolean,
     val isFavorite: Boolean,
     @SerializedName("vote_average")

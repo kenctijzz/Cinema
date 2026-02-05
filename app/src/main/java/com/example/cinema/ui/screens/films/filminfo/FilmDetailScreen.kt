@@ -83,19 +83,19 @@ fun FilmDetailScreen(
                             Spacer(modifier = Modifier.height(72.dp))
                             FilmPoster(
                                 uiState.data.image,
-                                filmTitle = uiState.data.title,
+                                filmTitle = uiState.data.title ?: "Без названия",
                                 filmReleaseDate = uiState.data.releaseDate?.replace('-', '.') ?: "Дата неизвестна",
                                 filmRunTime = uiState.data.runtime,
                                 filmRating = uiState.data.rating
                             )
-                            FilmTrailerWatchButton(uiState.data.video, uiState.data.title, releaseYear = uiState.data.releaseDate?.substringBefore("-")
+                            FilmTrailerWatchButton(uiState.data.video, uiState.data.title ?: "Без названия", releaseYear = uiState.data.releaseDate?.substringBefore("-")
                                 ?: "")
                             FilmDetailButtons(
                                 film = uiState.data,
                                 snackbarHostState = snackbarHostState,
                                 filmId = uiState.data.id
                             )
-                            FilmOverview(uiState.data.overview ?: "Film has no overview")
+                            FilmOverview(uiState.data.overview ?: "У фильма отсутствует описание")
                             FilmPhotos(
                                 uiState.data.photos,
                                 showSnackBar = { scope.launch { filmDetailViewModel.successImageSave() } })

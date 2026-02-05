@@ -13,7 +13,7 @@ import com.example.cinema.data.remote.JsonConverters
 
 @Database(
     entities = [FilmEntity::class, ActorEntity::class, LikedFilmsEntity::class, RatedFilmsEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(JsonConverters::class)

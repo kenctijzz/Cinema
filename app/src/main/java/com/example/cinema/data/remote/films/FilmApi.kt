@@ -13,10 +13,11 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface FilmApi {
-    @GET("api/v2.2/films/top")
+    @GET("api/v2.2/films/collections")
     suspend fun getPopularMovies(
         @Header("X-API-KEY") apikey: String,
         @Query("page") page: Int,
+        @Query("type") type: String = "TOP_POPULAR_MOVIES",
         @Query("language") lang: String = "ru-RU",
         @Query("include_image_language") imageLang: String = "ru,en,null"
     ): FilmResponse

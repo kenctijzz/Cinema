@@ -121,16 +121,9 @@ class FilmRemoteMediator (
 
             MediatorResult.Success(endOfPaginationReached = films.isEmpty())
         } catch (e: Exception) {
-            if(db.filmDao().getAnyFilm() == null){
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Загружен офлайн-каталог", Toast.LENGTH_LONG).show()
-                }
-
-                delay(500)
-                Log.d("ERROR_MEDIATOR", "$e")
-                return MediatorResult.Success(endOfPaginationReached = false)
-            }
-            MediatorResult.Error(e)
+            Log.d("ERROR_MEDIATOR", "$e")
+            //return MediatorResult.Success(endOfPaginationReached = false)
+            return MediatorResult.Error(e)
             }
 
         }

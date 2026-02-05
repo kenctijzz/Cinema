@@ -14,7 +14,7 @@ data class LikedFilmsEntity(
     @SerializedName("release_date")
     val releaseDate: String?,
     val overview: String?,
-    val title: String,
+    val title: String?,
     val adult: Boolean,
     @SerializedName("vote_average")
     val rating: Double,

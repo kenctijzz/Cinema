@@ -3,7 +3,7 @@ package com.example.cinema.data.remote.films.dto
 import com.google.gson.annotations.SerializedName
 
 data class FilmResponse(
-    @SerializedName("films")
+    @SerializedName("items")
     val results: List<FilmModel>
 )
 

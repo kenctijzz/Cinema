@@ -8,7 +8,7 @@ data class Film(
     val image: String?,
     val releaseDate: String?,
     val overview: String?,
-    val title: String,
+    val title: String?,
     val adult: Boolean,
     val isFavorite: Boolean,
     val rating: Double,

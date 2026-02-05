@@ -1,5 +1,7 @@
 package com.example.cinema.ui.screens.films.filminfo.components
 
+import android.R.attr.fontWeight
+import android.R.attr.letterSpacing
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,7 +30,7 @@ import com.example.cinema.ui.utils.runTimeToString
 @Composable
 fun FilmPrimaryInfo(
     filmPoster: String?,
-    filmTitle: String,
+    filmTitle: String?,
     filmReleaseDate: String?,
     filmRunTime: String?
 ) {
@@ -53,7 +55,7 @@ fun FilmPrimaryInfo(
         }
         Text(
             modifier = Modifier.width(200.dp),
-            text = filmTitle,
+            text = "$filmTitle",
             letterSpacing = (-0.5).sp,
             fontSize = 24.sp,
             fontWeight = FontWeight.ExtraBold,

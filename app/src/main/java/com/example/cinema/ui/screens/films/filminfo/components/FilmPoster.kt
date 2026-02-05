@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun FilmPoster(
     filmPoster: String?,
-    filmTitle: String,
+    filmTitle: String?,
     filmReleaseDate: String?,
     filmRunTime: String?,
     filmRating: Double

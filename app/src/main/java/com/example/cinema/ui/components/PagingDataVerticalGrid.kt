@@ -107,7 +107,7 @@ fun <T : VisualModels> PagingDataVerticalGrid(
             ) { index ->
                 anyPagingData[index]?.let { content(it) }
             }
-            if (isOffline || anyPagingData.loadState.append is LoadState.Error || anyPagingData.loadState.refresh is LoadState.Error) {
+            if (anyPagingData.loadState.append is LoadState.Error || anyPagingData.loadState.refresh is LoadState.Error) {
                 item(span = { GridItemSpan(2) }) {
                     Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                         Text(
@@ -128,7 +128,7 @@ fun <T : VisualModels> PagingDataVerticalGrid(
                                 containerColor = Color.Transparent,
                                 contentColor = MaterialTheme.colorScheme.inverseSurface
                             ),
-                            onClick = { anyPagingData.refresh() }
+                            onClick = { anyPagingData.retry() }
                         ) {
                             Text("Повторить")
                         }
