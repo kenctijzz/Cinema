@@ -2,16 +2,13 @@ package com.example.cinema.data.local.dao
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import com.example.cinema.data.local.entities.FilmEntity
 import com.example.cinema.data.local.entities.IdRatingPair
 import com.example.cinema.data.local.entities.LikedFilmsEntity
 import com.example.cinema.data.local.entities.RatedFilmsEntity
-import com.example.cinema.domain.model.Film
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -62,7 +59,7 @@ interface FilmDao {
 
     @Query("UPDATE films SET runtime = :runtime, video = :video, photos = :photos WHERE id = :id")
     suspend fun updateFilmDetails(
-        runtime: Int,
+        runtime: String?,
         id: Int,
         video: String?,
         photos: List<String>,

@@ -24,7 +24,7 @@ object NetworkModule {
     @Provides
     fun provideActorApi(): ActorApi{
         return Retrofit.Builder()
-            .baseUrl(ApiConstants.BASE_URL)
+            .baseUrl("${ApiConstants.BASE_URL2}/3/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ActorApi::class.java)
@@ -32,7 +32,7 @@ object NetworkModule {
     @Provides
     fun provideFilmApi(): FilmApi {
         return Retrofit.Builder()
-            .baseUrl(ApiConstants.BASE_URL)
+            .baseUrl(ApiConstants.BASE_URL2)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(FilmApi::class.java)

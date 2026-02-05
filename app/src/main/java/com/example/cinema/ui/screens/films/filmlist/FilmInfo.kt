@@ -1,5 +1,6 @@
 package com.example.cinema.ui.screens.films.filmlist
 
+import android.util.Log
 import com.example.cinema.R
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.LocalIndication
@@ -77,9 +78,19 @@ fun FilmInfo(
                     modifier = Modifier.fillMaxSize(),
                     alignment = Alignment.Center,
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data("${ApiConstants.POSTER_BASE_URL}${film.image}")
+                        .data(film.image)
+                        .listener(
+                            onStart = { Log.d("COIL_URL", "Загрузка началась: ${it.data}") },
+                            onError = { _, result ->
+                                Log.e(
+                                    "COIL_URL",
+                                    "Ошибка: ${result.throwable?.message}"
+                                )
+                            }
+                        )
                         .crossfade(true)
                         .build(),
+
                     contentDescription = "${film.title} image",
                     error = painterResource(id = R.drawable.ic_no_video),
                     placeholder = painterResource(id = R.drawable.ic_no_video),

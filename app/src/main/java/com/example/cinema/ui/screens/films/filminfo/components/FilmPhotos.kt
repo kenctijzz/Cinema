@@ -59,9 +59,9 @@ fun FilmPhotos(photos: List<String>, showSnackBar: () -> Unit) {
             .padding(horizontal = 8.dp)
     ) {
 
-        Text(text = "Кадры и постеры", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+        Text(text = "Кадры из фильма", fontSize = 16.sp, fontWeight = FontWeight.Bold)
         if (photos.isEmpty()) {
-            Text("У фильма отсутствуют фото")
+            Text("У фильма отсутствуют кадры")
         } else {
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
@@ -79,7 +79,7 @@ fun FilmPhotos(photos: List<String>, showSnackBar: () -> Unit) {
                         AsyncImage(
                             modifier = Modifier.clip(RoundedCornerShape(8.dp)),
                             model = ImageRequest.Builder(LocalContext.current)
-                                .data("${ApiConstants.ORIGINAL_IMAGE_BASE_URL}$photo")
+                                .data(photo)
                                 .crossfade(true)
                                 .build(),
                             contentDescription = "filmPhoto",

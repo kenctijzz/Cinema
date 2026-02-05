@@ -13,8 +13,8 @@ data class Film(
     val isFavorite: Boolean,
     val rating: Double,
     val popularity: Double,
-    val language: String,
-    val runtime: Int,
+    val language: String?,
+    val runtime: String?,
     val video: String?,
     val photos: List<String>,
     val userRating: Int?

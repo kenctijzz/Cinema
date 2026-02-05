@@ -23,9 +23,9 @@ data class FilmEntity(
     val rating: Double,
     val popularity: Double,
     @SerializedName("original_language")
-    val language: String,
+    val language: String?,
     @SerializedName("runtime")
-    val runtime: Int,
+    val runtime: String?,
     val video: String?,
     val photos: List<String>,
     val userRating: Int?,

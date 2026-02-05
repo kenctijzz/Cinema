@@ -48,7 +48,7 @@ class FilmViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     val filmsFlow = combine(
         filmsSortType,
-        searchText.debounce(200L)
+        searchText.debounce(400L)
     ) { type, text ->
         type to text
     }.flatMapLatest { (type, text) ->

@@ -1,3 +1,3 @@
 package com.example.cinema.ui.utils
 
-fun Int.runTimeToString(): String = ("${this/60}ч ${this % 60}мин")
+fun String.runTimeToString(): String = ("${this.toInt()/60}ч ${this.toInt() % 60}мин")

@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.cinema.core.ui.UiEvent
-import com.example.cinema.data.remote.ApiConstants
 import com.example.cinema.ui.common.UiState
 import com.example.cinema.ui.screens.films.filminfo.components.BackgroundPoster
 import com.example.cinema.ui.screens.films.filminfo.components.detailbuttons.FilmDetailButtons
@@ -73,7 +72,7 @@ fun FilmDetailScreen(
                 ) {
                     Box(modifier = Modifier.fillMaxSize()) {
                         Box(modifier = Modifier.graphicsLayer { alpha = backgroundAlpha }) {
-                            BackgroundPoster("${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image}")
+                            BackgroundPoster(uiState.data.image)
                         }
                         Column(
                             modifier = Modifier
@@ -83,7 +82,7 @@ fun FilmDetailScreen(
                         ) {
                             Spacer(modifier = Modifier.height(72.dp))
                             FilmPoster(
-                                "${ApiConstants.ORIGINAL_IMAGE_BASE_URL}${uiState.data.image}",
+                                uiState.data.image,
                                 filmTitle = uiState.data.title,
                                 filmReleaseDate = uiState.data.releaseDate?.replace('-', '.') ?: "Дата неизвестна",
                                 filmRunTime = uiState.data.runtime,
