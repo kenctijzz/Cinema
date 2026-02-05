@@ -1,5 +1,5 @@
 # CineRoom - Приложение позволяющее составлять коллекцию любимых фильмов, выставлять оценки, сохранять на телефон понравившиеся кадры и постеры. Так же имеется возможность мгновенно перейтиа к поиску фильма в Вк Видео
-## [Скачать последнюю версию (APK)](https://github.com/kenctijzz/CineRoom/releases/download/v1.0.3/cineroom-release.apk)
+## [Скачать последнюю версию (APK)](https://github.com/kenctijzz/CineRoom/releases/download/v1.0.4/cineroom-release.apk)
 
 Технологический стек
 
