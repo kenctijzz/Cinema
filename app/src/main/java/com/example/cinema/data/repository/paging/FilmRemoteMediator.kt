@@ -109,12 +109,6 @@ class FilmRemoteMediator (
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     db.filmDao().clearPopularFilms()
-                    val mockIds = listOf(101,103,104,105)
-                    mockIds.forEach { id ->
-                        db.filmDao().deleteFilmUserRating(id)
-                        db.filmDao().deleteLikedFilm(id)
-                        db.filmDao().deleteFilm(id)
-                    }
                 }
                 db.filmDao().insertAll(films)
             }
