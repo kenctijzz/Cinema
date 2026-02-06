@@ -11,6 +11,9 @@ plugins {
 android {
 
     namespace = "com.example.cinema"
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
     compileSdk {
         version = release(36)
     }
@@ -103,4 +106,13 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     implementation("androidx.room:room-paging:2.6.1")
     implementation("androidx.core:core-splashscreen:1.0.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    testImplementation("org.mockito:mockito-core:5.5.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("app.cash.turbine:turbine:1.0.0")
+    testImplementation("io.mockk:mockk:1.13.8")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("app.cash.turbine:turbine:1.0.0")
+    testImplementation(kotlin("test"))
 }

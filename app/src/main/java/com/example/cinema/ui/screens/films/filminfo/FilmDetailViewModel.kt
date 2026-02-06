@@ -48,28 +48,29 @@ class FilmDetailViewModel @Inject constructor(
         _snackBarEvent.emit(UiEvent.ShowSnackBar(message))
     }
 
-    private val filmId: Int = savedStateHandle.toRoute<Screen.FilmDetail>().id
+    private val filmId: Int = savedStateHandle.get<Int>("id")
+        ?: savedStateHandle.toRoute<Screen.FilmDetail>().id
     private val _state = MutableStateFlow<UiState<Film>>(UiState.Loading)
 
     val filmFlow: StateFlow<Film?> = getFilmFlowUseCase(filmId).stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = null
-        )
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
 
 
     val state: StateFlow<UiState<Film>> = _state
     override fun load() {
         viewModelScope.launch {
             _state.update { UiState.Loading }
-                getFilmDetailsUseCase(filmId).onSuccess { data ->
-                    _state.update { UiState.Success(data) }
-                }.onFailure { error ->
-                    _state.update {
-                        Log.e("ERROR OF LOADING FILM INFO", "$error")
-                        UiState.Error("$error")
-                    }
+            getFilmDetailsUseCase(filmId).onSuccess { data ->
+                _state.update { UiState.Success(data) }
+            }.onFailure { error ->
+                _state.update {
+                    Log.e("ERROR OF LOADING FILM INFO", "$error")
+                    UiState.Error("$error")
                 }
+            }
         }
     }
 
@@ -81,13 +82,15 @@ class FilmDetailViewModel @Inject constructor(
             }
         }
     }
-    fun deleteFilmUserRating(id: Int){
+
+    fun deleteFilmUserRating(id: Int) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO){
+            withContext(Dispatchers.IO) {
                 deleteFilmUserRatingUseCase(id)
             }
         }
     }
+
     fun toggleFilmLike(film: Film?) {
         viewModelScope.launch {
             val favoriteStatus = toggleFilmLikeUseCase(film)
