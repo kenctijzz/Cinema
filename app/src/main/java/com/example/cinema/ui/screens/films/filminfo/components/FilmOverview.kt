@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun FilmOverview(overview: String) {
@@ -64,6 +65,7 @@ fun FilmOverview(overview: String) {
                     }
                 },
             text = if(overview != "")overview else "У фильма отсутствует описание",
+            fontSize = 16.sp,
             textAlign = TextAlign.Start,
             maxLines = if (onFullOverview) 100 else 3,
             overflow = TextOverflow.Clip,

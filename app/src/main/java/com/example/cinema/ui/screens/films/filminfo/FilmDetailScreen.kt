@@ -31,6 +31,8 @@ import com.example.cinema.ui.screens.films.filminfo.components.detailbuttons.Fil
 import com.example.cinema.ui.screens.films.filminfo.components.FilmOverview
 import com.example.cinema.ui.screens.films.filminfo.components.FilmPhotos
 import com.example.cinema.ui.screens.films.filminfo.components.FilmPoster
+import com.example.cinema.ui.screens.films.filminfo.components.FilmPosters
+import com.example.cinema.ui.screens.films.filminfo.components.FilmSimilars
 import com.example.cinema.ui.screens.films.filminfo.components.FilmTrailerWatchButton
 import com.example.cinema.ui.utils.UiError
 import com.example.cinema.ui.utils.UiLoading
@@ -84,12 +86,17 @@ fun FilmDetailScreen(
                             FilmPoster(
                                 uiState.data.image,
                                 filmTitle = uiState.data.title ?: "Без названия",
-                                filmReleaseDate = uiState.data.releaseDate?.replace('-', '.') ?: "Дата неизвестна",
+                                filmReleaseDate = uiState.data.releaseDate?.replace('-', '.')
+                                    ?: "Дата неизвестна",
                                 filmRunTime = uiState.data.runtime,
                                 filmRating = uiState.data.rating
                             )
-                            FilmTrailerWatchButton(uiState.data.video, uiState.data.title ?: "Без названия", releaseYear = uiState.data.releaseDate?.substringBefore("-")
-                                ?: "")
+                            FilmTrailerWatchButton(
+                                uiState.data.video,
+                                uiState.data.title ?: "Без названия",
+                                releaseYear = uiState.data.releaseDate?.substringBefore("-")
+                                    ?: ""
+                            )
                             FilmDetailButtons(
                                 film = uiState.data,
                                 snackbarHostState = snackbarHostState,
@@ -98,7 +105,15 @@ fun FilmDetailScreen(
                             FilmOverview(uiState.data.overview ?: "У фильма отсутствует описание")
                             FilmPhotos(
                                 uiState.data.photos,
-                                showSnackBar = { scope.launch { filmDetailViewModel.successImageSave() } })
+                                showSnackBar = { scope.launch { filmDetailViewModel.successSave() } })
+                            FilmPosters(
+                                uiState.data.posters,
+                                showSnackBar = { scope.launch { filmDetailViewModel.successSave() } }
+                            )
+                            FilmSimilars(
+                                similarFilms = uiState.data.similarFilms,
+                                viewModel = filmDetailViewModel
+                            )
                             Spacer(modifier = Modifier.height(32.dp))
                         }
                     }

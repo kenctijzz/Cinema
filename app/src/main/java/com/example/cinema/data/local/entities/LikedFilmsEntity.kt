@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 data class LikedFilmsEntity(
     @PrimaryKey val id: Int,
     val isFavorite: Boolean,
-    val page: Int,
+    val page: Int?,
     @SerializedName("poster_path")
     val image: String?,
     @SerializedName("release_date")
@@ -25,5 +25,7 @@ data class LikedFilmsEntity(
     val runtime: String?,
     val video: String?,
     val photos: List<String>,
+    val posters: List<String>,
+    val similarFilms: List<FilmEntity>,
     val userRating: Int?
 )

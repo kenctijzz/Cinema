@@ -1,16 +1,16 @@
 package com.example.cinema.data.local.entities
 
-import android.util.Log.v
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
+@Serializable
 @Entity(tableName = "films")
 data class FilmEntity(
     @PrimaryKey val id: Int,
-    val page: Int,
+    val page: Int?,
     @SerializedName("poster_path")
     val image: String?,
     @SerializedName("release_date")
@@ -28,6 +28,8 @@ data class FilmEntity(
     val runtime: String?,
     val video: String?,
     val photos: List<String>,
+    val posters: List<String>,
+    val similarFilms: List<FilmEntity>,
     val userRating: Int?,
     val isSearchResult: Boolean = false
 )

@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FilmDao {
-    @Query("SELECT * FROM films WHERE isSearchResult = 0 ORDER BY page ASC, id ASC")
+    @Query("SELECT * FROM films WHERE isSearchResult = 0 AND page > 0 ORDER BY page ASC, id ASC")
     fun getPagingSource(): PagingSource<Int, FilmEntity>
 
     @Query("SELECT * FROM films WHERE userRating IS NOT NULL ORDER BY userRating DESC, id ASC")
@@ -57,12 +57,14 @@ interface FilmDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertInitialFilm(film: FilmEntity): Long
 
-    @Query("UPDATE films SET runtime = :runtime, video = :video, photos = :photos WHERE id = :id")
+    @Query("UPDATE films SET runtime = :runtime, similarFilms =:similarFilms, posters = :posters, video = :video, photos = :photos WHERE id = :id")
     suspend fun updateFilmDetails(
         runtime: String?,
         id: Int,
         video: String?,
         photos: List<String>,
+        posters: List<String>,
+        similarFilms: List<FilmEntity>
     )
 
     @Query("SELECT * FROM films WHERE id = :id")
@@ -95,7 +97,7 @@ interface FilmDao {
     @Query("DELETE FROM rated_films WHERE id = :id")
     suspend fun deleteFilmUserRating(id: Int)
     @Query("SELECT EXISTS(SELECT 1 FROM liked_films WHERE id = :id)")
-    suspend fun getFilmLikeInfo(id: Int): Boolean
+    suspend fun getFilmLikeInfo(id: Int?): Boolean
 
     @Query("SELECT EXISTS(SELECT 1 FROM liked_films WHERE id = :id)")
     fun getLikeInfoFlow(id: Int): Flow<Boolean>

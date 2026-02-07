@@ -1,12 +1,8 @@
 package com.example.cinema.data.repository.paging
 
-import android.R.attr.apiKey
 import android.content.Context
 import android.util.Log
-import android.util.Log.e
-import android.widget.Toast
 import androidx.paging.ExperimentalPagingApi
-import androidx.paging.LoadState.Loading.endOfPaginationReached
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
@@ -15,20 +11,14 @@ import com.example.cinema.data.local.db.CinemaDatabase
 import com.example.cinema.data.local.entities.FilmEntity
 import com.example.cinema.data.remote.films.FilmApi
 import com.example.cinema.data.remote.films.dto.FilmModel
-import com.example.cinema.data.repository.paging.toEntity
-import com.example.cinema.data.repository.toEntity
 import com.example.cinema.ui.utils.isNetworkAvailable
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
-
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 private fun FilmModel.toEntity(
-    pageNumber: Int,
+    pageNumber: Int?,
     videos: List<String> = emptyList(),
     photos: List<String> = emptyList(),
+    posters: List<String> = emptyList(),
+    similarFilms: List<FilmEntity> = emptyList(),
     userRating: Int?,
     isSearchResult: Boolean
 ): FilmEntity {
@@ -48,7 +38,9 @@ private fun FilmModel.toEntity(
         video = null,
         photos = photos,
         userRating = userRating,
-        isSearchResult = isSearchResult
+        isSearchResult = isSearchResult,
+        posters = posters,
+        similarFilms = similarFilms
     )
 }
 
@@ -86,7 +78,7 @@ class FilmRemoteMediator (
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
                     val lastItem = state.lastItemOrNull()
-                    if (lastItem == null) 1 else lastItem.page + 1
+                    if (lastItem == null) 1 else lastItem.page?.plus(1)
                 }
             }
 

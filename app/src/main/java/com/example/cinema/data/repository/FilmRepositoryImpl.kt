@@ -26,7 +26,8 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import kotlin.Int
 
-private fun FilmEntity.toDomainModel(): Film {
+private fun FilmEntity.toDomainModel(
+): Film {
     return Film(
         id = this.id,
         title = this.title ?: "Без названия",
@@ -42,7 +43,9 @@ private fun FilmEntity.toDomainModel(): Film {
         runtime = this.runtime,
         video = this.video,
         photos = this.photos,
-        userRating = this.userRating
+        userRating = this.userRating,
+        posters = this.posters,
+        similarFilms = this.similarFilms.map { it.toDomainModel() }
     )
 }
 
@@ -62,15 +65,19 @@ private fun FilmEntity.toLikeEntity(): LikedFilmsEntity {
         video = this.video,
         photos = this.photos,
         userRating = this.userRating,
-        title = this.title ?: "Без названия"
+        title = this.title ?: "Без названия",
+        posters = this.posters,
+        similarFilms = this.similarFilms
     )
 
 }
 
 private fun FilmModel.toDomainModel(
-    pageNumber: Int,
+    pageNumber: Int?,
     video: String?,
     photos: List<String>,
+    posters: List<String>,
+    similarFilms: List<Film>,
     isFavorite: Boolean
 ): Film {
     return Film(
@@ -88,7 +95,9 @@ private fun FilmModel.toDomainModel(
         runtime = this.runtime,
         video = video,
         photos = photos,
-        userRating = null
+        posters = posters,
+        userRating = null,
+        similarFilms = similarFilms
     )
 }
 
@@ -108,7 +117,9 @@ private fun LikedFilmsEntity.toDomainModel(): Film {
         runtime = this.runtime,
         video = this.video,
         photos = this.photos,
-        userRating = this.userRating
+        userRating = this.userRating,
+        posters = this.posters,
+        similarFilms = this.similarFilms.map { it.toDomainModel() }
     )
 }
 
@@ -129,7 +140,9 @@ fun Film.toEntity(): FilmEntity {
         runtime = this.runtime,
         video = this.video,
         photos = this.photos,
-        userRating = this.userRating
+        userRating = this.userRating,
+        posters = this.posters,
+        similarFilms = this.similarFilms.map { it.toEntity() }
     )
 }
 
@@ -204,25 +217,40 @@ class FilmRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun getFilmByIdFromLocal(id: Int): Film? {
+    override suspend fun getFilmByIdFromLocal(id: Int?): Film? {
         val film = filmDao.getFilmById(id)
         return film?.toDomainModel()
     }
 
-    override suspend fun getFilmByIdFromRemote(id: Int): Film {
+    override suspend fun getFilmByIdFromRemote(id: Int?): Film {
         val film = filmApi.getFilm(id, apiKey)
         val video = filmApi.getFilmVideos(id, apiKey)
         val localFilm = filmDao.getFilmById(id)
         val likeInfo = filmDao.getFilmLikeInfo(id)
+        val localFavorites = db.filmDao().getAllLikedFilms()
         val photos: List<String> =
-            filmApi.getFilmImages(id = id, apikey = apiKey).backdrops?.mapNotNull { it -> it.photo }
+            filmApi.getFilmImages(id = id, apikey = apiKey, type = "STILL").backdrops?.mapNotNull { it -> it.photo }
                 ?: emptyList()
+        val posters: List<String> =
+            filmApi.getFilmImages(id = id, apikey = apiKey, type = "POSTER").backdrops?.mapNotNull { it -> it.photo }
+                ?: emptyList()
+        val similarFilms: List<Film> =
+            filmApi.getFilmSimilars(id = id, apikey = apiKey).results.map { it.toDomainModel(
+                pageNumber = 0,
+                video = "",
+                photos = emptyList(),
+                posters = emptyList(),
+                similarFilms = emptyList(),
+                isFavorite = localFavorites.contains(it.kinopoiskId)
+            ) }
         val gettedFilm = film.toDomainModel(
-            isFavorite = likeInfo,
-            pageNumber = localFilm?.page ?: 0,
+            pageNumber = localFilm?.page,
             video = video.results?.firstOrNull { it.type == "Trailer" }?.videoKey
                 ?: video.results?.firstOrNull()?.videoKey,
             photos = photos,
+            posters = posters,
+            similarFilms = similarFilms,
+            isFavorite = likeInfo
         )
         val entity = gettedFilm.toEntity()
         val result = filmDao.insertInitialFilm(entity)
@@ -231,7 +259,9 @@ class FilmRepositoryImpl @Inject constructor(
                 id = gettedFilm.id,
                 runtime = gettedFilm.runtime,
                 video = gettedFilm.video,
-                photos = gettedFilm.photos
+                photos = gettedFilm.photos,
+                posters = gettedFilm.posters,
+                similarFilms = gettedFilm.similarFilms.map { it.toEntity() }
             )
         }
         Log.e("FILMdbINSERTRESULT", "$result")
@@ -243,16 +273,28 @@ class FilmRepositoryImpl @Inject constructor(
         filmDao.addFilm(film.toEntity())
     }
 
-    override suspend fun toggleFilmLike(likeStatus: Boolean, id: Int?) {
-        filmDao.toggleFilmLike(likeStatus, id)
+    override suspend fun toggleFilmLike(likeStatus: Boolean, film: Film) {
+        val localFilm = filmDao.getFilmById(film.id)
+
+        if (localFilm == null) {
+            val newEntity = film.toEntity().copy(
+                isFavorite = likeStatus,
+                page = 0
+            )
+            filmDao.insertInitialFilm(newEntity)
+            Log.e("ToggleLikeInfo","$localFilm")
+        } else {
+            filmDao.toggleFilmLike(id = film.id, likeStatus = likeStatus)
+            Log.e("ToggleLikeInfo", "$localFilm")
+        }
+
         if (likeStatus) {
-            filmDao.getFilmById(id)?.toLikeEntity()?.let {
+            filmDao.getFilmById(film.id)?.toLikeEntity()?.let {
                 filmDao.addLikedFilm(it)
             }
         } else {
-            filmDao.deleteLikedFilm(id)
+            filmDao.deleteLikedFilm(film.id)
         }
-        Log.e("newlikestatus in repo", "$likeStatus")
     }
 
     override fun getFilmFlow(id: Int): Flow<Film?> {

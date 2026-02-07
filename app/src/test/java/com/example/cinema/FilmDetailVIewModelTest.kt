@@ -1,3 +1,5 @@
+package com.example.cinema
+
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.example.cinema.domain.model.Film
@@ -20,12 +22,29 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.mockito.kotlin.mock
 import kotlin.test.assertEquals
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FilmDetailVIewModelTest {
+    private val mockFilm = Film(
+        id = 1, title = "Matrix",
+        page = 0,
+        image = "",
+        releaseDate = "",
+        overview = "",
+        adult = false,
+        isFavorite = false,
+        rating = 5.0,
+        popularity = 5.0,
+        language = "ru",
+        runtime = "123",
+        video = "",
+        photos = emptyList(),
+        userRating = 4,
+        posters = emptyList(),
+        similarFilms = emptyList()
+    )
     private val testDispatcher = StandardTestDispatcher()
 
     //СОЗДАЕМ ПУСТЫШКИ ДЛЯ ЮЗКЕЙСОВ
@@ -54,22 +73,7 @@ class FilmDetailVIewModelTest {
 
     @Test
     fun `load should update state to Success when useCase returns data`() = runTest {
-        val mockFilm = Film(
-            id = 123, title = "Inception",
-            page = 0,
-            image = "",
-            releaseDate = "",
-            overview = "",
-            adult = false,
-            isFavorite = false,
-            rating = 5.0,
-            popularity = 5.0,
-            language = "ru",
-            runtime = "123",
-            video = "",
-            photos = emptyList(),
-            userRating = 4
-        )
+        val mockFilm = mockFilm
         coEvery { getFilmDetailsUseCase(123) } returns Result.success(mockFilm)
 
         //СОЗДАЕМ ТЕСТИРУЕМУЮ VIEWMODEL
@@ -87,27 +91,12 @@ class FilmDetailVIewModelTest {
             //УКАЗЫВАЕМ ЧТО ДЛЯ ПРОХОЖДЕНИЯ ТЕСТА ДОЛЖНЫ ПОЛУЧИТЬ SUCCESS
             assert(item is UiState.Success)
             //ПРОВЕРЯЕМ ЧТО НАЗВАНИЕ ФИЛЬМА СОВПАДАЕТ С НАЗВАНИЕ MOCKFILM
-            assertEquals("Inception", (item as UiState.Success).data.title)
+            assertEquals("Matrix", (item as UiState.Success).data.title)
         }
     }
     @Test
     fun `toggleFilmLike should show snackbar with added message`() = runTest {
-        val film = Film(
-            id = 1, title = "Matrix",
-            page = 0,
-            image = "",
-            releaseDate = "",
-            overview = "",
-            adult = false,
-            isFavorite = false,
-            rating = 5.0,
-            popularity = 5.0,
-            language = "ru",
-            runtime = "123",
-            video = "",
-            photos = emptyList(),
-            userRating = 4
-        )
+        val film = mockFilm
         coEvery { getFilmDetailsUseCase(any()) } returns Result.success(film)
         coEvery { toggleFilmLikeUseCase(film) } returns true
         viewModel = FilmDetailViewModel(
