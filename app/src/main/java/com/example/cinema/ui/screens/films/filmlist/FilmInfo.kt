@@ -46,7 +46,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun FilmInfo(
     film: Film,
-    viewModel: ViewModel,
+    isShowLikes: Boolean,
     onLikeClick: () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -96,30 +96,32 @@ fun FilmInfo(
                     placeholder = painterResource(id = R.drawable.ic_no_video),
                     contentScale = ContentScale.Crop
                 )
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.Bottom
-                ) {
-                    Box(
+                if (isShowLikes) {
+                    Column(
                         modifier = Modifier
-                            .size(40.dp)
-                            .padding(8.dp)
-                            .clickable(onClick = {
-                                onLikeClick()
-                            }
-                            )
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.End,
+                        verticalArrangement = Arrangement.Bottom
                     ) {
-                        Icon(
-                            imageVector =
-                                if (film.isFavorite) {
-                                    Icons.Default.Favorite
-                                } else {
-                                    Icons.Default.FavoriteBorder
-                                },
-                            contentDescription = null
-                        )
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .padding(8.dp)
+                                .clickable(onClick = {
+                                    onLikeClick()
+                                }
+                                )
+                        ) {
+                            Icon(
+                                imageVector =
+                                    if (film.isFavorite) {
+                                        Icons.Default.Favorite
+                                    } else {
+                                        Icons.Default.FavoriteBorder
+                                    },
+                                contentDescription = null
+                            )
+                        }
                     }
                 }
             }

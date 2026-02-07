@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun FilmPhotoDropDownMenu(
-    photo: String, onDismissRequest: () -> Unit,
+    item: String, onDismissRequest: () -> Unit,
     showSnackBar: () -> Unit,
     scope: CoroutineScope,
 ) {
@@ -41,7 +41,7 @@ fun FilmPhotoDropDownMenu(
             onClick = {
                 onDismissRequest()
                 scope.launch {
-                    saveCoilImageToGallery(context, photo, showSnackBar)
+                    saveCoilImageToGallery(context, item, showSnackBar)
                 }
             }
         )

@@ -1,7 +1,6 @@
 package com.example.cinema.domain.usecases.films
 
 import android.util.Log
-import android.util.Log.e
 import com.example.cinema.domain.model.Film
 import com.example.cinema.domain.repository.FilmRepository
 import javax.inject.Inject
@@ -10,14 +9,16 @@ import javax.inject.Inject
 class GetFilmDetailsUseCase @Inject constructor(
     private val repository: FilmRepository
 ) {
+
     suspend operator fun invoke(id: Int): Result<Film> {
+
         return try {
             val localFilmEntity = repository.getFilmByIdFromLocal(id)
             val likeInfo = repository.getLikeInfoById(id)
-            if (localFilmEntity != null
+            if ((localFilmEntity != null
                 && localFilmEntity.runtime != null
                 && localFilmEntity.video != null
-                && localFilmEntity.photos.isNotEmpty()
+                && localFilmEntity.photos.isNotEmpty())
             ) {
                 Result.success(localFilmEntity.copy(isFavorite = likeInfo))
             } else {

@@ -152,7 +152,7 @@ fun FilmListScreen(
                     ) { film ->
                         FilmInfo(
                             film = film,
-                            viewModel = filmViewModel,
+                            isShowLikes = true,
                             onLikeClick = { filmViewModel.toggleFilmLike(film) }
                         )
                     }

@@ -100,7 +100,7 @@ fun FavoriteFilms(
                     items(items = currentState.data, key = { it.id }) { film ->
                         FilmInfo(
                             film = film,
-                            viewModel = favoriteFilmsViewModel,
+                            isShowLikes = true,
                             onLikeClick = { favoriteFilmsViewModel.toggleFilmLike(film) })
                     }
                 }

@@ -4,7 +4,7 @@ import com.example.cinema.ui.common.VisualModels
 
 data class Film(
     override val id: Int,
-    val page: Int,
+    val page: Int?,
     val image: String?,
     val releaseDate: String?,
     val overview: String?,
@@ -17,5 +17,7 @@ data class Film(
     val runtime: String?,
     val video: String?,
     val photos: List<String>,
+    val posters: List<String>,
+    val similarFilms: List<Film>,
     val userRating: Int?
 ) : VisualModels

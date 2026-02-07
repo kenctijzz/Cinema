@@ -1,7 +1,6 @@
 package com.example.cinema.ui.screens.films.filminfo
 
 import android.util.Log
-import androidx.compose.runtime.State
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
@@ -51,13 +50,32 @@ class FilmDetailViewModel @Inject constructor(
     private val filmId: Int = savedStateHandle.get<Int>("id")
         ?: savedStateHandle.toRoute<Screen.FilmDetail>().id
     private val _state = MutableStateFlow<UiState<Film>>(UiState.Loading)
-
+    private val _filmState = MutableStateFlow<Film>(
+        Film(
+            id = 1, title = "Matrix",
+            page = 0,
+            image = "",
+            releaseDate = "",
+            overview = "",
+            adult = false,
+            isFavorite = false,
+            rating = 5.0,
+            popularity = 5.0,
+            language = "ru",
+            runtime = "123",
+            video = "",
+            photos = emptyList(),
+            userRating = 4,
+            posters = emptyList(),
+            similarFilms = emptyList()
+        )
+    )
+    val filmState: StateFlow<Film> = _filmState
     val filmFlow: StateFlow<Film?> = getFilmFlowUseCase(filmId).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = null
     )
-
 
     val state: StateFlow<UiState<Film>> = _state
     override fun load() {
@@ -74,6 +92,13 @@ class FilmDetailViewModel @Inject constructor(
         }
     }
 
+    fun getFilm(id: Int) {
+        viewModelScope.launch {
+            getFilmDetailsUseCase(id).onSuccess { data ->
+                _filmState.value = data
+            }
+        }
+    }
 
     fun updateFilmRating(newRating: Int, id: Int) {
         viewModelScope.launch {
@@ -102,7 +127,7 @@ class FilmDetailViewModel @Inject constructor(
         }
     }
 
-    fun successImageSave() {
+    fun successSave() {
         viewModelScope.launch {
             showSnackBar("Сохранено в галерею")
         }

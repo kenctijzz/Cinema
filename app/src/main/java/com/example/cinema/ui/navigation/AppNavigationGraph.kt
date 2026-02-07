@@ -36,7 +36,7 @@ fun AppNavigationGraph(
             if (currentState == Lifecycle.State.RESUMED) {
                 when (event) {
                     is UiNavigation.NavigateTo -> {
-                        navController.navigate(event.route) { launchSingleTop = true }
+                        navController.navigate(event.route) 
                     }
 
                     is UiNavigation.NavigateBack -> {

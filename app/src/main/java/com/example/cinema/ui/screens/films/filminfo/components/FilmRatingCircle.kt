@@ -1,5 +1,6 @@
 package com.example.cinema.ui.screens.films.filminfo.components
 
+import android.R.attr.fontWeight
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -40,13 +42,15 @@ fun FilmRatingCircle(filmRating: Double) {
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = String.format(Locale.US, "%.1f", filmRating),
+                text =
+                    if(filmRating != 0.0)String.format(Locale.US, "%.1f", filmRating)
+                else "-",
                 fontWeight = FontWeight.ExtraBold,
                 textAlign = TextAlign.Center,
                 fontSize = 24.sp,
                 style = TextStyle(
                     shadow = Shadow(
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.surfaceVariant,
                         offset = Offset(2f, 2f)
                     )
                 )
