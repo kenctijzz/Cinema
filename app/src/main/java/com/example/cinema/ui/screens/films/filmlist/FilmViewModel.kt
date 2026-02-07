@@ -3,7 +3,9 @@ package com.example.cinema.ui.screens.films.filmlist
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.example.cinema.BuildConfig
 import com.example.cinema.core.ui.UiEvent
+import com.example.cinema.data.remote.films.FilmApi
 import com.example.cinema.data.repository.SortType
 import com.example.cinema.domain.model.Film
 import com.example.cinema.domain.usecases.films.GetFilmsUseCase
@@ -11,6 +13,7 @@ import com.example.cinema.domain.usecases.films.ManualRefreshUseCase
 import com.example.cinema.domain.usecases.films.ToggleFilmLikeUseCase
 import com.example.cinema.ui.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BufferOverflow
@@ -22,6 +25,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.Dispatcher
 import javax.inject.Inject
 
 
