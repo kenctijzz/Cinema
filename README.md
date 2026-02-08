@@ -16,8 +16,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/kenctijzz/CineRoom/releases/download/v1.0.4/cineroom-release.apk">
-    <img src="https://img.shields.io/badge/Скачать_APK-v1.0.4-0055FF?style=for-the-badge&logo=android" alt="Скачать APK">
+  <a href="https://github.com/kenctijzz/CineRoom/releases/download/v1.0.5/cineroom_v1.0.5.apk">
+    <img src="https://img.shields.io/badge/Скачать_APK-v1.0.5-0055FF?style=for-the-badge&logo=android" alt="Скачать APK">
   </a>
   <a href="https://github.com/kenctijzz/CineRoom/releases">
     <img src="https://img.shields.io/badge/Все_релизы-GitHub-181717?style=for-the-badge&logo=github" alt="Все релизы">
