@@ -24,10 +24,19 @@ android {
         applicationId = "com.timur.cineroomapp"
         minSdk = 26
         targetSdk = 36
-        versionCode = 12
-        versionName = "1.0"
+        versionCode = 13
+        versionName = "1.0.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        android {
+            defaultConfig {
+                javaCompileOptions {
+                    annotationProcessorOptions {
+                        arguments["room.schemaLocation"] = "$projectDir/schemas"
+                    }
+                }
+            }
+        }
     }
 
     buildTypes {
@@ -115,4 +124,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("app.cash.turbine:turbine:1.0.0")
     testImplementation(kotlin("test"))
+}
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }

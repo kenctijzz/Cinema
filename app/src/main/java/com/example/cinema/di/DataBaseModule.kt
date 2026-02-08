@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.example.cinema.data.local.dao.ActorDao
 import com.example.cinema.data.local.dao.FilmDao
 import com.example.cinema.data.local.db.CinemaDatabase
+import com.example.cinema.data.local.db.MIGRATION_2_3
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,7 +21,7 @@ object DataBaseModule {
     fun provideDatabase(@ApplicationContext context: Context): CinemaDatabase {
         return Room.databaseBuilder(
             context, CinemaDatabase::class.java, "film_database"
-        ).fallbackToDestructiveMigration(true)
+        ).addMigrations(MIGRATION_2_3)
             .build()
     }
 
